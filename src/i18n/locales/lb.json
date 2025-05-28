@@ -1,0 +1,74 @@
+{
+  "home": {
+    "title": "Äre virtuelle Sozialassistent, iwwerall, ëmmer.",
+    "subtitle": "Hutt Dir eng Fro? Fänkt hei un. Et ass einfach.",
+    "chatButton": "Mat dem Assistant schwätzen",
+    "microcopy": "Kee Kont néideg. Keng Donnéeë gespäichert."
+  },
+  "features": {
+    "title": "Eng Plattform. Vill Méiglechkeeten ze hëllefen.",
+    "subtitle": "Konkret, einfach an intelligent Tools fir ze verstoen, ze handelen an an Äre Prozesser virunzekommen.",
+    "scanner": {
+      "title": "Dokument scannen",
+      "description": "Luet en Dokument erop (PDF, Foto, Word). Den Assistant liest et, iwwersetzt et an erkläert wat dra steet.",
+      "button": "Zum Scanner"
+    },
+    "process": {
+      "title": "Prozess starten",
+      "description": "Fëllt e einfache Formulaire aus. Den Assistant hëlleft Iech en administratiivt Dokument ze generéieren dat Ärer Situatioun ugepasst ass (Wunnen, Hëllef, Recours...).",
+      "button": "Prozess ufänken"
+    },
+    "map": {
+      "title": "Hëllef an der Géigend fannen",
+      "description": "Sicht eng Ënnerkonft, eng Associatioun oder e soziale Service an Ärer Géigend. No Besoin filteren.",
+      "button": "Kaart weisen"
+    },
+    "videos": {
+      "title": "Mat Video verstoen",
+      "description": "Einfach, iwwersat an zougänglech Videoe fir alles einfach ze verstoen.",
+      "button": "Videoe kucken"
+    }
+  },
+  "scanner": {
+    "capture": "Opnam",
+    "capturing": "Opnam leeft...",
+    "fileLabel": "Fichier",
+    "analyzing": "Analys leeft...",
+    "error": "E Feeler ass opgetrueden",
+    "noTextFound": "Keen Text fonnt",
+    "processing": "Veraarbechtung leeft..."
+  },
+  "why": {
+    "title": "Eng ëffentlech Technologie. Einfach, diskret, essentiell.",
+    "subtitle": "Geduecht fir jiddereen, op all Etapp vun Ärem Wee.",
+    "benefits": {
+      "help": {
+        "title": "Geduecht fir ze hëllefen, net fir ze iwwerwaachen.",
+        "text": "Dokument scannen, Hëllef verstoen, Service fannen oder Formulaire ausfëllen: all Tool ass geduecht fir einfach, nëtzlech, ouni Fachchinesisch ze sinn."
+      },
+      "anonymous": {
+        "title": "Dir bleift anonym. Ëmmer.",
+        "text": "Kee Kont, keng Späicherung. D'Erfarung ass vertraulech a konform mam RGPD."
+      },
+      "free": {
+        "title": "Gratis. Direkt. Ouni Umeldung.",
+        "text": "Opmaachen. Benotzen. Virukomm. D'Hëllef ass do, ouni Hindernisser."
+      },
+      "multi": {
+        "title": "Méisproocheg an adaptiv.",
+        "text": "Den Assistant versteet Iech an Ärer Sprooch. D'Inhalter entwéckele sech no Ärem Feedback."
+      }
+    },
+    "cta": {
+      "text": "Dësen ëffentleche Service entwéckelt sech mat Iech. All Feedback zielt fir eng wierklech nëtzlech Plattform ze bauen.",
+      "button": "Iddi deelen"
+    }
+  },
+  "nav": {
+    "mainMenu": "Haaptmenü",
+    "back": "Zeréck",
+    "help": "Hëllef & Informatiounen",
+    "scan": "Scanner",
+    "map": "Interaktiv Kaart"
+  }
+}

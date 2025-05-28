@@ -1,0 +1,84 @@
+{
+  "home": {
+    "title": "Seu assistente social virtual, em qualquer lugar, a qualquer momento.",
+    "subtitle": "Problema? Comece aqui. É simples.",
+    "chatButton": "Falar com o assistente",
+    "microcopy": "Não precisa de conta. Nenhum dado armazenado."
+  },
+  "features": {
+    "title": "Uma plataforma. Várias maneiras de ajudar você.",
+    "subtitle": "Ferramentas práticas, simples e inteligentes para entender, agir e avançar em seus processos.",
+    "scanner": {
+      "title": "Digitalizar um documento",
+      "description": "Fotografe ou faça upload de um documento (Foto, PDF, Word). O assistente o lê, traduz e explica seu conteúdo.",
+      "button": "Acessar o scanner"
+    },
+    "process": {
+      "title": "Realizar um procedimento",
+      "description": "Preencha um formulário simples. O assistente ajuda você a gerar um documento administrativo adequado à sua situação (moradia, auxílio, recurso…).",
+      "button": "Iniciar um procedimento"
+    },
+    "map": {
+      "title": "Encontrar um local de ajuda",
+      "description": "Pesquise por um abrigo, uma associação, um escritório ou serviço social perto de você. Filtre por necessidade.",
+      "button": "Ver o mapa"
+    },
+    "videos": {
+      "title": "Entender em vídeo",
+      "description": "Vídeos simples, traduzidos e acessíveis para entender tudo com facilidade.",
+      "button": "Assistir aos vídeos"
+    }
+  },
+  "scanner": {
+    "banner": {
+      "title": "Digitalizar um documento:",
+      "tagline": "simples, rápido, inteligente.",
+      "description": "Fotografe ou faça upload de um documento (PDF, foto, Word). O assistente o lê, traduz e explica o que contém — passo a passo, no seu idioma.",
+      "privacy": "Análise instantânea, sem armazenamento. Seu documento permanece confidencial."
+    },
+    "capture": "Digitalizar com a câmera",
+    "capturing": "Capturando...",
+    "fileLabel": "Arquivo",
+    "analyzing": "Analisando...",
+    "error": "Ocorreu um erro",
+    "noTextFound": "Nenhum texto encontrado",
+    "processing": "Processando...",
+    "analyze": "Analisar o documento",
+    "summary": "Resumo do documento",
+    "keyPoints": "Pontos principais",
+    "importFile": "Importar um arquivo do seu dispositivo"
+  },
+  "why": {
+    "title": "Uma tecnologia pública. Simples, discreta, essencial.",
+    "subtitle": "Projetada para todos, em cada etapa do seu percurso.",
+    "benefits": {
+      "help": {
+        "title": "Pensada para ajudar, não para vigiar.",
+        "text": "Digitalizar um documento, entender um benefício, encontrar um serviço ou preencher um formulário: cada ferramenta é projetada para ser simples, útil, sem jargões."
+      },
+      "anonymous": {
+        "title": "Você permanece anônimo. Sempre.",
+        "text": "Sem conta, sem armazenamento. A experiência é confidencial e em conformidade com o RGPD."
+      },
+      "free": {
+        "title": "Gratuito. Instantâneo. Sem cadastro.",
+        "text": "Abra. Use. Progrida. A ajuda está aqui, sem obstáculos."
+      },
+      "multi": {
+        "title": "Multilíngue e atencioso.",
+        "text": "O assistente entende você no seu idioma. Os conteúdos evoluem de acordo com seu feedback."
+      }
+    },
+    "cta": {
+      "text": "Este serviço público evolui com você. Cada feedback conta para construir uma plataforma realmente útil.",
+      "button": "Compartilhar uma ideia"
+    }
+  },
+  "nav": {
+    "mainMenu": "Menu Principal",
+    "back": "Voltar",
+    "help": "Ajuda e Informações",
+    "scan": "Digitalizar",
+    "map": "Mapa Interativo"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "home": {
+    "title": "Tu asistente social virtual, en todas partes, en cualquier momento.",
+    "subtitle": "¿Tienes una pregunta? Empieza aquí. Es simple.",
+    "chatButton": "Hablar con el asistente",
+    "microcopy": "No necesitas cuenta. No se almacenan datos."
+  },
+  "features": {
+    "title": "Una plataforma. Muchas formas de ayudar.",
+    "subtitle": "Herramientas concretas, simples e inteligentes para entender, actuar y avanzar en tus procesos.",
+    "scanner": {
+      "title": "Escanear un documento",
+      "description": "Sube un documento (PDF, foto, Word). El asistente lo lee, lo traduce y explica su contenido.",
+      "button": "Acceder al escáner"
+    },
+    "process": {
+      "title": "Iniciar un trámite",
+      "description": "Rellena un formulario simple. El asistente te ayuda a generar un documento administrativo adaptado a tu situación (vivienda, ayudas, recursos...).",
+      "button": "Iniciar trámite"
+    },
+    "map": {
+      "title": "Encontrar ayuda cercana",
+      "description": "Busca un albergue, asociación o servicio social cerca de ti. Filtra por necesidad.",
+      "button": "Ver mapa"
+    },
+    "videos": {
+      "title": "Aprender con vídeos",
+      "description": "Vídeos simples, traducidos y accesibles para entender todo fácilmente.",
+      "button": "Ver vídeos"
+    }
+  },
+  "scanner": {
+    "capture": "Capturar",
+    "capturing": "Capturando...",
+    "fileLabel": "Archivo",
+    "analyzing": "Analizando...",
+    "error": "Ocurrió un error",
+    "noTextFound": "No se encontró texto",
+    "processing": "Procesando..."
+  },
+  "why": {
+    "title": "Tecnología pública. Simple, discreta, esencial.",
+    "subtitle": "Pensada para todos, en cada etapa de tu camino.",
+    "benefits": {
+      "help": {
+        "title": "Pensada para ayudar, no para vigilar.",
+        "text": "Escanear un documento, entender una ayuda, encontrar un servicio o rellenar un formulario: cada herramienta está pensada para ser simple, útil, sin jerga."
+      },
+      "anonymous": {
+        "title": "Permaneces anónimo. Siempre.",
+        "text": "Sin cuenta, sin almacenamiento. La experiencia es confidencial y cumple con el RGPD."
+      },
+      "free": {
+        "title": "Gratuito. Instantáneo. Sin registro.",
+        "text": "Abre. Usa. Avanza. La ayuda está ahí, sin obstáculos."
+      },
+      "multi": {
+        "title": "Multilingüe y receptivo.",
+        "text": "El asistente te entiende en tu idioma. Los contenidos evolucionan según tus comentarios."
+      }
+    },
+    "cta": {
+      "text": "Este servicio público evoluciona contigo. Cada comentario cuenta para construir una plataforma verdaderamente útil.",
+      "button": "Compartir una idea"
+    }
+  },
+  "nav": {
+    "mainMenu": "Menú Principal",
+    "back": "Volver",
+    "help": "Ayuda & Información",
+    "scan": "Escáner",
+    "map": "Mapa Interactivo"
+  }
+}

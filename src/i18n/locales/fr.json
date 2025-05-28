@@ -1,0 +1,142 @@
+{
+  "home": {
+    "title": "Votre assistant social virtuel, partout, à tout moment.",
+    "subtitle": "Un problème ? Commencez ici. C'est simple.",
+    "chatButton": "Parler à l'assistant",
+    "microcopy": "Pas besoin de compte. Aucune donnée enregistrée."
+  },
+  "features": {
+    "title": "Une plateforme. De multiples façons de vous aider.",
+    "subtitle": "Des outils concrets, simples et intelligents pour comprendre, agir et avancer dans vos démarches.",
+    "scanner": {
+      "title": "Scanner un document",
+      "description": "Photographiez ou téléchargez un document (Photo, PDF, Word). L'assistant le lit, le traduit et explique son contenu.",
+      "button": "Accéder au scanner"
+    },
+    "process": {
+      "title": "Faire une démarche",
+      "description": "Remplissez un formulaire simple. L'assistant vous aide à générer un document administratif adapté à votre situation (logement, aide, recours…).",
+      "button": "Démarrer une démarche"
+    },
+    "map": {
+      "title": "Trouver un lieu d'aide",
+      "description": "Recherchez un foyer, une association, un office ou service social près de chez vous. Filtrez par besoin.",
+      "button": "Voir la carte"
+    },
+    "videos": {
+      "title": "Comprendre en vidéo",
+      "description": "Des vidéos simples, traduites et accessibles pour tout comprendre facilement.",
+      "button": "Regarder les vidéos"
+    }
+  },
+  "scanner": {
+    "banner": {
+      "title": "Scanner un document :",
+      "tagline": "simple, rapide, intelligent.",
+      "description": "Prenez en photo ou téléchargez un document (PDF, photo, Word). L'assistant le lit, le traduit, et vous explique ce qu'il contient — étape par étape, dans votre langue.",
+      "privacy": "Analyse instantanée, sans enregistrement. Votre document reste confidentiel."
+    },
+    "capture": "Scanner avec l'appareil photo",
+    "capturing": "Capture en cours...",
+    "fileLabel": "Fichier",
+    "analyzing": "Analyse en cours...",
+    "error": "Une erreur est survenue",
+    "noTextFound": "Aucun texte n'a été trouvé",
+    "processing": "Traitement en cours...",
+    "analyze": "Analyser le document",
+    "startEnhancedAnalysis": "Démarrer l'analyse intelligente",
+    "summary": "Résumé du document",
+    "keyPoints": "Points clés",
+    "importFile": "Importer un fichier depuis votre appareil",
+    "dropFiles": "Déposez vos fichiers ici",
+    "flipCamera": "Changer de caméra",
+    "closeCamera": "Fermer la caméra",
+    "imageCaptured": "Image capturée avec succès",
+    "textCopied": "Texte copié dans le presse-papiers",
+    "copyError": "Erreur lors de la copie",
+    "downloadSuccess": "Fichier téléchargé avec succès",
+    "downloadError": "Erreur lors du téléchargement",
+    "uploadError": "Erreur lors du téléchargement du fichier",
+    "errorProcessing": "Erreur lors du traitement du document",
+    "cameraPermissionDenied": "Permission d'accès à la caméra refusée",
+    "cameraNotFound": "Aucune caméra trouvée",
+    "cameraInUse": "Caméra déjà utilisée par une autre application",
+    "cameraConstraints": "Contraintes de caméra non supportées",
+    "fullContent": "Contenu complet",
+    "translationNote": "Traduction automatique par IA",
+    "summaryNote": "Résumé généré automatiquement",
+    "copySummary": "Copier le résumé",
+    "downloadReport": "Télécharger le rapport",
+    "copied": "Copié !",
+    "copy": "Copier",
+    "languagePreference": "Langue de rendu préférée",
+    "selectedLanguage": "Langue sélectionnée",
+    "defaultLanguage": "Langue par défaut",
+    "extractingText": "Extraction du texte...",
+    "detectingLanguage": "Détection de la langue...",
+    "translating": "Traduction en cours...",
+    "generatingSummary": "Génération du résumé...",
+    "finalizingAnalysis": "Finalisation de l'analyse...",
+    "complete": "terminé",
+    "enhancedAnalysisNote": "Analyse intelligente avec IA avancée",
+    "analysisError": "Erreur d'analyse",
+    "confidence": "Fiabilité",
+    "confidenceExplanation": "Pourcentage d'informations extraites avec succès du document (nom, adresse, dates, etc.)",
+    "detectedLanguage": "Langue détectée",
+    "translatedTo": "Traduit vers",
+    "personalInfo": "Informations personnelles",
+    "contactInfo": "Informations de contact",
+    "addressInfo": "Adresse",
+    "deadlines": "Échéances",
+    "nextSteps": "Prochaines étapes",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "dateOfBirth": "Date de naissance",
+    "nationality": "Nationalité",
+    "showOriginal": "Voir l'original",
+    "showTranslation": "Voir la traduction",
+    "enhancedAnalysisDisclaimer": "Cette analyse est générée par intelligence artificielle et peut contenir des erreurs. Vérifiez toujours les informations importantes.",
+    "importance": {
+      "urgent": "Urgent",
+      "high": "Important",
+      "medium": "Modéré",
+      "low": "Faible"
+    },
+    "networkError": "Erreur de connexion. Vérifiez votre connexion internet et réessayez.",
+    "apiError": "Service temporairement indisponible. Veuillez réessayer dans quelques instants.",
+    "translationError": "Erreur de traduction. Le document sera affiché dans sa langue originale."
+  },
+  "why": {
+    "title": "Une technologie publique. Simple, discrète, essentielle.",
+    "subtitle": "Pensée pour toutes et tous, à chaque étape de votre parcours.",
+    "benefits": {
+      "help": {
+        "title": "Pensée pour vous aider, pas pour surveiller.",
+        "text": "Scanner un document, comprendre une aide, trouver un service ou remplir un formulaire : chaque outil est pensé pour être simple, utile, sans jargon."
+      },
+      "anonymous": {
+        "title": "Vous restez anonyme. Toujours.",
+        "text": "Pas de compte, pas de stockage. L'expérience est confidentielle et conforme au RGPD."
+      },
+      "free": {
+        "title": "Gratuit. Instantané. Sans inscription.",
+        "text": "Ouvrez. Utilisez. Avancez. L'aide est là, sans obstacle."
+      },
+      "multi": {
+        "title": "Multilingue et à l'écoute.",
+        "text": "L'assistant vous comprend dans votre langue. Les contenus évoluent selon vos retours."
+      }
+    },
+    "cta": {
+      "text": "Ce service public évolue avec vous. Chaque retour compte pour construire une plateforme vraiment utile.",
+      "button": "Partager une idée"
+    }
+  },
+  "nav": {
+    "mainMenu": "Menu Principal",
+    "back": "Retour",
+    "help": "Aides et Informations",
+    "scan": "Scanner",
+    "map": "Carte Interactive"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "home": {
+    "title": "Ihr virtueller Sozialassistent, überall und jederzeit.",
+    "subtitle": "Haben Sie eine Frage? Beginnen Sie hier. Es ist einfach.",
+    "chatButton": "Mit dem Assistenten sprechen",
+    "microcopy": "Kein Konto erforderlich. Keine Daten gespeichert."
+  },
+  "features": {
+    "title": "Eine Plattform. Viele Möglichkeiten zu helfen.",
+    "subtitle": "Konkrete, einfache und intelligente Tools zum Verstehen, Handeln und Weiterkommen in Ihren Prozessen.",
+    "scanner": {
+      "title": "Dokument scannen",
+      "description": "Laden Sie ein Dokument hoch (PDF, Foto, Word). Der Assistent liest es, übersetzt es und erklärt den Inhalt.",
+      "button": "Zum Scanner"
+    },
+    "process": {
+      "title": "Vorgang starten",
+      "description": "Füllen Sie ein einfaches Formular aus. Der Assistent hilft Ihnen, ein Verwaltungsdokument zu erstellen, das Ihrer Situation entspricht (Wohnung, Hilfe, Einsprüche...).",
+      "button": "Vorgang beginnen"
+    },
+    "map": {
+      "title": "Hilfe in der Nähe finden",
+      "description": "Suchen Sie eine Unterkunft, einen Verein oder einen sozialen Dienst in Ihrer Nähe. Nach Bedarf filtern.",
+      "button": "Karte anzeigen"
+    },
+    "videos": {
+      "title": "Per Video verstehen",
+      "description": "Einfache, übersetzte und zugängliche Videos, um alles leicht zu verstehen.",
+      "button": "Videos ansehen"
+    }
+  },
+  "scanner": {
+    "banner": {
+      "title": "Dokument scannen:",
+      "tagline": "einfach, schnell, intelligent.",
+      "description": "Machen Sie ein Foto oder laden Sie ein Dokument hoch (PDF, Foto, Word). Der Assistent liest es, übersetzt es und erklärt den Inhalt — Schritt für Schritt, in Ihrer Sprache.",
+      "privacy": "Sofortige Analyse, keine Speicherung. Ihr Dokument bleibt vertraulich."
+    },
+    "capture": "Aufnehmen",
+    "capturing": "Aufnahme läuft...",
+    "fileLabel": "Datei",
+    "analyzing": "Analyse läuft...",
+    "error": "Ein Fehler ist aufgetreten",
+    "noTextFound": "Kein Text gefunden",
+    "processing": "Verarbeitung läuft..."
+  },
+  "why": {
+    "title": "Öffentliche Technologie. Einfach, diskret, essentiell.",
+    "subtitle": "Entwickelt für alle, in jeder Phase Ihres Weges.",
+    "benefits": {
+      "help": {
+        "title": "Entwickelt zum Helfen, nicht zum Überwachen.",
+        "text": "Dokument scannen, Hilfe verstehen, Service finden oder Formular ausfüllen: Jedes Tool ist einfach, nützlich und ohne Fachjargon gestaltet."
+      },
+      "anonymous": {
+        "title": "Sie bleiben anonym. Immer.",
+        "text": "Kein Konto, keine Speicherung. Die Erfahrung ist vertraulich und DSGVO-konform."
+      },
+      "free": {
+        "title": "Kostenlos. Sofort. Ohne Anmeldung.",
+        "text": "Öffnen. Nutzen. Weiterkommen. Hilfe ist da, ohne Hindernisse."
+      },
+      "multi": {
+        "title": "Mehrsprachig und anpassungsfähig.",
+        "text": "Der Assistent versteht Sie in Ihrer Sprache. Inhalte entwickeln sich basierend auf Ihrem Feedback."
+      }
+    },
+    "cta": {
+      "text": "Dieser öffentliche Dienst entwickelt sich mit Ihnen. Jedes Feedback zählt, um eine wirklich nützliche Plattform zu bauen.",
+      "button": "Idee teilen"
+    }
+  },
+  "nav": {
+    "mainMenu": "Hauptmenü",
+    "back": "Zurück",
+    "help": "Hilfe & Informationen",
+    "scan": "Scanner",
+    "map": "Interaktive Karte"
+  }
+}

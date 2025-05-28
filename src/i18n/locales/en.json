@@ -1,0 +1,80 @@
+{
+  "home": {
+    "title": "Your virtual social assistant, everywhere, anytime.",
+    "subtitle": "Have a question? Start here. It's simple.",
+    "chatButton": "Talk to the assistant",
+    "microcopy": "No account needed. No data stored."
+  },
+  "features": {
+    "title": "One platform. Many ways to help you.",
+    "subtitle": "Concrete, simple and smart tools to understand, act and move forward in your processes.",
+    "scanner": {
+      "title": "Scan a document",
+      "description": "Upload a document (PDF, photo, Word). The assistant reads it, translates it and explains what it contains.",
+      "button": "Access scanner"
+    },
+    "process": {
+      "title": "Start a process",
+      "description": "Fill out a simple form. The assistant helps you generate an administrative document suited to your situation (housing, aid, appeals...).",
+      "button": "Start process"
+    },
+    "map": {
+      "title": "Find help nearby",
+      "description": "Search for a shelter, association or social service near you. Filter by need.",
+      "button": "View map"
+    },
+    "videos": {
+      "title": "Learn through video",
+      "description": "Simple, translated and accessible videos to understand everything easily.",
+      "button": "Watch videos"
+    }
+  },
+  "scanner": {
+    "banner": {
+      "title": "Scan a document:",
+      "tagline": "simple, fast, intelligent.",
+      "description": "Take a photo or upload a document (PDF, photo, Word). The assistant reads it, translates it, and explains what it contains — step by step, in your language.",
+      "privacy": "Instant analysis, no storage. Your document remains confidential."
+    },
+    "capture": "Capture",
+    "capturing": "Capturing...",
+    "fileLabel": "File",
+    "analyzing": "Analyzing...",
+    "error": "An error occurred",
+    "noTextFound": "No text was found",
+    "processing": "Processing..."
+  },
+  "why": {
+    "title": "Public technology. Simple, discreet, essential.",
+    "subtitle": "Designed for everyone, at every step of your journey.",
+    "benefits": {
+      "help": {
+        "title": "Designed to help, not to monitor.",
+        "text": "Scan a document, understand aid, find a service or fill out a form: each tool is designed to be simple, useful, without jargon."
+      },
+      "anonymous": {
+        "title": "You remain anonymous. Always.",
+        "text": "No account, no storage. The experience is confidential and GDPR compliant."
+      },
+      "free": {
+        "title": "Free. Instant. No registration.",
+        "text": "Open. Use. Move forward. Help is there, without obstacles."
+      },
+      "multi": {
+        "title": "Multilingual and responsive.",
+        "text": "The assistant understands you in your language. Content evolves based on your feedback."
+      }
+    },
+    "cta": {
+      "text": "This public service evolves with you. Every feedback counts to build a truly useful platform.",
+      "button": "Share your idea"
+    }
+  },
+  "nav": {
+    "mainMenu": "Main Menu",
+    "back": "Back",
+    "help": "Help & Information",
+    "scan": "Scanner",
+    "map": "Interactive Map"
+  }
+}

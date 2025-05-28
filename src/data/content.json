@@ -1,0 +1,111 @@
+{
+  "pages": {
+    "logement": {
+      "formalites-installation": {
+        "title": "Formalités pour s'installer dans un logement au Luxembourg",
+        "icon": "ClipboardList",
+        "content": {
+          "intro": "Placeholder: Introduction aux formalités d'installation",
+          "sections": [
+            {
+              "title": "Documents nécessaires",
+              "content": "Placeholder: Liste des documents requis"
+            },
+            {
+              "title": "Étapes à suivre",
+              "content": "Placeholder: Procédure d'installation"
+            },
+            {
+              "title": "Délais et coûts",
+              "content": "Placeholder: Informations sur les délais et coûts"
+            }
+          ]
+        }
+      },
+      "droits-obligations": {
+        "title": "Droits et obligations des locataires et propriétaires au Luxembourg",
+        "icon": "Scale",
+        "content": {
+          "intro": "Placeholder: Introduction aux droits et obligations",
+          "sections": [
+            {
+              "title": "Droits des locataires",
+              "content": "Placeholder: Droits des locataires"
+            },
+            {
+              "title": "Obligations des locataires",
+              "content": "Placeholder: Obligations des locataires"
+            },
+            {
+              "title": "Droits des propriétaires",
+              "content": "Placeholder: Droits des propriétaires"
+            }
+          ]
+        }
+      },
+      "aides-financieres": {
+        "title": "Aides financières au logement au Luxembourg",
+        "icon": "BadgeEuro",
+        "content": {
+          "intro": "Placeholder: Introduction aux aides financières",
+          "sections": [
+            {
+              "title": "Types d'aides disponibles",
+              "content": "Placeholder: Liste des aides"
+            },
+            {
+              "title": "Conditions d'éligibilité",
+              "content": "Placeholder: Conditions requises"
+            },
+            {
+              "title": "Procédure de demande",
+              "content": "Placeholder: Comment faire une demande"
+            }
+          ]
+        }
+      },
+      "hebergement-urgence": {
+        "title": "Hébergement d'urgence et solutions pour les personnes sans logement au Luxembourg",
+        "icon": "Home",
+        "content": {
+          "intro": "Placeholder: Introduction à l'hébergement d'urgence",
+          "sections": [
+            {
+              "title": "Solutions d'urgence",
+              "content": "Placeholder: Options d'hébergement d'urgence"
+            },
+            {
+              "title": "Contacts utiles",
+              "content": "Placeholder: Liste des contacts"
+            },
+            {
+              "title": "Démarches à suivre",
+              "content": "Placeholder: Procédures"
+            }
+          ]
+        }
+      },
+      "budget-logement": {
+        "title": "Évaluer son budget logement et options de logement social au Luxembourg",
+        "icon": "Calculator",
+        "content": {
+          "intro": "Placeholder: Introduction au budget logement",
+          "sections": [
+            {
+              "title": "Calcul du budget",
+              "content": "Placeholder: Comment calculer son budget"
+            },
+            {
+              "title": "Options de logement social",
+              "content": "Placeholder: Types de logements sociaux"
+            },
+            {
+              "title": "Conseils et astuces",
+              "content": "Placeholder: Recommandations"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
