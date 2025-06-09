@@ -1,5 +1,5 @@
 import React from 'react';
-import EligibilityWizardSimple from '../components/EligibilityChecker/EligibilityWizardSimple';
+import EligibilityWizardRefactored from '../components/EligibilityChecker/EligibilityWizardRefactored';
 import { useNavigate } from 'react-router-dom';
 
 const EligibilityWizardDirect: React.FC = () => {
@@ -21,7 +21,7 @@ const EligibilityWizardDirect: React.FC = () => {
           </p>
         </div>
 
-        <EligibilityWizardSimple onBack={handleBack} />
+        <EligibilityWizardRefactored onBack={handleBack} />
       </div>
     </div>
   );
