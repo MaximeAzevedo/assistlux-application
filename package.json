@@ -43,6 +43,7 @@
     "react-router-dom": "^6.22.1",
     "react-select": "^5.8.0",
     "react-webcam": "^7.2.0",
+    "reconnecting-websocket": "^4.4.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
