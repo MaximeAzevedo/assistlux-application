@@ -8,10 +8,10 @@ interface ChatMessage {
 }
 
 class N8nChatClient {
-  private baseUrl = 'https://n8n.srv779498.hstgr.cloud/webhook/17e272b8-90e4-41ce-a0ef-db068ed5726b';
+  private baseUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.srv779498.hstgr.cloud/webhook/17e272b8-90e4-41ce-a0ef-db068ed5726b';
   private auth = {
-    username: 'maximedeazevedo',
-    password: 'Azertyuiop_1'
+    username: import.meta.env.VITE_N8N_USERNAME || '',
+    password: import.meta.env.VITE_N8N_PASSWORD || ''
   };
   private messageCallbacks: ((message: ChatMessage) => void)[] = [];
 
