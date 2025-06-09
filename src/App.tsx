@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import DocumentScanner from './components/DocumentScanner';
-import DebugTest from './components/DebugTest';
 import DatabaseSetup from './components/DatabaseSetup';
 
 // Import des vraies pages
@@ -50,8 +49,7 @@ function App() {
           <Route path="/carte-interactive" element={<CarteInteractive />} />
           <Route path="/aides-et-informations" element={<Dashboard />} />
           
-          {/* Pages de développement/debug */}
-          <Route path="/debug" element={<DebugTest />} />
+          {/* Pages de développement */}
           <Route path="/database-setup" element={<DatabaseSetup />} />
         </Routes>
       </Suspense>

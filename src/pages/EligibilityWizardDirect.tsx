@@ -1,7 +1,6 @@
 import React from 'react';
 import EligibilityWizardSimple from '../components/EligibilityChecker/EligibilityWizardSimple';
 import { useNavigate } from 'react-router-dom';
-// import DebugSupabaseData from '../components/EligibilityChecker/DebugSupabaseData';
 
 const EligibilityWizardDirect: React.FC = () => {
   const navigate = useNavigate();
@@ -21,11 +20,6 @@ const EligibilityWizardDirect: React.FC = () => {
             Découvrez les aides sociales auxquelles vous avez droit au Luxembourg
           </p>
         </div>
-
-        {/* Debug temporairement désactivé */}
-        {/* <div className="mb-8">
-          <DebugSupabaseData />
-        </div> */}
 
         <EligibilityWizardSimple onBack={handleBack} />
       </div>
