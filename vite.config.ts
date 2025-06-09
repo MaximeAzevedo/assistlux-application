@@ -47,10 +47,10 @@ export default defineConfig({
             if (id.includes('@googlemaps')) {
               return 'maps-vendor';
             }
-            if (id.includes('openai') || id.includes('@tensorflow')) {
+            if (id.includes('openai')) {
               return 'ai-vendor';
             }
-            if (id.includes('tesseract') || id.includes('mammoth') || id.includes('pdfjs')) {
+            if (id.includes('mammoth') || id.includes('pdfjs')) {
               return 'document-vendor';
             }
             if (id.includes('firebase')) {

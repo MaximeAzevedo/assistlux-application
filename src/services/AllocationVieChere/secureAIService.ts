@@ -3,7 +3,7 @@
 import { AzureOpenAI } from 'openai';
 import { supabase } from '../../lib/supabase/client';
 import CryptoJS from 'crypto-js';
-import Tesseract from 'tesseract.js';
+import { extractTextWithOpenAI } from '../../lib/openaiOCR';
 
 // Configuration IA Azure OpenAI EU - RGPD Compliant
 const AI_CONFIG = {
@@ -618,36 +618,35 @@ export class AllocationVieCherSecureAIService {
   // 6. UTILITAIRES SÉCURISÉS
   // ===============================================
 
+  /**
+   * Extraction sécurisée de texte avec Azure OpenAI Vision (RGPD-compliant)
+   */
   private async extractTextFromFile(file: File): Promise<string> {
-    // Implémentation OCR locale avec Tesseract.js si nécessaire
-    if (file.type.includes('image')) {
-      // TODO: Implémenter OCR avec Tesseract.js
-      // const worker = await Tesseract.createWorker();
-      // await worker.loadLanguage('fra+deu+eng');
-      // await worker.initialize('fra+deu+eng');
-      // const { data: { text } } = await worker.recognize(file);
-      // await worker.terminate();
-      // return text;
+    try {
+      console.log('🔒 Extraction sécurisée avec Azure OpenAI Vision EU');
       
-      // Pour l'instant, retourner du texte simulé
-      return `Document image simulé - ${file.name}
-      Nom: [NOM_PRENOM]
-      Prénom: [NOM_PRENOM] 
-      Matricule: [MATRICULE_LUX]
-      IBAN: [IBAN_BANCAIRE]
-      Salaire net: [MONTANT_EUR]
-      Adresse: [ADRESSE_LUX]`;
+      // Conversion du fichier en base64 pour traitement
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result);
+        };
+        reader.onerror = () => reject(new Error('Erreur lecture fichier'));
+        reader.readAsDataURL(file);
+      });
+
+      // Extraction avec Azure OpenAI Vision (déjà anonymisé dans openaiOCR)
+      const ocrResult = await extractTextWithOpenAI(base64, file);
+      
+      console.log('✅ Extraction terminée avec anonymisation RGPD');
+      
+      return ocrResult.text;
+      
+    } catch (error) {
+      console.error('❌ Erreur extraction texte sécurisée:', error);
+      throw new Error(`Échec extraction: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
     }
-    
-    // Pour PDF, utiliser pdfjs-dist
-    if (file.type === 'application/pdf') {
-      // TODO: Implémentation PDF parsing avec pdfjs-dist
-      return `Document PDF simulé - ${file.name}
-      Contenu extrait du PDF...
-      Données personnelles anonymisées pour traitement IA`;
-    }
-    
-    throw new Error('Format de fichier non supporté');
   }
 
   private async calculateHash(data: string): Promise<string> {

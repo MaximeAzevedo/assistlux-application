@@ -1,4 +1,4 @@
-import Tesseract from 'tesseract.js';
+import { extractTextWithOpenAI } from './openaiOCR';
 
 // Configuration des formats supportés
 export const IMAGE_FORMATS = {
@@ -226,47 +226,32 @@ export async function preprocessImage(imageData: string): Promise<string> {
 }
 
 /**
- * Extraction de texte avec OCR robuste
+ * Extraction de texte optimisée avec Azure OpenAI Vision
  */
 export async function extractTextFromImage(imageData: string): Promise<string> {
   try {
+    console.log('Début extraction OCR avec Azure OpenAI Vision');
+    
     // Préprocessing pour améliorer la précision OCR
     const processedImage = await preprocessImage(imageData);
     
-    // Création du worker Tesseract avec typage any pour éviter les erreurs
-    const worker: any = await Tesseract.createWorker();
+    // Reconnaissance OCR avec Azure OpenAI Vision
+    const ocrResult = await extractTextWithOpenAI(processedImage);
+    const text = ocrResult.text;
+    
+    console.log('OCR extraction réussie');
+    
+    // Nettoyage du texte
+    const cleanedText = text
+      .trim()
+      .replace(/\s+/g, ' ') // Normaliser les espaces
+      .replace(/[^\w\s.,;:!?()[\]{}@#%&*+\-=<>/\\|"'`~àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿ€$£¥]/g, '');
 
-    try {
-      // Chargement et initialisation des langues
-      await worker.loadLanguage('eng+fra+deu');
-      await worker.initialize('eng+fra+deu');
-
-      // Configuration de base pour éviter les problèmes de compatibilité
-      await worker.setParameters({
-        preserve_interword_spaces: '1',
-      });
-
-      // Reconnaissance OCR
-      const { data: { text } } = await worker.recognize(processedImage);
-      
-      console.log('OCR extraction réussie');
-      
-      // Nettoyage du texte
-      const cleanedText = text
-        .trim()
-        .replace(/\s+/g, ' ') // Normaliser les espaces
-        .replace(/[^\w\s.,;:!?()[\]{}@#%&*+\-=<>/\\|"'`~àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿ€$£¥]/g, '');
-
-      return cleanedText;
-
-    } finally {
-      // Nettoyage obligatoire du worker
-      await worker.terminate();
-    }
+    return cleanedText;
 
   } catch (error) {
     console.error('Erreur extraction OCR:', error);
-    throw new Error(`Impossible d'extraire le texte de l'image: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+    throw new Error(`Échec de l'extraction de texte: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
   }
 }
 
