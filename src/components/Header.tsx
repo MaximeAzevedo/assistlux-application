@@ -52,17 +52,24 @@ const Header = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
               <Link 
-                to="/carte-interactive" 
+                to="/verificateur-eligibilite" 
                 className="text-gray-700 hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 hover:bg-clip-text hover:text-transparent font-semibold transition-all relative group"
               >
-                {t('nav.map')}
+                Vérifier éligibilité
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
               <Link 
                 to="/effectuer-demarche" 
                 className="text-gray-700 hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 hover:bg-clip-text hover:text-transparent font-semibold transition-all relative group"
               >
-                Effectuer une démarche
+                Effectuer démarche
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+              </Link>
+              <Link 
+                to="/carte-interactive" 
+                className="text-gray-700 hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 hover:bg-clip-text hover:text-transparent font-semibold transition-all relative group"
+              >
+                {t('nav.map')}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
             </div>
@@ -100,18 +107,25 @@ const Header = () => {
               {t('nav.scan')}
             </Link>
             <Link
-              to="/carte-interactive"
+              to="/verificateur-eligibilite"
               className="block px-3 py-2 rounded-xl text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              {t('nav.map')}
+              Vérifier éligibilité
             </Link>
             <Link
               to="/effectuer-demarche"
               className="block px-3 py-2 rounded-xl text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Effectuer une démarche
+              Effectuer démarche
+            </Link>
+            <Link
+              to="/carte-interactive"
+              className="block px-3 py-2 rounded-xl text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              {t('nav.map')}
             </Link>
           </div>
         </div>

@@ -19,7 +19,8 @@ import {
   Eye,
   EyeOff,
   Copy,
-  Check
+  Check,
+  Shield
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,6 +33,7 @@ interface DocumentResultProps {
   analysis?: any; // Enhanced analysis data
   onCopy?: (text: string) => void;
   onDownload?: () => void;
+  wasAnonymized?: boolean; // Nouveau prop pour indiquer l'anonymisation
 }
 
 const DocumentResult: React.FC<DocumentResultProps> = ({
@@ -42,7 +44,8 @@ const DocumentResult: React.FC<DocumentResultProps> = ({
   keyPoints = [],
   analysis,
   onCopy,
-  onDownload
+  onDownload,
+  wasAnonymized = false
 }) => {
   const { t } = useTranslation();
   const [showOriginalText, setShowOriginalText] = useState(false);
@@ -133,6 +136,14 @@ const DocumentResult: React.FC<DocumentResultProps> = ({
                 <span>{t('scanner.translatedTo')}: {analysis.targetLanguage.toUpperCase()}</span>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Indicateur d'anonymisation RGPD */}
+        {wasAnonymized && (
+          <div className="flex items-center text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full border border-green-200">
+            <Shield className="w-3 h-3 mr-1" />
+            Traité avec anonymisation RGPD
           </div>
         )}
       </div>
@@ -398,6 +409,33 @@ const DocumentResult: React.FC<DocumentResultProps> = ({
           <p className="font-medium mb-1">{t('scanner.translationNote')}</p>
           <p>{t('scanner.enhancedAnalysisDisclaimer')}</p>
         </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-3 pt-4 border-t border-gray-200">
+        <button
+          onClick={() => handleCopy(summary || translatedText, 'summary')}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <Copy className="w-4 h-4" />
+          {t('scanner.copyAnalysis')}
+        </button>
+        
+        <button
+          onClick={onDownload}
+          className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+        >
+          <Copy className="w-4 h-4" />
+          {t('scanner.downloadReport')}
+        </button>
+
+        {/* Note RGPD pour le téléchargement */}
+        {wasAnonymized && (
+          <div className="flex items-center text-xs text-gray-500 ml-auto">
+            <Shield className="w-3 h-3 mr-1" />
+            Rapport anonymisé conforme RGPD
+          </div>
+        )}
       </div>
     </div>
   );

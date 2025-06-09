@@ -1,1 +1,1 @@
-export { default } from './EligibilityWizard';
+export { default as EligibilityWizardRefactored } from './EligibilityWizardRefactored';

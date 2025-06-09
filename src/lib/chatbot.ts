@@ -1,8 +1,8 @@
-import OpenAI from 'openai';
+import { AzureOpenAI } from 'openai';
 import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { detectLanguage, translateText } from './translation';
-import openai from './openaiConfig';
+import azureOpenAI, { DEPLOYMENT_NAME } from './openaiConfig';
 
 interface ChatContext {
   userId?: string;
@@ -28,8 +28,8 @@ export async function processMessage(message: string, userId?: string): Promise<
     const systemMessage = await prepareSystemMessage(context);
     
     // Generate response using GPT-3.5 Turbo
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+    const response = await azureOpenAI.chat.completions.create({
+      model: DEPLOYMENT_NAME,
       messages: [
         { role: "system", content: systemMessage },
         ...context.previousMessages || [],

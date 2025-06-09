@@ -65,7 +65,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, locations }) 
         const content = `
           <div class="p-4 max-w-sm bg-white rounded-xl shadow-sm">
             <h3 class="text-lg font-semibold mb-1">${location.name}</h3>
-            ${location.services.length > 0 ? `
+            ${location.services && location.services.length > 0 ? `
               <p class="text-gray-600 text-sm mb-2">${location.services.join(', ')}</p>
             ` : ''}
             <p class="text-purple-600 text-sm mb-3">${location.category}</p>
@@ -272,7 +272,7 @@ const CarteInteractive: React.FC = () => {
                           </span>
                         </div>
 
-                        {location.services.length > 0 && (
+                        {location.services && location.services.length > 0 && (
                           <div className="flex gap-3">
                             <Info className="w-5 h-5 text-gray-400 flex-shrink-0" />
                             <div>

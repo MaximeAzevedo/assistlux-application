@@ -7,18 +7,10 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import ProceduresGuide from '../components/ProceduresGuide/ProceduresGuide';
-import EligibilityWizard from '../components/EligibilityChecker';
-import { UserAnswers } from '../types/eligibility';
+import EligibilityWizardRefactored from '../components/EligibilityChecker/EligibilityWizardRefactored';
 
 const ProcessAssistant: React.FC = () => {
   const [currentPath, setCurrentPath] = React.useState<'selection' | 'guided' | 'help' | 'wizard'>('selection');
-  const [userAnswers, setUserAnswers] = React.useState<UserAnswers>({});
-
-  const handleWizardComplete = (answers: UserAnswers) => {
-    setUserAnswers(answers);
-    // TODO: Implement analysis and results display
-    console.log('Wizard completed with answers:', answers);
-  };
 
   if (currentPath === 'selection') {
     return (
@@ -152,8 +144,7 @@ const ProcessAssistant: React.FC = () => {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white/80 backdrop-blur-xl rounded-[32px] shadow-2xl border border-gray-100/50 p-12">
             <div className="relative z-10">
-              <EligibilityWizard
-                onComplete={handleWizardComplete}
+              <EligibilityWizardRefactored
                 onBack={() => setCurrentPath('help')}
               />
             </div>
@@ -179,10 +170,7 @@ const ProcessAssistant: React.FC = () => {
               </div>
             </div>
 
-            <ProceduresGuide 
-              defaultProcedure="REVIS"
-              sheetEndpoint="https://api.sheety.co/dab35de9f35c72bde7ab250a7e49dda5/revisdemarches/revisdemarches"
-            />
+            <ProceduresGuide />
 
             <button
               onClick={() => setCurrentPath('selection')}

@@ -104,7 +104,9 @@
     },
     "networkError": "Erreur de connexion. Vérifiez votre connexion internet et réessayez.",
     "apiError": "Service temporairement indisponible. Veuillez réessayer dans quelques instants.",
-    "translationError": "Erreur de traduction. Le document sera affiché dans sa langue originale."
+    "translationError": "Erreur de traduction. Le document sera affiché dans sa langue originale.",
+    "page": "page",
+    "pages": "pages"
   },
   "why": {
     "title": "Une technologie publique. Simple, discrète, essentielle.",

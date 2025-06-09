@@ -3,16 +3,17 @@ import { AlertCircle, FileText, BookOpen, ListChecks, Globe, Settings } from 'lu
 import { useTranslation } from 'react-i18next';
 import DocumentTypeDetector from './DocumentTypeDetector';
 import { analyzeDocument } from '../../lib/documentAnalysis';
-import { extractTextFromImage } from '../../lib/imageProcessing';
+import { extractTextWithOpenAI, updateOCRStats, getOCRStats } from '../../lib/openaiOCR';
 import { supportedLanguages } from '../../lib/translation';
 
 interface DocumentAnalyzerProps {
   imageData?: string;
   textData?: string;
+  originalFile?: File;
   onAnalysisComplete: (text: string, translation: string, documentType: string, summary: string, keyPoints: string[], analysis?: any) => void;
 }
 
-const DocumentAnalyzer: React.FC<DocumentAnalyzerProps> = ({ imageData, textData, onAnalysisComplete }) => {
+const DocumentAnalyzer: React.FC<DocumentAnalyzerProps> = ({ imageData, textData, originalFile, onAnalysisComplete }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -36,8 +37,41 @@ const DocumentAnalyzer: React.FC<DocumentAnalyzerProps> = ({ imageData, textData
       setProgress(10);
       
       // Extract text if needed
-      const extractedText = textData || (imageData ? await extractTextFromImage(imageData) : '');
-      setProgress(30);
+      let extractedText = textData;
+      
+      if (!extractedText && imageData) {
+        try {
+          setProgress(20);
+          
+          // Pass original file for HEIC conversion if needed
+          const ocrResult = await extractTextWithOpenAI(imageData, originalFile);
+          extractedText = ocrResult.text;
+          
+          // Update stats silently (for developer monitoring)
+          updateOCRStats(ocrResult);
+          
+          console.log('✅ OpenAI Vision OCR completed:', {
+            textLength: extractedText.length,
+            confidence: ocrResult.confidence,
+            cost: ocrResult.cost,
+            inputTokens: ocrResult.inputTokens,
+            outputTokens: ocrResult.outputTokens,
+            wasConverted: ocrResult.wasConverted
+          });
+          
+          setProgress(30);
+        } catch (ocrError) {
+          console.warn('OCR failed, but allowing manual text input:', ocrError);
+          // Si l'OCR échoue, on peut quand même continuer avec une analyse basique
+          extractedText = `[Document image analysé - OCR indisponible]
+          
+Type de document détecté: ${documentType}
+          
+Note: L'extraction automatique de texte a échoué. 
+Vous pouvez toujours utiliser les fonctionnalités de classification de documents.`;
+          setProgress(30);
+        }
+      }
       
       if (!extractedText) {
         throw new Error(t('scanner.noTextFound'));
@@ -65,7 +99,8 @@ const DocumentAnalyzer: React.FC<DocumentAnalyzerProps> = ({ imageData, textData
         translationLength: translation.length,
         summaryLength: summary.length,
         keyPointsCount: keyPoints.length,
-        hasContext: !!analysis.explanation.context
+        hasContext: !!analysis.explanation.context,
+        ocrStats: getOCRStats() // Include stats for debugging
       });
 
       setProgress(100);
@@ -75,7 +110,10 @@ const DocumentAnalyzer: React.FC<DocumentAnalyzerProps> = ({ imageData, textData
         analysis.type,
         summary,
         keyPoints,
-        analysis // Pass the full analysis for enhanced display
+        {
+          ...analysis,
+          ocrStats: getOCRStats() // Pass stats to parent for potential display
+        }
       );
     } catch (err) {
       console.error('❌ Document analysis error:', err);

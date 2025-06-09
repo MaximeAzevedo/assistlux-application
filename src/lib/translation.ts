@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import openai from './openaiConfig';
+import azureOpenAI, { DEPLOYMENT_NAME } from './openaiConfig';
 
 // Language codes and names mapping
 export const supportedLanguages = {
@@ -61,31 +61,15 @@ export function shouldTranslateField(field: string, value: string): boolean {
 }
 
 export async function translateText(text: string, targetLanguage: string): Promise<string> {
+  if (!text?.trim()) return text;
+  
   try {
-    if (!text || !targetLanguage || !(targetLanguage in supportedLanguages)) {
-      // En développement seulement
-      if (import.meta.env.DEV) {
-        console.warn('Invalid translation parameters:', { text: !!text, targetLanguage });
-      }
-      return text;
-    }
-
-    const languageInfo = supportedLanguages[targetLanguage as SupportedLanguage];
-    const languagePrompt = targetLanguage === 'lb' 
-      ? 'Translate to Luxembourgish (Lëtzebuergesch). Use proper Luxembourgish grammar, vocabulary, and expressions.'
-      : `Translate to ${languageInfo.name} (${languageInfo.nativeName}).`;
-
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await azureOpenAI.chat.completions.create({
+      model: DEPLOYMENT_NAME,
       messages: [
         {
           role: "system",
-          content: `You are a professional translator specializing in ${languageInfo.name}. ${languagePrompt}
-Maintain the original meaning and tone while ensuring the translation is clear and natural.
-Be precise and accurate.
-Preserve any formatting, numbers, and special characters.
-Consider cultural context and use appropriate idiomatic expressions.
-Return ONLY the translated text.`
+          content: `Tu es un traducteur expert spécialisé dans les documents administratifs luxembourgeois. Traduis le texte suivant en ${targetLanguage} en conservant le sens exact et les termes techniques appropriés.`
         },
         {
           role: "user",
@@ -112,8 +96,8 @@ export async function detectLanguage(text: string): Promise<string> {
       return i18next.language || 'fr';
     }
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await azureOpenAI.chat.completions.create({
+      model: DEPLOYMENT_NAME,
       messages: [
         {
           role: "system",

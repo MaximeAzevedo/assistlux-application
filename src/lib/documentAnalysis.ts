@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import openai from './openaiConfig';
+import azureOpenAI, { DEPLOYMENT_NAME } from './openaiConfig';
 import { translateText, detectLanguage, supportedLanguages } from './translation';
 import i18next from 'i18next';
 
@@ -191,8 +191,8 @@ async function detectDocumentType(text: string): Promise<string> {
   }
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await azureOpenAI.chat.completions.create({
+      model: DEPLOYMENT_NAME,
       messages: [
         { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
         {
@@ -239,8 +239,8 @@ async function generateEnhancedSummary(text: string, documentType: string, targe
       ? 'Write in Luxembourgish (Lëtzebuergesch). Use proper Luxembourgish grammar and vocabulary.'
       : `Write in ${languageInfo?.name || targetLanguage}`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await azureOpenAI.chat.completions.create({
+      model: DEPLOYMENT_NAME,
       messages: [
         { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
         { role: "system", content: `${languagePrompt}
@@ -273,8 +273,8 @@ async function generateEnhancedKeyPoints(text: string, documentType: string, tar
       ? 'Write in Luxembourgish (Lëtzebuergesch). Use proper Luxembourgish grammar and vocabulary.'
       : `Write in ${languageInfo?.name || targetLanguage}`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await azureOpenAI.chat.completions.create({
+      model: DEPLOYMENT_NAME,
       messages: [
         { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
         { role: "system", content: `${languagePrompt}
@@ -317,8 +317,8 @@ async function generateDocumentContext(text: string, documentType: string, targe
       ? 'Répondez en luxembourgeois (Lëtzebuergesch). Utilisez la grammaire et le vocabulaire luxembourgeois appropriés.'
       : `Répondez en ${languageInfo?.name || 'français'}. Utilisez uniquement cette langue pour votre réponse.`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await azureOpenAI.chat.completions.create({
+      model: DEPLOYMENT_NAME,
       messages: [
         { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
         { role: "system", content: `${languagePrompt}
@@ -395,8 +395,8 @@ async function extractEnhancedFields(text: string, documentType: string) {
   };
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await azureOpenAI.chat.completions.create({
+      model: DEPLOYMENT_NAME,
       messages: [
         { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
         { role: "system", content: `Extract all relevant information from this ${documentType} document and return it as a valid JSON object with the following structure:

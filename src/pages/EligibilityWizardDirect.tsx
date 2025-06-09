@@ -1,0 +1,36 @@
+import React from 'react';
+import EligibilityWizardSimple from '../components/EligibilityChecker/EligibilityWizardSimple';
+import { useNavigate } from 'react-router-dom';
+// import DebugSupabaseData from '../components/EligibilityChecker/DebugSupabaseData';
+
+const EligibilityWizardDirect: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Vérificateur d'Éligibilité AssistLux
+          </h1>
+          <p className="text-lg text-gray-600">
+            Découvrez les aides sociales auxquelles vous avez droit au Luxembourg
+          </p>
+        </div>
+
+        {/* Debug temporairement désactivé */}
+        {/* <div className="mb-8">
+          <DebugSupabaseData />
+        </div> */}
+
+        <EligibilityWizardSimple onBack={handleBack} />
+      </div>
+    </div>
+  );
+};
+
+export default EligibilityWizardDirect; 
