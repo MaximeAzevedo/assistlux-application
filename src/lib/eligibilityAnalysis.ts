@@ -212,11 +212,11 @@ export function getNextQuestionId(
     
     // Si c'est une fin (PROF_END ou PROF_EVAL), retourner null
     if (nextId === 'PROF_END' || nextId === 'PROF_EVAL') {
-      console.log(`🏁 Fin du questionnaire: ${nextId}`);
+      // console.log(`🏁 Fin du questionnaire: ${nextId}`);
       return null;
     }
 
-    console.log(`🧭 Navigation: ${currentQuestionId} + ${userAnswer} → ${nextId}`);
+    // console.log(`🧭 Navigation: ${currentQuestionId} + ${userAnswer} → ${nextId}`);
     return nextId;
 
   } catch (error) {
@@ -267,8 +267,8 @@ export function canCompleteQuestionnaire(
 
 export async function analyzeEligibility(userAnswers: Record<string, any>) {
   try {
-    console.log('🚀 Analyse d\'éligibilité basée sur la table conclusions');
-    console.log('📝 Réponses utilisateur:', userAnswers);
+    // console.log('🚀 Analyse d\'éligibilité basée sur la table conclusions');
+    // console.log('📝 Réponses utilisateur:', userAnswers);
 
     // Charger les conclusions
     const conclusions = await loadConclusionsFromDB();
@@ -279,13 +279,13 @@ export async function analyzeEligibility(userAnswers: Record<string, any>) {
     const eligibleConclusions = conclusions.filter(c => c.categorie === 'Eligible');
     
     for (const conclusion of eligibleConclusions) {
-      console.log(`\n🔍 Évaluation: ${conclusion.titre_aide}`);
-      console.log(`📐 Condition: ${conclusion.logic_condition}`);
+      // console.log(`\n🔍 Évaluation: ${conclusion.titre_aide}`);
+      // console.log(`📐 Condition: ${conclusion.logic_condition}`);
       
       const isEligible = evaluateCondition(conclusion.logic_condition, userAnswers);
       
       if (isEligible) {
-        console.log(`✅ ÉLIGIBLE: ${conclusion.titre_aide}`);
+        // console.log(`✅ ÉLIGIBLE: ${conclusion.titre_aide}`);
         
         results.push({
           aid_id: conclusion.id,
@@ -298,11 +298,11 @@ export async function analyzeEligibility(userAnswers: Record<string, any>) {
           action: 'Télécharger le formulaire'
         });
       } else {
-        console.log(`❌ NON ÉLIGIBLE: ${conclusion.titre_aide}`);
+        // console.log(`❌ NON ÉLIGIBLE: ${conclusion.titre_aide}`);
       }
     }
 
-    console.log(`\n🎉 Analyse terminée: ${results.length} aides éligibles trouvées`);
+    // console.log(`\n🎉 Analyse terminée: ${results.length} aides éligibles trouvées`);
     return results;
 
   } catch (error) {

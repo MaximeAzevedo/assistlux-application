@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Scale, 
@@ -13,6 +12,7 @@ import {
   Camera,
   Euro
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const ProceduresGuide: React.FC = () => {
   const navigate = useNavigate();

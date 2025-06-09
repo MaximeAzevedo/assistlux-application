@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { Health } from '../../../types/user';
 import Select from 'react-select';
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import PersonalInfo from './sections/PersonalInfo';
 import CivilStatus from './sections/CivilStatus';
@@ -11,8 +11,7 @@ import HealthNeeds from './sections/HealthNeeds';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ProfilePDF from './ProfilePDF';
 import { Save, Download, AlertCircle, User } from 'lucide-react';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { databaseService } from '../../lib/supabase/database';
 
 const PersonalSpace: React.FC = () => {
   const { currentUser } = useAuth();
@@ -145,16 +144,14 @@ const PersonalSpace: React.FC = () => {
       if (!currentUser) return;
 
       try {
-        const userProfileRef = doc(db, 'users', currentUser.uid);
-        const profileDoc = await getDoc(userProfileRef);
+        const profileData = await databaseService.getUserProfile(currentUser.uid);
         
-        if (profileDoc.exists()) {
-          const data = profileDoc.data();
-          console.log('Raw Firestore data:', data);
+        if (profileData) {
+          console.log('Raw Supabase data:', profileData);
           
-          setLastSavedData(JSON.stringify(data));
+          setLastSavedData(JSON.stringify(profileData));
           
-          const deserializedData = deserializeProfile(data);
+          const deserializedData = deserializeProfile(profileData);
           console.log('Deserialized profile data:', deserializedData);
           
           setProfile(prevProfile => ({
@@ -195,8 +192,7 @@ const PersonalSpace: React.FC = () => {
         return;
       }
       
-      const userProfileRef = doc(db, 'users', currentUser.uid);
-      await setDoc(userProfileRef, {
+      await databaseService.saveUserProfile(currentUser.uid, {
         ...serializedProfile,
         updatedAt: new Date().toISOString(),
       });
@@ -320,7 +316,7 @@ const PersonalSpace: React.FC = () => {
                 }`}>
                   <div className="p-6 bg-white border-t border-gray-100">
                     <Section
-                      data={profile[id]}
+                      data={(profile as any)[id]}
                       onChange={(newData) =>
                         setProfile((prev) => ({ ...prev, [id]: newData }))
                       }

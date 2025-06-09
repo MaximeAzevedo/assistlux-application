@@ -415,7 +415,7 @@ export class DocumentService {
     }
 
     try {
-      // eslint-disable-next-line no-eval
+       
       return Boolean(eval(expression));
     } catch {
       return false;

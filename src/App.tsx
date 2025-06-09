@@ -1,21 +1,21 @@
 import React, { Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n';
 import Layout from './components/Layout';
-import Dashboard from './components/Dashboard';
 import DocumentScanner from './components/DocumentScanner';
-import DatabaseSetup from './components/DatabaseSetup';
-
-// Import des vraies pages
-import CarteInteractive from './pages/CarteInteractive';
-import ProcessAssistant from './pages/ProcessAssistant';
 import PersonalSpace from './components/PersonalSpace/PersonalSpace';
-import ProceduresGuide from './components/ProceduresGuide/ProceduresGuide';
-import AssistanceJudiciaireWizard from './components/AssistanceJudiciaire/AssistanceJudiciaireWizard';
-import AideLogementWizard from './components/AideLogement/AideLogementWizard';
-import AllocationVieCherePage from './components/AllocationVieChere/AllocationVieCherePage';
-import AllocationVieChereConfirmation from './components/AllocationVieChere/AllocationVieChereConfirmation';
-import VerificateurEligibilite from './pages/VerificateurEligibilite';
 import EligibilityWizardDirect from './pages/EligibilityWizardDirect';
+import VerificateurEligibilite from './pages/VerificateurEligibilite';
+import ProcessAssistant from './pages/ProcessAssistant';
+import CarteInteractive from './pages/CarteInteractive';
+import AideLogementWizard from './components/AideLogement/AideLogementWizard';
+import ContentPage from './components/ContentPage';
+import Dashboard from './components/Dashboard';
+import DatabaseSetup from './components/DatabaseSetup';
+import AssistanceJudiciaireWizard from './components/AssistanceJudiciaire/AssistanceJudiciaireWizard';
+import ProceduresGuide from './components/ProceduresGuide/ProceduresGuide';
 
 // Composant de chargement
 const LoadingSpinner = () => (
@@ -42,8 +42,6 @@ function App() {
           <Route path="/effectuer-demarche" element={<ProceduresGuide />} />
           <Route path="/effectuer-demarche/assistance-judiciaire" element={<AssistanceJudiciaireWizard />} />
           <Route path="/effectuer-demarche/aide-logement" element={<AideLogementWizard />} />
-          <Route path="/allocation-vie-chere" element={<AllocationVieCherePage />} />
-          <Route path="/allocation-vie-chere/confirmation" element={<AllocationVieChereConfirmation />} />
           <Route path="/espace-personnel" element={<PersonalSpace />} />
           <Route path="/guide-demarches" element={<ProceduresGuide />} />
           <Route path="/carte-interactive" element={<CarteInteractive />} />

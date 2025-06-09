@@ -57,7 +57,7 @@ export const useEligibilityWizardRefactored = () => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
 
-      console.log('🔄 Initialisation du wizard refactorisé...');
+      // console.log('🔄 Initialisation du wizard refactorisé...');
       
       // Initialiser le moteur d'éligibilité
       await engine.initialize();
@@ -76,8 +76,8 @@ export const useEligibilityWizardRefactored = () => {
         throw new Error('Aucune question initiale trouvée');
       }
 
-      console.log(`✅ ${allQuestions.length} questions chargées`);
-      console.log(`🎯 Première question: ${firstQuestion.question}`);
+      // console.log(`✅ ${allQuestions.length} questions chargées`);
+      // console.log(`🎯 Première question: ${firstQuestion.question}`);
 
       setState(prev => ({
         ...prev,
@@ -118,7 +118,7 @@ export const useEligibilityWizardRefactored = () => {
       [state.currentQuestion.key_reponse]: value
     };
 
-    console.log(`📝 Réponse: ${state.currentQuestion.key_reponse} = ${value}`);
+    // console.log(`📝 Réponse: ${state.currentQuestion.key_reponse} = ${value}`);
 
     setState(prev => ({
       ...prev,
@@ -143,11 +143,11 @@ export const useEligibilityWizardRefactored = () => {
     if (!state.currentQuestion) return;
 
     try {
-      console.log('🚀 Navigation vers la question suivante...');
+      // console.log('🚀 Navigation vers la question suivante...');
 
       // Vérifier si on peut terminer le questionnaire
       if (engine.canCompleteQuestionnaire(currentAnswers)) {
-        console.log('🏁 Questionnaire terminé, analyse des résultats...');
+        // console.log('🏁 Questionnaire terminé, analyse des résultats...');
         await completeQuestionnaire(currentAnswers);
         return;
       }
@@ -156,7 +156,7 @@ export const useEligibilityWizardRefactored = () => {
       const nextQuestion = engine.getNextQuestion(state.currentQuestion, currentAnswers);
 
       if (!nextQuestion) {
-        console.log('🏁 Fin des questions, analyse des résultats...');
+        // console.log('🏁 Fin des questions, analyse des résultats...');
         await completeQuestionnaire(currentAnswers);
         return;
       }
@@ -172,7 +172,7 @@ export const useEligibilityWizardRefactored = () => {
         canGoNext: false // Reset jusqu'à la prochaine réponse
       }));
 
-      console.log(`➡️ Question suivante: ${nextQuestion.question}`);
+      // console.log(`➡️ Question suivante: ${nextQuestion.question}`);
 
     } catch (error) {
       console.error('❌ Erreur navigation:', error);
@@ -200,7 +200,7 @@ export const useEligibilityWizardRefactored = () => {
         canGoNext: prev.userAnswers[previousQuestion.key_reponse] !== undefined
       }));
 
-      console.log(`⬅️ Question précédente: ${previousQuestion.question}`);
+      // console.log(`⬅️ Question précédente: ${previousQuestion.question}`);
     }
   }, [state.currentIndex, state.allQuestions, state.userAnswers]);
 
@@ -212,7 +212,7 @@ export const useEligibilityWizardRefactored = () => {
     try {
       setState(prev => ({ ...prev, loading: true }));
 
-      console.log('🎯 Analyse d\'éligibilité en cours...');
+      // console.log('🎯 Analyse d\'éligibilité en cours...');
       
       const results = await engine.analyzeEligibility(answers);
 
@@ -224,7 +224,7 @@ export const useEligibilityWizardRefactored = () => {
         progress: 100
       }));
 
-      console.log(`✅ Analyse terminée: ${results.length} résultats`);
+      // console.log(`✅ Analyse terminée: ${results.length} résultats`);
 
     } catch (error) {
       console.error('❌ Erreur analyse d\'éligibilité:', error);

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { PersonalInfo as PersonalInfoType } from '../../../types/user';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";

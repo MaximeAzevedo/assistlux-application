@@ -138,7 +138,7 @@ export class FormLogicService {
     }
 
     try {
-      // eslint-disable-next-line no-eval
+       
       return Boolean(eval(expression));
     } catch {
       return false;

@@ -1,5 +1,4 @@
-import React from 'react';
-import { CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
+import { CheckCircle2, XCircle, AlertCircle, ExternalLink, AlertTriangle } from 'lucide-react';
 
 interface Result {
   aidLinked?: string;

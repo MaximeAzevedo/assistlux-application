@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, MessageCircle, MessageSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Header from './Header';
@@ -14,7 +14,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { i18n } = useTranslation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     (window as any).toggleChat = () => setIsChatOpen(prev => !prev);
   }, []);
 

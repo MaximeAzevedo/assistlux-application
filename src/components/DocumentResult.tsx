@@ -1,9 +1,8 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { FileText, Download, Copy, Languages, FileType, AlertCircle, BookOpen, ListChecks } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { databaseService } from '../lib/supabase/database';
 
 interface DocumentResultProps {
   originalText: string;
@@ -26,17 +25,16 @@ const DocumentResult: React.FC<DocumentResultProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
   const { currentUser } = useAuth();
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [translationError, setTranslationError] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [translationError, setTranslationError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchUserPreferences = async () => {
       try {
         if (currentUser) {
-          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            const preferredLang = userData?.languages?.preferred;
+          const userPreferences = await databaseService.getUserPreferences(currentUser.uid);
+          if (userPreferences) {
+            const preferredLang = userPreferences.preferred;
             if (preferredLang && i18n.languages.includes(preferredLang)) {
               await i18n.changeLanguage(preferredLang);
             }

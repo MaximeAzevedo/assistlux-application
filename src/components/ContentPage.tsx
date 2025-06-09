@@ -1,7 +1,7 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import contentData from '../data/content.json';
+import { useTranslation } from 'react-i18next';
 
 interface ContentPageProps {
   category: string;

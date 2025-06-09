@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import Webcam from 'react-webcam';
 import { useDropzone } from 'react-dropzone';
 import imageCompression from 'browser-image-compression';
@@ -192,7 +192,7 @@ const DocumentScanner: React.FC = () => {
                         file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp|tiff|svg|heic|heif|avif)$/i);
         
         let documentData: ScannedDocument;
-        let tempData: any = {}; // Données temporaires à effacer
+        const tempData: any = {}; // Données temporaires à effacer
 
         if (isImage) {
           // Validation du fichier image
@@ -382,7 +382,7 @@ const DocumentScanner: React.FC = () => {
     }
   };
 
-  const captureImage = React.useCallback(async () => {
+  const captureImage = useCallback(async () => {
     if (!rgpdAccepted) {
       showToast('❌ Veuillez d\'abord accepter les conditions de protection des données', 'error');
       return;

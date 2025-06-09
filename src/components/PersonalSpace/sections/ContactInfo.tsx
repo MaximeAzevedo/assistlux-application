@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { Contact } from '../../../types/user';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';

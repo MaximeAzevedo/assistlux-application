@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { MapService, MapLocation } from '../services/MapService';
 
 const CarteInteractive: React.FC = () => {

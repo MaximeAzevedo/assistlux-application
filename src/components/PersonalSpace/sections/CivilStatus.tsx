@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { CivilStatus as CivilStatusType } from '../../../types/user';
 import Select from 'react-select';
 

@@ -85,7 +85,7 @@ export class DocumentScannerService {
       }
     });
 
-    console.log(`🔒 Document anonymisé : ${Object.keys(mappings).length} données personnelles masquées`);
+    // console.log(`🔒 Document anonymisé : ${Object.keys(mappings).length} données personnelles masquées`);
     
     return { anonymizedText: anonymized, mappings };
   }
@@ -131,7 +131,7 @@ export class DocumentScannerService {
     let aiResponse: any = null;
 
     try {
-      console.log(`🔍 Scanning document: ${file.name} (type attendu: ${expectedDocumentType})`);
+      // console.log(`🔍 Scanning document: ${file.name} (type attendu: ${expectedDocumentType})`);
 
       // 1. Convertir le fichier en base64
       base64Data = await this.fileToBase64(file);
@@ -168,7 +168,7 @@ export class DocumentScannerService {
       };
     } finally {
       // EFFACEMENT IMMÉDIAT ET SÉCURISÉ DES DONNÉES TEMPORAIRES
-      console.log('🗑️ Effacement sécurisé des données temporaires...');
+      // console.log('🗑️ Effacement sécurisé des données temporaires...');
       
       if (base64Data) {
         // Suréécriture multiple du base64
@@ -192,7 +192,7 @@ export class DocumentScannerService {
         global.gc();
       }
 
-      console.log('✅ Données temporaires effacées de manière sécurisée');
+      // console.log('✅ Données temporaires effacées de manière sécurisée');
     }
   }
 
@@ -226,7 +226,7 @@ IMPORTANT - CONFORMITÉ RGPD AZURE OPENAI EU :
 
 Analysez le document anonymisé et fournissez les informations demandées :`;
 
-      console.log('🇪🇺 Envoi vers Azure OpenAI EU (Sweden Central) avec anonymisation RGPD');
+      // console.log('🇪🇺 Envoi vers Azure OpenAI EU (Sweden Central) avec anonymisation RGPD');
 
       // Appel Azure OpenAI avec modèle déployé
       const response = await this.azureOpenAI.chat.completions.create({
@@ -247,7 +247,7 @@ Analysez le document anonymisé et fournissez les informations demandées :`;
 
       const extractedText = response.choices[0]?.message?.content || 'Aucun texte extrait';
 
-      console.log('✅ Analyse Azure OpenAI EU terminée avec succès (données anonymisées)');
+      // console.log('✅ Analyse Azure OpenAI EU terminée avec succès (données anonymisées)');
 
       return {
         extractedText,

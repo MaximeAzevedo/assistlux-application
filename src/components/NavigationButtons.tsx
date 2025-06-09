@@ -1,6 +1,5 @@
-import React from 'react';
+import { ArrowLeft, ArrowRight, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Home } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const NavigationButtons: React.FC = () => {

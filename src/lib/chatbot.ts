@@ -1,6 +1,5 @@
 import { AzureOpenAI } from 'openai';
-import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
-import { db } from './firebase';
+import { databaseService } from './supabase/database';
 import { detectLanguage, translateText } from './translation';
 import azureOpenAI, { DEPLOYMENT_NAME } from './openaiConfig';
 
@@ -123,18 +122,17 @@ async function getUserContext(userId?: string): Promise<ChatContext> {
   if (!userId) return {};
 
   try {
-    const userDoc = await getDoc(doc(db, 'users', userId));
-    if (!userDoc.exists()) return {};
-
-    const userData = userDoc.data();
+    const userPreferences = await databaseService.getUserPreferences(userId);
+    const recentMessages = await getRecentMessages(userId);
+    
     return {
       userId,
-      language: userData.languages?.preferred || 'fr',
-      previousMessages: await getRecentMessages(userId)
+      language: userPreferences?.preferred || 'fr',
+      previousMessages: recentMessages
     };
   } catch (error) {
     console.error('Error getting user context:', error);
-    return {};
+    return { userId };
   }
 }
 
@@ -175,9 +173,11 @@ Remember: Users depend on you for clear and practical guidance, NEVER answer vag
 
 async function getRecentMessages(userId: string): Promise<Array<{ role: string; content: string }>> {
   try {
-    const conversationsRef = collection(db, 'users', userId, 'conversations');
-    const recentMessages = await getDoc(doc(conversationsRef, 'recent'));
-    return recentMessages.exists() ? recentMessages.data().messages : [];
+    const conversations = await databaseService.getConversationHistory(userId, 5);
+    return conversations.map(conv => [
+      { role: 'user', content: conv.user_message },
+      { role: 'assistant', content: conv.bot_response }
+    ]).flat();
   } catch (error) {
     console.error('Error getting recent messages:', error);
     return [];
@@ -186,23 +186,7 @@ async function getRecentMessages(userId: string): Promise<Array<{ role: string; 
 
 async function storeConversation(userId: string, userMessage: string, botResponse: string) {
   try {
-    const conversationsRef = collection(db, 'users', userId, 'conversations');
-    
-    // Store the conversation
-    await addDoc(conversationsRef, {
-      userMessage,
-      botResponse,
-      timestamp: new Date().toISOString()
-    });
-
-    // Update recent messages
-    const recentRef = doc(conversationsRef, 'recent');
-    await addDoc(recentRef, {
-      messages: [
-        { role: 'user', content: userMessage },
-        { role: 'assistant', content: botResponse }
-      ]
-    });
+    await databaseService.saveConversation(userId, userMessage, botResponse);
   } catch (error) {
     console.error('Error storing conversation:', error);
   }

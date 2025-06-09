@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { IdentityDocuments as IdentityDocumentsType } from '../../../types/user';
 
 interface IdentityDocumentsProps {
