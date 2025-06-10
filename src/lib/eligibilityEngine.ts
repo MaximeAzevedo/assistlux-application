@@ -1,6 +1,18 @@
 import { supabase } from './supabase/client';
 
 // ═══════════════════════════════════════════════════════════
+// UTILITAIRE DE LOGGING OPTIMISÉ
+// ═══════════════════════════════════════════════════════════
+
+const isDev = import.meta.env.DEV;
+const logger = {
+  log: (...args: any[]) => isDev && console.log(...args),
+  warn: (...args: any[]) => isDev && console.warn(...args),
+  error: (...args: any[]) => console.error(...args), // Toujours afficher les erreurs
+  info: (...args: any[]) => isDev && console.info(...args)
+};
+
+// ═══════════════════════════════════════════════════════════
 // TYPES POUR LE NOUVEAU MOTEUR D'ÉLIGIBILITÉ
 // ═══════════════════════════════════════════════════════════
 
@@ -53,8 +65,8 @@ class ConditionEvaluator {
     if (!condition || condition.trim() === '') return true;
 
     try {
-      console.log(`🔍 Évaluation condition: "${condition}"`);
-      console.log(`📋 Réponses disponibles:`, answers);
+      logger.log(`🔍 Évaluation condition: "${condition}"`);
+      logger.log(`📋 Réponses disponibles:`, answers);
 
       // Nettoyer la condition
       const cleanCondition = condition.trim();
@@ -77,7 +89,7 @@ class ConditionEvaluator {
       return this.evaluateSimpleCondition(cleanCondition, answers);
 
     } catch (error) {
-      console.error('❌ Erreur évaluation condition:', error);
+      logger.error('❌ Erreur évaluation condition:', error);
       return false;
     }
   }
@@ -101,7 +113,7 @@ class ConditionEvaluator {
     const results = parts.map(part => this.evaluate(part, answers));
     const result = results.every(r => r);
     
-    console.log(`   🔗 AND: ${parts.join(' ET ')} = ${result}`);
+    logger.log(`   🔗 AND: ${parts.join(' ET ')} = ${result}`);
     return result;
   }
 
@@ -110,7 +122,7 @@ class ConditionEvaluator {
     const results = parts.map(part => this.evaluate(part, answers));
     const result = results.some(r => r);
     
-    console.log(`   🔀 OR: ${parts.join(' OU ')} = ${result}`);
+    logger.log(`   🔀 OR: ${parts.join(' OU ')} = ${result}`);
     return result;
   }
 
@@ -120,7 +132,7 @@ class ConditionEvaluator {
       const [key, value] = condition.split(' != ').map(s => s.trim());
       const userValue = answers[key];
       const result = userValue !== value;
-      console.log(`   ❌ NE: ${key}=${userValue} != ${value} = ${result}`);
+      logger.log(`   ❌ NE: ${key}=${userValue} != ${value} = ${result}`);
       return result;
     }
 
@@ -129,7 +141,7 @@ class ConditionEvaluator {
       const [key, value] = condition.split(' = ').map(s => s.trim());
       const userValue = answers[key];
       const result = userValue === value;
-      console.log(`   ✅ EQ: ${key}=${userValue} == ${value} = ${result}`);
+      logger.log(`   ✅ EQ: ${key}=${userValue} == ${value} = ${result}`);
       return result;
     }
 
@@ -144,7 +156,7 @@ class ConditionEvaluator {
       const userValue = parseFloat(answers[keyTrimmed] as string);
       
       if (isNaN(numValue) || isNaN(userValue)) {
-        console.warn(`   ⚠️ Comparaison numérique impossible: ${keyTrimmed}=${answers[keyTrimmed]} ${operator} ${valueTrimmed}`);
+        logger.warn(`   ⚠️ Comparaison numérique impossible: ${keyTrimmed}=${answers[keyTrimmed]} ${operator} ${valueTrimmed}`);
         return false;
       }
       
@@ -156,11 +168,11 @@ class ConditionEvaluator {
         case '<': result = userValue < numValue; break;
       }
       
-      console.log(`   🔢 NUM: ${keyTrimmed}=${userValue} ${operator} ${numValue} = ${result}`);
+      logger.log(`   🔢 NUM: ${keyTrimmed}=${userValue} ${operator} ${numValue} = ${result}`);
       return result;
     }
 
-    console.warn(`   ⚠️ Condition non reconnue: "${condition}"`);
+    logger.warn(`   ⚠️ Condition non reconnue: "${condition}"`);
     return false;
   }
 }
@@ -190,7 +202,7 @@ export class EligibilityEngine {
     if (this.initialized) return;
 
     try {
-      console.log('🔄 Initialisation du moteur d\'éligibilité...');
+      logger.log('🔄 Initialisation du moteur d\'éligibilité...');
       
       await Promise.all([
         this.loadQuestions(),
@@ -198,10 +210,10 @@ export class EligibilityEngine {
       ]);
       
       this.initialized = true;
-      console.log('✅ Moteur d\'éligibilité initialisé');
+      logger.log('✅ Moteur d\'éligibilité initialisé');
       
     } catch (error) {
-      console.error('❌ Erreur initialisation moteur:', error);
+      logger.error('❌ Erreur initialisation moteur:', error);
       throw error;
     }
   }
@@ -229,7 +241,7 @@ export class EligibilityEngine {
       condition_affichage: q.condition_affichage
     }));
 
-    console.log(`📋 ${this.questions.length} questions chargées`);
+    logger.log(`📋 ${this.questions.length} questions chargées`);
   }
 
   /**
@@ -256,7 +268,7 @@ export class EligibilityEngine {
       action: r.action
     }));
 
-    console.log(`🎯 ${this.rules.length} règles d'éligibilité chargées`);
+    logger.log(`🎯 ${this.rules.length} règles d'éligibilité chargées`);
   }
 
   /**
@@ -330,19 +342,19 @@ export class EligibilityEngine {
    * Analyse l'éligibilité avec les réponses fournies
    */
   async analyzeEligibility(answers: UserAnswers): Promise<EligibilityResult[]> {
-    console.log('🚀 Analyse d\'éligibilité avec moteur refait');
-    console.log('📝 Réponses:', answers);
+    logger.log('🚀 Analyse d\'éligibilité avec moteur refait');
+    logger.log('📝 Réponses:', answers);
     
     const results: EligibilityResult[] = [];
     
     for (const rule of this.rules) {
-      console.log(`\n🔍 Évaluation: ${rule.titre_aide}`);
-      console.log(`📐 Condition: ${rule.logic_condition}`);
+      logger.log(`\n🔍 Évaluation: ${rule.titre_aide}`);
+      logger.log(`📐 Condition: ${rule.logic_condition}`);
       
       const isEligible = ConditionEvaluator.evaluate(rule.logic_condition, answers);
       
       if (isEligible) {
-        console.log(`✅ RÉSULTAT: ${rule.titre_aide} - ${rule.categorie}`);
+        logger.log(`✅ RÉSULTAT: ${rule.titre_aide} - ${rule.categorie}`);
         
         results.push({
           aid_id: rule.id,
@@ -356,11 +368,11 @@ export class EligibilityEngine {
           action: rule.action || (rule.categorie === 'Eligible' ? 'Télécharger' : 'Plus d\'infos')
         });
       } else {
-        console.log(`❌ NON ÉLIGIBLE: ${rule.titre_aide}`);
+        logger.log(`❌ NON ÉLIGIBLE: ${rule.titre_aide}`);
       }
     }
     
-    console.log(`\n🎉 Analyse terminée: ${results.length} résultats`);
+    logger.log(`\n🎉 Analyse terminée: ${results.length} résultats`);
     return results.sort((a, b) => {
       // Trier par priorité : Eligible > Maybe > Ineligible
       const priority = { 'Eligible': 3, 'Maybe': 2, 'Ineligible': 1 };

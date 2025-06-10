@@ -129,20 +129,89 @@ export class FormLogicService {
 
   /**
    * Évaluation sécurisée d'expressions simples
+   * REMPLACE eval() par une évaluation contrôlée
    */
   private safeEval(expression: string): boolean {
-    // Vérifier que l'expression ne contient que des opérateurs autorisés
-    const allowedPattern = /^[0-9\s+\-*/<>=!&|()'"a-zA-Z_]+$/;
-    if (!allowedPattern.test(expression)) {
-      throw new Error('Expression non autorisée');
+    // Nettoyer l'expression
+    const cleanExpr = expression.trim();
+    
+    // Vérifier les patterns autorisés
+    const allowedOperators = /^[0-9\s+\-*/<>=!&|()'"a-zA-Z_\.]+$/;
+    if (!allowedOperators.test(cleanExpr)) {
+      console.warn('Expression non autorisée:', cleanExpr);
+      return false;
     }
 
     try {
-       
-      return Boolean(eval(expression));
-    } catch {
+      // Parser les expressions simples sans eval()
+      return this.parseSimpleExpression(cleanExpr);
+    } catch (error) {
+      console.warn('Erreur évaluation expression:', cleanExpr, error);
       return false;
     }
+  }
+
+  /**
+   * Parse des expressions simples de manière sécurisée
+   */
+  private parseSimpleExpression(expression: string): boolean {
+    // Expressions de comparaison simples
+    const comparisons = [
+      { pattern: /^(.+?)\s*===\s*(.+?)$/, op: (a: any, b: any) => a === b },
+      { pattern: /^(.+?)\s*!==\s*(.+?)$/, op: (a: any, b: any) => a !== b },
+      { pattern: /^(.+?)\s*==\s*(.+?)$/, op: (a: any, b: any) => a == b },
+      { pattern: /^(.+?)\s*!=\s*(.+?)$/, op: (a: any, b: any) => a != b },
+      { pattern: /^(.+?)\s*>=\s*(.+?)$/, op: (a: any, b: any) => Number(a) >= Number(b) },
+      { pattern: /^(.+?)\s*<=\s*(.+?)$/, op: (a: any, b: any) => Number(a) <= Number(b) },
+      { pattern: /^(.+?)\s*>\s*(.+?)$/, op: (a: any, b: any) => Number(a) > Number(b) },
+      { pattern: /^(.+?)\s*<\s*(.+?)$/, op: (a: any, b: any) => Number(a) < Number(b) },
+    ];
+
+    for (const { pattern, op } of comparisons) {
+      const match = expression.match(pattern);
+      if (match) {
+        const [, left, right] = match;
+        const leftVal = this.parseValue(left.trim());
+        const rightVal = this.parseValue(right.trim());
+        return op(leftVal, rightVal);
+      }
+    }
+
+    // Expressions booléennes simples
+    if (expression === 'true') return true;
+    if (expression === 'false') return false;
+    
+    // Si c'est un nombre
+    const numValue = Number(expression);
+    if (!isNaN(numValue)) return numValue !== 0;
+
+    // Par défaut, retourner false pour sécurité
+    console.warn('Expression non supportée:', expression);
+    return false;
+  }
+
+  /**
+   * Parse une valeur de manière sécurisée
+   */
+  private parseValue(value: string): any {
+    const trimmed = value.trim();
+    
+    // Chaînes entre guillemets
+    if ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+        (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+      return trimmed.slice(1, -1);
+    }
+    
+    // Nombres
+    const numValue = Number(trimmed);
+    if (!isNaN(numValue)) return numValue;
+    
+    // Booléens
+    if (trimmed === 'true') return true;
+    if (trimmed === 'false') return false;
+    
+    // Variables/propriétés (pour étendre plus tard si besoin)
+    return trimmed;
   }
 
   /**
@@ -158,15 +227,15 @@ export class FormLogicService {
     const warnings: ValidationWarning[] = [];
 
     // 1. Validation obligatoire
-    if (champ.obligatoire && !this.hasValue(userResponses, champ.nom)) {
+    if (champ.obligatoire && !this.hasValue(userResponses, champ.nom_champ)) {
       errors.push({
-        field: champ.nom,
-        message: `Le champ ${champ.nom} est obligatoire`,
+        field: champ.nom_champ,
+        message: `Le champ ${champ.nom_champ} est obligatoire`,
         type: 'required'
       });
     }
 
-    if (!this.hasValue(userResponses, champ.nom)) {
+    if (!this.hasValue(userResponses, champ.nom_champ)) {
       return { isValid: errors.length === 0, errors, warnings };
     }
 
@@ -175,19 +244,19 @@ export class FormLogicService {
       const regex = new RegExp(champ.validation_regex);
       if (!regex.test(String(value))) {
         errors.push({
-          field: champ.nom,
-          message: `Format invalide pour ${champ.nom}`,
+          field: champ.nom_champ,
+          message: `Format invalide pour ${champ.nom_champ}`,
           type: 'format'
         });
       }
     }
 
     // 3. Validation par type
-    switch (champ.type) {
+    switch (champ.type_champ) {
       case 'email':
         if (!this.isValidEmail(String(value))) {
           errors.push({
-            field: champ.nom,
+            field: champ.nom_champ,
             message: 'Adresse email invalide',
             type: 'format'
           });
@@ -197,7 +266,7 @@ export class FormLogicService {
       case 'tel':
         if (!this.isValidPhone(String(value))) {
           errors.push({
-            field: champ.nom,
+            field: champ.nom_champ,
             message: 'Numéro de téléphone invalide',
             type: 'format'
           });
@@ -207,7 +276,7 @@ export class FormLogicService {
       case 'number':
         if (isNaN(Number(value))) {
           errors.push({
-            field: champ.nom,
+            field: champ.nom_champ,
             message: 'Valeur numérique requise',
             type: 'format'
           });
@@ -217,7 +286,7 @@ export class FormLogicService {
       case 'date':
         if (!this.isValidDate(String(value))) {
           errors.push({
-            field: champ.nom,
+            field: champ.nom_champ,
             message: 'Date invalide',
             type: 'format'
           });
@@ -226,16 +295,16 @@ export class FormLogicService {
     }
 
     // 4. Validations métier spécifiques
-    this.validateBusinessRules(champ.nom, value, userResponses, errors, warnings);
+    this.validateBusinessRules(champ.nom_champ, value, userResponses, errors, warnings);
 
     // 5. Validations personnalisées depuis la base
     if (validationRules) {
       validationRules
-        .filter(rule => rule.champ === champ.nom)
+        .filter(rule => rule.champ === champ.nom_champ)
         .forEach(rule => {
           if (!this.evaluateValidationRule(rule.regle, value, userResponses)) {
             errors.push({
-              field: champ.nom,
+              field: champ.nom_champ,
               message: rule.message_erreur,
               type: 'business'
             });
