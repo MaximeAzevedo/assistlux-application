@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import azureOpenAI, { DEPLOYMENT_NAME } from './openaiConfig';
+import { azureOpenAIClient, DEPLOYMENT_NAME } from './openaiConfig';
 import { translateText, detectLanguage, supportedLanguages } from './translation';
 import i18next from 'i18next';
+import { aiService } from './aiService';
 
 // System prompt for context: Social assistant role for Luxembourg's social services
 const SOCIAL_ASSISTANT_SYSTEM_PROMPT = `You are an AI assistant for Luxembourg's social services. Your task is to support the document-scanner feature: you must generate a clear summary, key points and a full translation of the input, without modifying any other part of the existing code or functionality. Adopt the role of a benevolent but ultra-professional social assistant. Your users are primarily people experiencing homelessness, refugees or clients of social agencies.
@@ -67,28 +68,40 @@ export async function analyzeDocument(text: string, preferredLanguage?: string):
   }
 
   try {
-    console.log('🔍 Starting enhanced document analysis...');
+    if (import.meta.env.DEV) {
+      console.log('🔍 Starting enhanced document analysis...');
+    }
     
     // 1. Detect the source language of the document
     const detectedLanguage = await detectLanguage(text);
-    console.log('📝 Detected document language:', detectedLanguage);
+    if (import.meta.env.DEV) {
+      console.log('📝 Detected document language:', detectedLanguage);
+    }
     
     // 2. Determine target language (user preference > current i18n > fallback)
     const targetLanguage = preferredLanguage || i18next.language || navigator.language.split('-')[0] || 'fr';
-    console.log('🎯 Target language:', targetLanguage);
+    if (import.meta.env.DEV) {
+      console.log('🎯 Target language:', targetLanguage);
+    }
     
     // 3. Detect document type early for better context
     const documentType = await detectDocumentType(text);
-    console.log('📄 Document type:', documentType);
+    if (import.meta.env.DEV) {
+      console.log('📄 Document type:', documentType);
+    }
     
     // 4. Translate if needed (only if source and target languages differ)
     let translatedText = text;
     if (detectedLanguage !== targetLanguage && detectedLanguage !== 'unknown') {
-      console.log('🔄 Translating document...');
+      if (import.meta.env.DEV) {
+        console.log('🔄 Translating document...');
+      }
       try {
         translatedText = await translateText(text, targetLanguage);
       } catch (error) {
-        console.warn('Translation failed, using original text:', error);
+        if (import.meta.env.DEV) {
+          console.warn('Translation failed, using original text:', error);
+        }
         translatedText = text;
       }
     }
@@ -122,30 +135,40 @@ export async function analyzeDocument(text: string, preferredLanguage?: string):
       if (results[0].status === 'fulfilled') {
         summary = results[0].value;
       } else {
-        console.warn('Summary generation failed:', results[0].reason);
+        if (import.meta.env.DEV) {
+          console.warn('Summary generation failed:', results[0].reason);
+        }
         summary = 'Résumé non disponible pour ce document.';
       }
 
       if (results[1].status === 'fulfilled') {
         keyPoints = results[1].value;
       } else {
-        console.warn('Key points generation failed:', results[1].reason);
+        if (import.meta.env.DEV) {
+          console.warn('Key points generation failed:', results[1].reason);
+        }
         keyPoints = ['Analyse des points clés non disponible.'];
       }
 
       if (results[2].status === 'fulfilled') {
         fields = results[2].value;
       } else {
-        console.warn('Fields extraction failed:', results[2].reason);
+        if (import.meta.env.DEV) {
+          console.warn('Fields extraction failed:', results[2].reason);
+        }
       }
 
       if (results[3].status === 'fulfilled') {
         context = results[3].value;
       } else {
-        console.warn('Context generation failed:', results[3].reason);
+        if (import.meta.env.DEV) {
+          console.warn('Context generation failed:', results[3].reason);
+        }
       }
     } catch (error) {
-      console.warn('Some analysis steps failed, using fallbacks:', error);
+      if (import.meta.env.DEV) {
+        console.warn('Some analysis steps failed, using fallbacks:', error);
+      }
     }
 
     // Ensure fields structure is valid
@@ -171,7 +194,9 @@ export async function analyzeDocument(text: string, preferredLanguage?: string):
     // Validate the analysis object against the schema
     try {
       documentSchema.parse(analysis);
-      console.log('✅ Document analysis completed successfully');
+      if (import.meta.env.DEV) {
+        console.log('✅ Document analysis completed successfully');
+      }
       return analysis;
     } catch (validationError) {
       console.error('Schema validation failed:', validationError);
@@ -191,13 +216,7 @@ async function detectDocumentType(text: string): Promise<string> {
   }
 
   try {
-    const response = await azureOpenAI.chat.completions.create({
-      model: DEPLOYMENT_NAME,
-      messages: [
-        { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
-        {
-          role: "system",
-          content: `You are a document classification expert specializing in Luxembourg administrative documents.
+    const systemPrompt = `You are a document classification expert specializing in Luxembourg administrative documents.
 Analyze the provided text and determine the document type.
 Return ONLY the document type in French, nothing else.
 Common types include:
@@ -217,15 +236,10 @@ Common types include:
 - courrier_officiel (official correspondence)
 - formulaire_social (social form)
 
-If the document doesn't match any specific type, return 'document_administratif'.`
-        },
-        { role: "user", content: text }
-      ],
-      temperature: 0.1,
-      max_tokens: 50
-    });
+If the document doesn't match any specific type, return 'document_administratif'.`;
 
-    return response.choices[0]?.message?.content?.toLowerCase().trim() || 'unknown';
+    const response = await aiService.processChat(text, systemPrompt);
+    return response.toLowerCase().trim() || 'unknown';
   } catch (error) {
     console.error('Error detecting document type:', error);
     return 'unknown';
@@ -239,11 +253,9 @@ async function generateEnhancedSummary(text: string, documentType: string, targe
       ? 'Write in Luxembourgish (Lëtzebuergesch). Use proper Luxembourgish grammar and vocabulary.'
       : `Write in ${languageInfo?.name || targetLanguage}`;
 
-    const response = await azureOpenAI.chat.completions.create({
-      model: DEPLOYMENT_NAME,
-      messages: [
-        { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
-        { role: "system", content: `${languagePrompt}
+    const systemPrompt = `${SOCIAL_ASSISTANT_SYSTEM_PROMPT}
+
+${languagePrompt}
 Create a comprehensive summary (3-4 sentences) of this ${documentType} document.
 The summary should:
 - Clearly explain what the document is and its purpose
@@ -252,14 +264,9 @@ The summary should:
 - Include any urgent actions needed
 
 Make it accessible and reassuring for someone who might be stressed or unfamiliar with administrative processes.
-Return ONLY the summary text, no additional formatting.` },
-        { role: "user", content: text }
-      ],
-      temperature: 0.7,
-      max_tokens: 300
-    });
+Return ONLY the summary text, no additional formatting.`;
 
-    return response.choices[0]?.message?.content?.trim() || '';
+    return await aiService.processChat(text, systemPrompt);
   } catch (error) {
     console.error('Error generating enhanced summary:', error);
     throw error;
@@ -273,11 +280,9 @@ async function generateEnhancedKeyPoints(text: string, documentType: string, tar
       ? 'Write in Luxembourgish (Lëtzebuergesch). Use proper Luxembourgish grammar and vocabulary.'
       : `Write in ${languageInfo?.name || targetLanguage}`;
 
-    const response = await azureOpenAI.chat.completions.create({
-      model: DEPLOYMENT_NAME,
-      messages: [
-        { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
-        { role: "system", content: `${languagePrompt}
+    const systemPrompt = `${SOCIAL_ASSISTANT_SYSTEM_PROMPT}
+
+${languagePrompt}
 Extract 5-8 key points from this ${documentType} document, prioritizing the most important information.
 Focus on:
 1. Document purpose and what it grants/allows
@@ -291,14 +296,9 @@ Focus on:
 
 Format each point as a separate line starting with "•".
 Be specific and include numbers, dates, and contact details when available.
-Return ONLY the bullet points, no additional text.` },
-        { role: "user", content: text }
-      ],
-      temperature: 0.7,
-      max_tokens: 600
-    });
+Return ONLY the bullet points, no additional text.`;
 
-    const content = response.choices[0]?.message?.content || '';
+    const content = await aiService.processChat(text, systemPrompt);
     return content
       .split('\n')
       .filter(line => line.trim().startsWith('•'))
@@ -317,11 +317,9 @@ async function generateDocumentContext(text: string, documentType: string, targe
       ? 'Répondez en luxembourgeois (Lëtzebuergesch). Utilisez la grammaire et le vocabulaire luxembourgeois appropriés.'
       : `Répondez en ${languageInfo?.name || 'français'}. Utilisez uniquement cette langue pour votre réponse.`;
 
-    const response = await azureOpenAI.chat.completions.create({
-      model: DEPLOYMENT_NAME,
-      messages: [
-        { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
-        { role: "system", content: `${languagePrompt}
+    const systemPrompt = `${SOCIAL_ASSISTANT_SYSTEM_PROMPT}
+
+${languagePrompt}
 
 Analysez ce document ${documentType} et fournissez des informations contextuelles.
 Retournez un objet JSON avec :
@@ -338,14 +336,9 @@ Niveaux d'importance :
 - low: informatif ou long terme
 
 Les prochaines étapes doivent être en ${languageInfo?.name || 'français'} et être des actions concrètes et utiles.
-Retournez UNIQUEMENT l'objet JSON.` },
-        { role: "user", content: text }
-      ],
-      temperature: 0.3,
-      max_tokens: 300
-    });
+Retournez UNIQUEMENT l'objet JSON.`;
 
-    const content = response.choices[0]?.message?.content || '{}';
+    const content = await aiService.processChat(text, systemPrompt);
     try {
       const parsed = JSON.parse(content.trim());
       
@@ -395,11 +388,9 @@ async function extractEnhancedFields(text: string, documentType: string) {
   };
 
   try {
-    const response = await azureOpenAI.chat.completions.create({
-      model: DEPLOYMENT_NAME,
-      messages: [
-        { role: "system", content: SOCIAL_ASSISTANT_SYSTEM_PROMPT },
-        { role: "system", content: `Extract all relevant information from this ${documentType} document and return it as a valid JSON object with the following structure:
+    const systemPrompt = `${SOCIAL_ASSISTANT_SYSTEM_PROMPT}
+
+Extract all relevant information from this ${documentType} document and return it as a valid JSON object with the following structure:
 {
   "personal": {
     "firstName": "First Name",
@@ -433,14 +424,9 @@ async function extractEnhancedFields(text: string, documentType: string) {
 
 Only include fields that are actually present in the document.
 Return ONLY the JSON object, with no markdown formatting or code blocks.
-Ensure the JSON is properly formatted with double quotes around property names.` },
-        { role: "user", content: text }
-      ],
-      temperature: 0.1,
-      max_tokens: 800
-    });
+Ensure the JSON is properly formatted with double quotes around property names.`;
 
-    const content = response.choices[0]?.message?.content || '{}';
+    const content = await aiService.processChat(text, systemPrompt);
     let cleanedContent = content.trim();
     
     // Remove markdown code block markers if present

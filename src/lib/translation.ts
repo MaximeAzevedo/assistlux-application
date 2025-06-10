@@ -1,5 +1,6 @@
 import i18next from 'i18next';
-import azureOpenAI, { DEPLOYMENT_NAME } from './openaiConfig';
+import { azureOpenAIClient, DEPLOYMENT_NAME } from './openaiConfig';
+import { aiService } from './aiService';
 
 // Language codes and names mapping
 export const supportedLanguages = {
@@ -64,23 +65,7 @@ export async function translateText(text: string, targetLanguage: string): Promi
   if (!text?.trim()) return text;
   
   try {
-    const response = await azureOpenAI.chat.completions.create({
-      model: DEPLOYMENT_NAME,
-      messages: [
-        {
-          role: "system",
-          content: `Tu es un traducteur expert spécialisé dans les documents administratifs luxembourgeois. Traduis le texte suivant en ${targetLanguage} en conservant le sens exact et les termes techniques appropriés.`
-        },
-        {
-          role: "user",
-          content: text
-        }
-      ],
-      temperature: 0.3,
-      max_tokens: 1500
-    });
-
-    return response.choices[0]?.message?.content || text;
+    return await aiService.translateText(text, targetLanguage);
   } catch (error) {
     // Log seulement en développement
     if (import.meta.env.DEV) {
@@ -96,23 +81,7 @@ export async function detectLanguage(text: string): Promise<string> {
       return i18next.language || 'fr';
     }
 
-    const response = await azureOpenAI.chat.completions.create({
-      model: DEPLOYMENT_NAME,
-      messages: [
-        {
-          role: "system",
-          content: "Detect the language of the following text. Respond with only the ISO 639-1 language code (e.g., 'en', 'fr', 'ar', 'lb'). Be precise and only return the code."
-        },
-        {
-          role: "user",
-          content: text
-        }
-      ],
-      temperature: 0.1,
-      max_tokens: 10
-    });
-
-    const detectedLanguage = response.choices[0]?.message?.content?.toLowerCase() || i18next.language || 'fr';
+    const detectedLanguage = await aiService.detectLanguage(text);
     return (detectedLanguage in supportedLanguages) ? detectedLanguage : i18next.language || 'fr';
   } catch (error) {
     console.error('Language detection error:', error);

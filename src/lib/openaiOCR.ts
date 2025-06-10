@@ -1,6 +1,7 @@
 import { AzureOpenAI } from 'openai';
-import azureOpenAI, { DEPLOYMENT_NAME } from './openaiConfig';
+import { azureOpenAIClient, DEPLOYMENT_NAME } from './openaiConfig';
 import { validateImageFile, convertImageToJpeg } from './imageProcessing';
+import { aiService } from './aiService';
 
 interface OCRResult {
   text: string;
@@ -95,15 +96,7 @@ export async function extractTextWithOpenAI(
       console.log('✅ Image converted to JPEG for Azure OpenAI compatibility');
     }
     
-    const response = await azureOpenAI.chat.completions.create({
-      model: DEPLOYMENT_NAME, // Utiliser le déploiement Azure
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: `Extrait tout le texte de cette image de document avec la plus haute précision possible.
+    const prompt = `Extrait tout le texte de cette image de document avec la plus haute précision possible.
 
 Instructions:
 - Retourne uniquement le texte extrait, sans commentaires ni explication
@@ -113,31 +106,17 @@ Instructions:
 - Pour les formulaires, indique clairement "Champ: Valeur"
 - Pour les tableaux, préserve la structure avec des espaces/tabulations
 - Si certaines parties sont illisibles, indique [ILLISIBLE] uniquement pour ces zones
-- Ne rajoute aucun texte explicatif`
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: processedImageData,
-                detail: "high"
-              }
-            }
-          ]
-        }
-      ],
-      max_tokens: 2000,
-      temperature: 0.1
-    });
+- Ne rajoute aucun texte explicatif`;
 
-    const extractedText = response.choices[0]?.message?.content || '';
+    const extractedText = await aiService.extractTextFromImage(processedImageData, prompt);
     
     if (!extractedText.trim()) {
       throw new Error('Azure OpenAI Vision returned empty text');
     }
 
-    // Tarification officielle gpt-4o-mini (Décembre 2024)
-    const inputTokens = response.usage?.prompt_tokens || 1000;
-    const outputTokens = response.usage?.completion_tokens || 100;
+    // Estimation des tokens et coût
+    const inputTokens = Math.ceil(processedImageData.length / 4) + prompt.length / 4;
+    const outputTokens = Math.ceil(extractedText.length / 4);
     
     // $0.15/1M input tokens, $0.60/1M output tokens
     const cost = (inputTokens * 0.00015 + outputTokens * 0.0006) / 1000;

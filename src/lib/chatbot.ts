@@ -1,7 +1,8 @@
 import { AzureOpenAI } from 'openai';
 import { databaseService } from './supabase/database';
 import { detectLanguage, translateText } from './translation';
-import azureOpenAI, { DEPLOYMENT_NAME } from './openaiConfig';
+import { azureOpenAIClient, DEPLOYMENT_NAME } from './openaiConfig';
+import { aiService } from './aiService';
 
 interface ChatContext {
   userId?: string;
@@ -26,34 +27,27 @@ export async function processMessage(message: string, userId?: string): Promise<
     // Prepare system message with context
     const systemMessage = await prepareSystemMessage(context);
     
-    // Generate response using GPT-3.5 Turbo
-    const response = await azureOpenAI.chat.completions.create({
-      model: DEPLOYMENT_NAME,
-      messages: [
-        { role: "system", content: systemMessage },
-        ...context.previousMessages || [],
-        { role: "user", content: message }
-      ],
-      temperature: 0.7,
-      max_tokens: 1000
-    });
-
-    let reply = response.choices[0]?.message?.content || "Je suis désolé, je ne peux pas répondre pour le moment.";
+    // Utiliser aiService au lieu d'appels directs
+    const reply = await aiService.processChat(
+      message,
+      systemMessage,
+      context.previousMessages || []
+    );
 
     // Add friendly emojis and formatting
-    reply = formatResponse(reply);
+    const formattedReply = formatResponse(reply);
 
     // Store conversation in Firebase if user is authenticated
     if (userId) {
-      await storeConversation(userId, message, reply);
+      await storeConversation(userId, message, formattedReply);
     }
 
     // Translate response if needed
     if (detectedLanguage !== 'fr') {
-      return await translateText(reply, detectedLanguage);
+      return await translateText(formattedReply, detectedLanguage);
     }
 
-    return reply;
+    return formattedReply;
   } catch (error) {
     console.error('Error processing message:', error);
     throw new Error('Failed to process message');

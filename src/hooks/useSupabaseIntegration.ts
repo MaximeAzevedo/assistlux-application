@@ -73,19 +73,27 @@ export const useSupabaseIntegration = () => {
   const saveSecureSession = useCallback(async (session: SessionSecurisee) => {
     try {
       // TODO: Sauvegarder en base via Supabase
-      console.log('💾 Sauvegarde session sécurisée:', session.id);
+      if (import.meta.env.DEV) {
+        console.log('💾 Sauvegarde session sécurisée:', session.id);
+      }
       
-      // Pour l'instant stockage local temporaire (RGPD compliant avec TTL)
+      // Créer une version anonymisée pour le stockage local
       const sessionData = {
-        ...session,
+        id: session.id,
+        // Ne stocker que les métadonnées, pas les données sensibles
+        token: 'metadata_only', // Token anonymisé
+        status: 'active',
+        // Données sensibles omises volontairement
+        dataPresent: true,
         savedAt: new Date().toISOString()
       };
       
-      sessionStorage.setItem(`secure_session_${session.id}`, JSON.stringify(sessionData));
+      // Stockage temporaire local (métadonnées uniquement)
+      sessionStorage.setItem(`secure_session_meta_${session.id}`, JSON.stringify(sessionData));
       
       // Auto-destruction après 1h (conformité RGPD)
       setTimeout(() => {
-        sessionStorage.removeItem(`secure_session_${session.id}`);
+        sessionStorage.removeItem(`secure_session_meta_${session.id}`);
       }, 60 * 60 * 1000); // 1 heure
       
       return { success: true };
@@ -99,22 +107,36 @@ export const useSupabaseIntegration = () => {
   const loadSecureSession = useCallback(async (sessionId: string): Promise<SessionSecurisee | null> => {
     try {
       // TODO: Charger depuis Supabase
-      const stored = sessionStorage.getItem(`secure_session_${sessionId}`);
+      const stored = sessionStorage.getItem(`secure_session_meta_${sessionId}`);
       if (!stored) return null;
       
-      const sessionData = JSON.parse(stored);
+      const sessionMeta = JSON.parse(stored);
       
       // Vérifier expiration
-      const savedAt = new Date(sessionData.savedAt);
+      const savedAt = new Date(sessionMeta.savedAt);
       const now = new Date();
       const hoursDiff = (now.getTime() - savedAt.getTime()) / (1000 * 60 * 60);
       
       if (hoursDiff > 1) {
-        sessionStorage.removeItem(`secure_session_${sessionId}`);
+        sessionStorage.removeItem(`secure_session_meta_${sessionId}`);
         return null;
       }
       
-      return sessionData;
+      // Retourner une session conforme au type SessionSecurisee
+      return {
+        id: sessionMeta.id,
+        token: 'restored_from_metadata',
+        expiresAt: new Date(savedAt.getTime() + (60 * 60 * 1000)), // 1h après sauvegarde
+        langue: 'fr', // Valeur par défaut
+        consentements: {
+          traitement: true,
+          ia_externe: true,
+          cookies: false,
+          analytics: false
+        },
+        createdAt: new Date(sessionMeta.savedAt),
+        lastActivity: new Date()
+      };
       
     } catch (error) {
       console.error('❌ Erreur chargement session:', error);

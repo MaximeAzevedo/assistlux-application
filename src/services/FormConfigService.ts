@@ -146,16 +146,17 @@ export interface StatistiqueValidation {
 
 export class FormConfigService {
   private static instance: FormConfigService;
-  private cache: Map<string, any> = new Map();
-  private cacheExpiry: Map<string, number> = new Map();
-  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-  public static getInstance(): FormConfigService {
+  static getInstance(): FormConfigService {
     if (!FormConfigService.instance) {
       FormConfigService.instance = new FormConfigService();
     }
     return FormConfigService.instance;
   }
+
+  private cache: Map<string, any> = new Map();
+  private cacheExpiry: Map<string, number> = new Map();
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   private isCacheValid(key: string): boolean {
     const expiry = this.cacheExpiry.get(key);

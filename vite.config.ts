@@ -28,6 +28,9 @@ export default defineConfig({
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
+    hmr: {
+      overlay: false
+    }
   },
   build: {
     rollupOptions: {
@@ -35,46 +38,28 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
       },
       output: {
-        manualChunks: (id) => {
-          // Chunking basé sur les modules plutôt que sur les noms de packages
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'react-vendor';
-            }
-            if (id.includes('@headlessui') || id.includes('lucide-react')) {
-              return 'ui-vendor';
-            }
-            if (id.includes('@googlemaps')) {
-              return 'maps-vendor';
-            }
-            if (id.includes('openai')) {
-              return 'ai-vendor';
-            }
-            if (id.includes('mammoth') || id.includes('pdfjs')) {
-              return 'document-vendor';
-            }
-            if (id.includes('firebase')) {
-              return 'firebase-vendor';
-            }
-            if (id.includes('@supabase')) {
-              return 'supabase-vendor';
-            }
-            // Autres dépendances
-            return 'vendor';
-          }
-        },
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': ['@headlessui/react', 'lucide-react'],
+          'document-vendor': ['pdfjs-dist', 'mammoth'],
+          'services-vendor': ['@supabase/supabase-js', 'openai', 'i18next'],
+          'maps-vendor': ['@googlemaps/react-wrapper']
+        }
       },
     },
-    // Augmenter la limite pour éviter les warnings
     chunkSizeWarningLimit: 1000,
-    // Optimisations supplémentaires
+    target: 'es2020',
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true, // Supprimer les console.log en production
+        drop_console: true,
         drop_debugger: true,
       },
     },
+    sourcemap: false
   },
-  publicDir: 'public'
+  publicDir: 'public',
+  css: {
+    devSourcemap: true
+  }
 });

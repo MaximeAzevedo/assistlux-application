@@ -182,18 +182,18 @@ class ConditionEvaluator {
 // ═══════════════════════════════════════════════════════════
 
 export class EligibilityEngine {
-  
   private static instance: EligibilityEngine;
+  
+  static getInstance(): EligibilityEngine {
+    if (!EligibilityEngine.instance) {
+      EligibilityEngine.instance = new EligibilityEngine();
+    }
+    return EligibilityEngine.instance;
+  }
+
   private questions: Question[] = [];
   private rules: EligibilityRule[] = [];
   private initialized = false;
-
-  static getInstance(): EligibilityEngine {
-    if (!this.instance) {
-      this.instance = new EligibilityEngine();
-    }
-    return this.instance;
-  }
 
   /**
    * Initialise le moteur en chargeant les données

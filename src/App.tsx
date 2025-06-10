@@ -25,8 +25,6 @@ const LoadingSpinner = () => (
 );
 
 function App() {
-  console.log('App: Démarrage AssistLux');
-  
   return (
     <Layout>
       <Suspense fallback={<LoadingSpinner />}>

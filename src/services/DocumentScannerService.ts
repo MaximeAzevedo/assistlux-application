@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase/client';
-import { AzureOpenAI } from 'openai';
+import { azureOpenAIClient, DEPLOYMENT_NAME } from '../lib/openaiConfig';
+import { aiService } from '../lib/aiService';
 
 // Types pour le scanner de documents
 export interface DocumentScanResult {
@@ -23,33 +24,19 @@ export interface DocumentValidationConfig {
 
 export class DocumentScannerService {
   private static instance: DocumentScannerService;
-  private azureOpenAI: AzureOpenAI;
-
-  constructor() {
-    // Configuration Azure OpenAI EU (RGPD Compliant - Sweden Central)
-    this.azureOpenAI = new AzureOpenAI({
-      apiKey: import.meta.env.VITE_AZURE_OPENAI_API_KEY,
-      endpoint: import.meta.env.VITE_AZURE_OPENAI_ENDPOINT,
-      apiVersion: import.meta.env.VITE_AZURE_OPENAI_API_VERSION,
-      dangerouslyAllowBrowser: true
-    });
-
-    if (!import.meta.env.VITE_AZURE_OPENAI_API_KEY) {
-      throw new Error('VITE_AZURE_OPENAI_API_KEY est requis');
-    }
-    if (!import.meta.env.VITE_AZURE_OPENAI_ENDPOINT) {
-      throw new Error('VITE_AZURE_OPENAI_ENDPOINT est requis');
-    }
-    if (!import.meta.env.VITE_AZURE_OPENAI_DEPLOYMENT_NAME) {
-      throw new Error('VITE_AZURE_OPENAI_DEPLOYMENT_NAME est requis');
-    }
-  }
 
   static getInstance(): DocumentScannerService {
     if (!DocumentScannerService.instance) {
       DocumentScannerService.instance = new DocumentScannerService();
     }
     return DocumentScannerService.instance;
+  }
+
+  constructor() {
+    // Utilisation de la configuration centralisée
+    if (!azureOpenAIClient) {
+      console.warn('Azure OpenAI non configuré - Fonctionnalités de scan limitées');
+    }
   }
 
   /**
@@ -228,31 +215,18 @@ Analysez le document anonymisé et fournissez les informations demandées :`;
 
       // console.log('🇪🇺 Envoi vers Azure OpenAI EU (Sweden Central) avec anonymisation RGPD');
 
-      // Appel Azure OpenAI avec modèle déployé
-      const response = await this.azureOpenAI.chat.completions.create({
-        model: import.meta.env.VITE_AZURE_OPENAI_DEPLOYMENT_NAME, // gpt-4o-mini deployment
-        messages: [{
-          role: "user",
-          content: [
-            { type: "text", text: rgpdPrompt },
-            {
-              type: "image_url",
-              image_url: { url: `data:image/jpeg;base64,${base64}` }
-            }
-          ]
-        }],
-        max_tokens: 800,
-        temperature: 0.1
-      });
-
-      const extractedText = response.choices[0]?.message?.content || 'Aucun texte extrait';
+      // Utiliser aiService au lieu d'appels directs
+      const extractedText = await aiService.extractTextFromImage(
+        `data:image/jpeg;base64,${base64}`,
+        rgpdPrompt
+      );
 
       // console.log('✅ Analyse Azure OpenAI EU terminée avec succès (données anonymisées)');
 
       return {
         extractedText,
         confidence: 0.95,
-        documentType: 'document_scanned_azure_eu',
+        documentType: 'document_administratif',
         metadata: {
           azureRegion: 'swedencentral',
           euDataBoundary: true,
@@ -422,36 +396,16 @@ Analysez le document anonymisé et fournissez les informations demandées :`;
   async validateDocumentType(file: File, expectedType: string): Promise<{isValid: boolean, actualType: string, confidence: number}> {
     const base64 = await this.fileToBase64(file);
     
-    const response = await this.azureOpenAI.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: "Tu es un expert en classification de documents. Détermine le type de ce document."
-        },
-        {
-          role: "user",
-          content: [
-            { 
-              type: "text", 
-              text: `Analyse ce document et détermine son type. Types possibles: piece_identite, justificatif_revenus, contrat_bail, justificatif_domicile.
-              Retourne un JSON: {"type": "type_detecte", "confidence": 0.95}` 
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: `data:image/jpeg;base64,${base64}`
-              }
-            }
-          ]
-        }
-      ],
-      max_tokens: 100,
-      temperature: 0.1
-    });
+    const prompt = `Analyse ce document et détermine son type. Types possibles: piece_identite, justificatif_revenus, contrat_bail, justificatif_domicile.
+              Retourne un JSON: {"type": "type_detecte", "confidence": 0.95}`;
+    
+    const response = await aiService.extractTextFromImage(
+      `data:image/jpeg;base64,${base64}`,
+      prompt
+    );
 
     try {
-      const result = JSON.parse(response.choices[0]?.message?.content || '{}');
+      const result = JSON.parse(response || '{}');
       return {
         isValid: result.type === expectedType,
         actualType: result.type || 'unknown',

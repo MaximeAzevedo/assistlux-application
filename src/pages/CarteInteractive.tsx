@@ -127,6 +127,13 @@ const CarteInteractive: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const center = { lat: 49.6116, lng: 6.1319 };
 
+  // Vérification de la clé API Google Maps
+  const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  
+  if (!googleMapsApiKey) {
+    console.error('⚠️ VITE_GOOGLE_MAPS_API_KEY manquante dans .env');
+  }
+
   useEffect(() => {
     const fetchLocations = async () => {
       try {
@@ -191,6 +198,22 @@ const CarteInteractive: React.FC = () => {
     );
   }
 
+  // Si pas de clé API, afficher un message d'erreur
+  if (!googleMapsApiKey) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white p-8 rounded-xl shadow-lg text-center">
+          <div className="text-red-500 mb-4">
+            <Info className="w-16 h-16 mx-auto" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Configuration manquante</h2>
+          <p className="text-gray-600">La clé API Google Maps n'est pas configurée.</p>
+          <p className="text-sm text-gray-500 mt-2">Veuillez ajouter VITE_GOOGLE_MAPS_API_KEY dans votre fichier .env</p>
+        </div>
+      </div>
+    );
+  }
+
   const categories = ['all', ...Array.from(new Set(allLocations.map(loc => loc.category)))].sort((a, b) => {
     if (a === 'all') return -1;
     if (b === 'all') return 1;
@@ -244,7 +267,7 @@ const CarteInteractive: React.FC = () => {
             <div className="lg:flex lg:gap-8">
               <div className="lg:w-[35%] flex-shrink-0">
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 mb-4">
-                  <Wrapper apiKey="AIzaSyBtpnSdC4fkMOhEyAYl1QmTGOD9e8Qe0Yk">
+                  <Wrapper apiKey={googleMapsApiKey}>
                     <MapComponent center={center} zoom={12} locations={locations} />
                   </Wrapper>
                 </div>

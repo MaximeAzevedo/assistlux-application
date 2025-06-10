@@ -1,5 +1,17 @@
 import { AzureOpenAI } from 'openai';
 
+// ═══════════════════════════════════════════════════════════
+// UTILITAIRE DE LOGGING OPTIMISÉ
+// ═══════════════════════════════════════════════════════════
+
+const isDev = import.meta.env.DEV;
+const logger = {
+  log: (...args: any[]) => isDev && console.log(...args),
+  warn: (...args: any[]) => isDev && console.warn(...args),
+  error: (...args: any[]) => console.error(...args), // Toujours afficher les erreurs
+  info: (...args: any[]) => isDev && console.info(...args)
+};
+
 // Configuration Azure OpenAI EU (RGPD Compliant - Sweden Central)
 // ⚠️ ATTENTION: En production, ces appels doivent passer par un proxy backend
 const AZURE_OPENAI_API_KEY = import.meta.env.VITE_AZURE_OPENAI_API_KEY;
@@ -21,49 +33,46 @@ interface ProxyRequest {
   temperature?: number;
 }
 
-// Client proxy sécurisé (recommandé pour production)
-const createProxyClient = () => ({
-  chat: {
-    completions: {
-      create: async (params: ProxyRequest) => {
-        try {
-          const response = await fetch(`${BACKEND_API_URL}/azure-openai/chat`, {
+// Fonction pour créer un client proxy sécurisé
+function createProxyClient() {
+  return {
+    chat: {
+      completions: {
+        create: async (params: ProxyRequest) => {
+          const response = await fetch(`${BACKEND_API_URL}/openai/chat`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(params),
+            body: JSON.stringify(params)
           });
-
+          
           if (!response.ok) {
-            throw new Error(`Proxy request failed: ${response.status}`);
+            throw new Error(`Erreur proxy: ${response.status}`);
           }
-
-          return await response.json();
-        } catch (error) {
-          console.error('Erreur proxy Azure OpenAI:', error);
-          throw error;
+          
+          return response.json();
         }
       }
     }
-  }
-});
+  };
+}
 
 if (USE_BACKEND_PROXY) {
   // Mode production sécurisé avec proxy backend
   azureOpenAIClient = createProxyClient();
-  console.log('🔒 Mode sécurisé: Utilisation du proxy backend pour Azure OpenAI');
+  logger.log('🔒 Mode sécurisé: Utilisation du proxy backend pour Azure OpenAI');
 } else if (!AZURE_OPENAI_API_KEY || !AZURE_OPENAI_ENDPOINT || !AZURE_OPENAI_DEPLOYMENT_NAME) {
-  console.warn('Variables Azure OpenAI manquantes - Fonctionnalités IA désactivées');
-  console.warn('Vérifiez: VITE_AZURE_OPENAI_API_KEY, VITE_AZURE_OPENAI_ENDPOINT, VITE_AZURE_OPENAI_DEPLOYMENT_NAME');
-  console.warn('⚠️ Pour la production, configurez VITE_USE_BACKEND_PROXY=true');
+  logger.warn('Variables Azure OpenAI manquantes - Fonctionnalités IA désactivées');
+  logger.warn('Vérifiez: VITE_AZURE_OPENAI_API_KEY, VITE_AZURE_OPENAI_ENDPOINT, VITE_AZURE_OPENAI_DEPLOYMENT_NAME');
+  logger.warn('⚠️ Pour la production, configurez VITE_USE_BACKEND_PROXY=true');
   
   // Créer un mock d'Azure OpenAI pour éviter les erreurs
   azureOpenAIClient = {
     chat: {
       completions: {
         create: async () => {
-          console.warn('Azure OpenAI non configuré - Ajoutez les variables Azure OpenAI dans votre fichier .env');
+          logger.warn('Azure OpenAI non configuré - Ajoutez les variables Azure OpenAI dans votre fichier .env');
           return {
             choices: [{
               message: {
@@ -77,8 +86,8 @@ if (USE_BACKEND_PROXY) {
   };
 } else {
   // Mode développement avec accès direct (UNIQUEMENT pour développement)
-  console.warn('⚠️ MODE DÉVELOPPEMENT: Accès direct Azure OpenAI');
-  console.warn('🔒 PRODUCTION: Configurez VITE_USE_BACKEND_PROXY=true pour la sécurité');
+  logger.warn('⚠️ MODE DÉVELOPPEMENT: Accès direct Azure OpenAI');
+  logger.warn('🔒 PRODUCTION: Configurez VITE_USE_BACKEND_PROXY=true pour la sécurité');
   
   azureOpenAIClient = new AzureOpenAI({
     apiKey: AZURE_OPENAI_API_KEY,
@@ -87,7 +96,7 @@ if (USE_BACKEND_PROXY) {
     dangerouslyAllowBrowser: true // ⚠️ UNIQUEMENT EN DÉVELOPPEMENT
   });
   
-  console.log('🇪🇺 Azure OpenAI EU configuré (mode dev):', {
+  logger.log('🇪🇺 Azure OpenAI EU configuré (mode dev):', {
     endpoint: AZURE_OPENAI_ENDPOINT.slice(0, 30) + '...',
     deployment: AZURE_OPENAI_DEPLOYMENT_NAME,
     region: 'swedencentral'
@@ -96,5 +105,4 @@ if (USE_BACKEND_PROXY) {
 
 // Export du modèle de déploiement pour tous les services
 export const DEPLOYMENT_NAME = AZURE_OPENAI_DEPLOYMENT_NAME || 'gpt-4o-mini';
-
-export default azureOpenAIClient;
+export { azureOpenAIClient };

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Loader2, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import n8nChat from '../../lib/n8nChat';
+import { processMessage } from '../../lib/chatbot';
 import ChatMessage from './ChatMessage';
 
 interface Message {
@@ -29,27 +29,15 @@ const ChatInterface: React.FC = () => {
   }, [messages]);
 
   useEffect(() => {
-    const initChat = async () => {
-      try {
-        await n8nChat.connect(currentUser?.uid);
-        
-        const unsubscribe = n8nChat.onMessage((message) => {
-          setMessages(prev => [...prev, message]);
-          setIsLoading(false);
-        });
-
-        return () => {
-          unsubscribe();
-          n8nChat.disconnect();
-        };
-      } catch (error) {
-        console.error('Error connecting to chat:', error);
-        setIsLoading(false);
-      }
+    // Ajouter un message de bienvenue initial
+    const welcomeMessage: Message = {
+      id: 'welcome',
+      text: t('chat.welcome') || "👋 Bonjour ! Je suis votre assistant social virtuel. Comment puis-je vous aider aujourd'hui ?",
+      sender: 'bot',
+      timestamp: new Date()
     };
-
-    initChat();
-  }, [currentUser]);
+    setMessages([welcomeMessage]);
+  }, [t]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,9 +55,28 @@ const ChatInterface: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await n8nChat.sendMessage(inputText, currentUser?.uid);
+      const response = await processMessage(inputText, currentUser?.uid);
+      
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: response,
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
+      
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "Désolé, je rencontre des difficultés techniques. Veuillez réessayer dans quelques instants.",
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
     }
   };

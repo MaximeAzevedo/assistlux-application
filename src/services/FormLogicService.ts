@@ -1,4 +1,10 @@
 import { ChampFormulaire, Document, StatistiqueValidation } from './FormConfigService';
+import { 
+  isValidEmail, 
+  isValidPhone, 
+  isValidDate, 
+  isValidMatricule 
+} from '../utils/validationUtils';
 
 export interface UserResponse {
   [key: string]: any;
@@ -25,7 +31,7 @@ export interface ValidationWarning {
 export class FormLogicService {
   private static instance: FormLogicService;
 
-  public static getInstance(): FormLogicService {
+  static getInstance(): FormLogicService {
     if (!FormLogicService.instance) {
       FormLogicService.instance = new FormLogicService();
     }
@@ -331,7 +337,7 @@ export class FormLogicService {
   ): void {
     switch (fieldName) {
       case 'matricule':
-        if (!this.isValidLuxembourgMatricule(String(value))) {
+        if (!isValidMatricule(String(value))) {
           errors.push({
             field: fieldName,
             message: 'Matricule luxembourgeois invalide (13 chiffres requis)',
@@ -460,25 +466,19 @@ export class FormLogicService {
   }
 
   private isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return isValidEmail(email);
   }
 
   private isValidPhone(phone: string): boolean {
-    // Format luxembourgeois : +352 XX XX XX XX ou XX XX XX XX
-    const phoneRegex = /^(\+352\s?)?[0-9]{2}\s?[0-9]{2}\s?[0-9]{2}\s?[0-9]{2}$/;
-    return phoneRegex.test(phone.replace(/\s/g, ''));
+    return isValidPhone(phone, 'LU');
   }
 
   private isValidDate(date: string): boolean {
-    const parsedDate = new Date(date);
-    return !isNaN(parsedDate.getTime());
+    return isValidDate(date);
   }
 
   private isValidLuxembourgMatricule(matricule: string): boolean {
-    // Matricule luxembourgeois : 13 chiffres
-    const matriculeRegex = /^[0-9]{13}$/;
-    return matriculeRegex.test(matricule);
+    return isValidMatricule(matricule);
   }
 
   /**

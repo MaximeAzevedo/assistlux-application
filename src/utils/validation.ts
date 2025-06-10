@@ -14,58 +14,37 @@ import {
   MESSAGES_ERREUR, 
   CHAMPS_REQUIS 
 } from '../constants/allocation';
+// Import des validations centralisées
+import {
+  isRequired as isRequiredUtil,
+  isValidEmail,
+  isValidPhone,
+  isValidIBAN,
+  isValidMatricule,
+  isValidPostalCodeLU,
+  isValidDate,
+  isValidAge,
+  isPositiveNumber
+} from './validationUtils';
 
 // ═══════════════════════════════════════════════════════════
-// VALIDATEURS DE BASE
+// VALIDATEURS DE BASE - UTILISE VALIDATIONUTILS
 // ═══════════════════════════════════════════════════════════
 
-export const isRequired = (value: any): boolean => {
-  if (value === null || value === undefined) return false;
-  if (typeof value === 'string') return value.trim() !== '';
-  if (typeof value === 'number') return !isNaN(value);
-  return true;
-};
+export const isRequired = isRequiredUtil;
 
-export const isValidMatricule = (matricule: string): boolean => {
-  return REGEX_VALIDATION.MATRICULE_LU.test(matricule);
-};
-
-export const isValidCodePostal = (codePostal: string): boolean => {
-  return REGEX_VALIDATION.CODE_POSTAL_LU.test(codePostal);
-};
-
-export const isValidEmail = (email: string): boolean => {
-  return REGEX_VALIDATION.EMAIL.test(email);
-};
+export const isValidCodePostal = isValidPostalCodeLU;
 
 export const isValidTelephone = (telephone: string): boolean => {
-  return REGEX_VALIDATION.TELEPHONE_LU.test(telephone);
-};
-
-export const isValidIBAN = (iban: string): boolean => {
-  return REGEX_VALIDATION.IBAN.test(iban.replace(/\s/g, ''));
-};
-
-export const isValidDate = (dateString: string): boolean => {
-  const date = new Date(dateString);
-  return !isNaN(date.getTime());
+  return isValidPhone(telephone, 'LU');
 };
 
 export const isAdulte = (dateNaissance: string): boolean => {
-  const today = new Date();
-  const birth = new Date(dateNaissance);
-  const age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    return age - 1 >= 18;
-  }
-  return age >= 18;
+  return isValidAge(dateNaissance, 18);
 };
 
-export const isPositiveNumber = (value: number): boolean => {
-  return !isNaN(value) && value >= 0;
-};
+// Réexport des autres validations
+export { isValidEmail, isValidMatricule, isValidIBAN, isValidDate, isPositiveNumber };
 
 // ═══════════════════════════════════════════════════════════
 // VALIDATEURS PAR ÉTAPE
