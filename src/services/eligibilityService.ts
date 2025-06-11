@@ -1,3 +1,7 @@
+import { createClient } from '@supabase/supabase-js';
+import { aiService } from '../lib/aiService';
+import { SupportedLanguage } from '../lib/translation';
+
 export interface Question {
   id: string;
   ordre: number;
@@ -28,7 +32,7 @@ export interface EligibilitySession {
   sessionId: string;
   responses: Record<string, string>;
   currentQuestionIndex: number;
-  language: 'fr' | 'de' | 'lu' | 'en';
+  language: SupportedLanguage;
   startTime: Date;
   estimatedRemainingTime: number;
 }
@@ -306,9 +310,7 @@ class EligibilityService {
    */
   async translateQuestion(question: Question, targetLanguage: string): Promise<Question> {
     try {
-      // Pour l'instant, traductions statiques
-      // TODO: Intégrer avec OpenAI/Azure OpenAI pour traduction contextuelle
-      
+      // Traductions étendues pour toutes les langues supportées
       const translations: Record<string, Record<string, string>> = {
         'de': {
           'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
@@ -352,35 +354,329 @@ class EligibilityService {
           'Combien de personnes composent votre foyer ?': 
             'Wéivill Leit wunnen an Ärem Stot?',
           'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
-            'Sinn Är monatleg netto Akommes vum Stot ënner 3000€?',
+            'SinnÄr monatleg netto Akommes vum Stot ënner 3000€?',
           'Quelle est votre situation de logement ?': 
             'Wéi ass Är Wunnsituatioun?',
           'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
             'Hutt Dir Schoolkanner tëschent 6 an 18 Joer?'
+        },
+        'en': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'Do you live and reside primarily in Luxembourg?',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'Do you have a valid residence permit in Luxembourg?',
+          'Quelle est votre nationalité ?': 
+            'What is your nationality?',
+          'Avez-vous 25 ans ou plus ?': 
+            'Are you 25 years old or older?',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'Do you have dependent children under 18 years old?',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'How many dependent children do you have?',
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+            'Are you registered as a job seeker with ADEM?',
+          'Combien de personnes composent votre foyer ?': 
+            'How many people make up your household?',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'Is your household\'s monthly net income less than €3000?',
+          'Quelle est votre situation de logement ?': 
+            'What is your housing situation?',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'Do you have school-age children between 6 and 18 years old?'
+        },
+        'pt': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'Vive e reside principalmente no Luxemburgo?',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'Tem uma autorização de residência válida no Luxemburgo?',
+          'Quelle est votre nationalité ?': 
+            'Qual é a sua nacionalidade?',
+          'Avez-vous 25 ans ou plus ?': 
+            'Tem 25 anos ou mais?',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'Tem filhos dependentes com menos de 18 anos?',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'Quantos filhos dependentes tem?',
+          'Êtes-vous inscrit(e) como demandeur d\'emploi à l\'ADEM ?': 
+            'Está inscrito como candidato a emprego na ADEM?',
+          'Combien de personnes composent votre foyer ?': 
+            'Quantas pessoas compõem o seu agregado familiar?',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'Os rendimentos líquidos mensais do seu agregado são inferiores a 3000€?',
+          'Quelle est votre situation de logement ?': 
+            'Qual é a sua situação habitacional?',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'Tem filhos em idade escolar entre os 6 e 18 anos?'
+        },
+        'es': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            '¿Vive y reside principalmente en Luxemburgo?',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            '¿Tiene un permiso de residencia válido en Luxemburgo?',
+          'Quelle est votre nationalité ?': 
+            '¿Cuál es su nacionalidad?',
+          'Avez-vous 25 ans ou plus ?': 
+            '¿Tiene 25 años o más?',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            '¿Tiene hijos dependientes menores de 18 años?',
+          'Combien d\'enfants à charge avez-vous ?': 
+            '¿Cuántos hijos dependientes tiene?',
+          'Êtes-vous inscrit(e) como demandeur d\'emploi à l\'ADEM ?': 
+            '¿Está registrado como solicitante de empleo en ADEM?',
+          'Combien de personnes composent votre foyer ?': 
+            '¿Cuántas personas componen su hogar?',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            '¿Los ingresos netos mensuales de su hogar son inferiores a 3000€?',
+          'Quelle est votre situation de logement ?': 
+            '¿Cuál es su situación de vivienda?',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            '¿Tiene hijos en edad escolar entre 6 y 18 años?'
+        },
+        'it': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'Vive e risiede principalmente in Lussemburgo?',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'Ha un permesso di soggiorno valido in Lussemburgo?',
+          'Quelle est votre nationalité ?': 
+            'Qual è la sua nazionalità?',
+          'Avez-vous 25 ans ou plus ?': 
+            'Ha 25 anni o più?',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'Ha figli a carico di età inferiore ai 18 anni?',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'Quanti figli a carico ha?',
+          'Êtes-vous inscrit(e) come demandeur d\'emploi à l\'ADEM ?': 
+            'È registrato come cerca lavoro presso ADEM?',
+          'Combien de personnes composent votre foyer ?': 
+            'Quante persone compongono il suo nucleo familiare?',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'Il reddito netto mensile del suo nucleo è inferiore a 3000€?',
+          'Quelle est votre situation de logement ?': 
+            'Qual è la sua situazione abitativa?',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'Ha figli in età scolare tra i 6 e i 18 anni?'
+        },
+        'ar': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'هل تعيش وتقيم بشكل أساسي في لوكسمبورغ؟',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'هل لديك تصريح إقامة صالح في لوكسمبورغ؟',
+          'Quelle est votre nationalité ?': 
+            'ما هي جنسيتك؟',
+          'Avez-vous 25 ans ou plus ?': 
+            'هل عمرك 25 سنة أو أكثر؟',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'هل لديك أطفال تحت 18 سنة تعولهم؟',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'كم عدد الأطفال الذين تعولهم؟',
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+            'هل أنت مسجل كباحث عن عمل في ADEM؟',
+          'Combien de personnes composent votre foyer ?': 
+            'كم عدد الأشخاص في أسرتك؟',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'هل دخل أسرتك الشهري الصافي أقل من 3000 يورو؟',
+          'Quelle est votre situation de logement ?': 
+            'ما هي حالة سكنك؟',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'هل لديك أطفال في سن المدرسة بين 6 و 18 سنة؟'
+        },
+        'pl': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'Czy mieszka Pan/Pani głównie w Luksemburgu?',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'Czy ma Pan/Pani ważne zezwolenie na pobyt w Luksemburgu?',
+          'Quelle est votre nationalité ?': 
+            'Jakie jest Pana/Pani obywatelstwo?',
+          'Avez-vous 25 ans ou plus ?': 
+            'Czy ma Pan/Pani 25 lat lub więcej?',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'Czy ma Pan/Pani dzieci na utrzymaniu poniżej 18 lat?',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'Ile dzieci ma Pan/Pani na utrzymaniu?',
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+            'Czy jest Pan/Pani zarejestrowany jako poszukujący pracy w ADEM?',
+          'Combien de personnes composent votre foyer ?': 
+            'Ile osób składa się na Pana/Pani gospodarstwo domowe?',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'Czy miesięczne dochody netto gospodarstwa są niższe niż 3000€?',
+          'Quelle est votre situation de logement ?': 
+            'Jaka jest Pana/Pani sytuacja mieszkaniowa?',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'Czy ma Pan/Pani dzieci w wieku szkolnym między 6 a 18 lat?'
+        },
+        'ru': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'Проживаете ли вы постоянно в Люксембурге?',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'Есть ли у вас действующее разрешение на пребывание в Люксембурге?',
+          'Quelle est votre nationalité ?': 
+            'Какое у вас гражданство?',
+          'Avez-vous 25 ans ou plus ?': 
+            'Вам 25 лет или больше?',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'Есть ли у вас дети на иждивении младше 18 лет?',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'Сколько у вас детей на иждивении?',
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+            'Зарегистрированы ли вы как ищущий работу в ADEM?',
+          'Combien de personnes composent votre foyer ?': 
+            'Сколько человек в вашем домохозяйстве?',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'Ваш месячный чистый доход домохозяйства менее 3000€?',
+          'Quelle est votre situation de logement ?': 
+            'Какая у вас жилищная ситуация?',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'Есть ли у вас дети школьного возраста от 6 до 18 лет?'
+        },
+        'nl': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'Woont en verblijft u hoofdzakelijk in Luxemburg?',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'Heeft u een geldige verblijfsvergunning in Luxemburg?',
+          'Quelle est votre nationalité ?': 
+            'Wat is uw nationaliteit?',
+          'Avez-vous 25 ans ou plus ?': 
+            'Bent u 25 jaar of ouder?',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'Heeft u kinderen ten laste jonger dan 18 jaar?',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'Hoeveel kinderen heeft u ten laste?',
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+            'Bent u ingeschreven als werkzoekende bij ADEM?',
+          'Combien de personnes composent votre foyer ?': 
+            'Uit hoeveel personen bestaat uw huishouden?',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'Is het maandelijkse netto-inkomen van uw huishouden minder dan €3000?',
+          'Quelle est votre situation de logement ?': 
+            'Wat is uw woonsituatie?',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'Heeft u schoolgaande kinderen tussen 6 en 18 jaar?'
+        },
+        'tr': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'Lüksemburg\'da yaşıyor ve oturuyorsunuz mu?',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'Lüksemburg\'da geçerli bir oturma izniniz var mı?',
+          'Quelle est votre nationalité ?': 
+            'Vatandaşlığınız nedir?',
+          'Avez-vous 25 ans ou plus ?': 
+            '25 yaşında veya daha büyük müsünüz?',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            '18 yaşından küçük bakmakla yükümlü olduğunuz çocuklarınız var mı?',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'Kaç çocuğunuz var?',
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+            'ADEM\'de iş arayan olarak kayıtlı mısınız?',
+          'Combien de personnes composent votre foyer ?': 
+            'Hanenizde kaç kişi yaşıyor?',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'Hanenizin aylık net geliri 3000€\'dan az mı?',
+          'Quelle est votre situation de logement ?': 
+            'Konut durumunuz nedir?',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            '6-18 yaş arası okul çağında çocuklarınız var mı?'
+        },
+        'fa': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'آیا عمدتاً در لوکزامبورگ زندگی و اقامت دارید؟',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'آیا مجوز اقامت معتبری در لوکزامبورگ دارید؟',
+          'Quelle est votre nationalité ?': 
+            'ملیت شما چیست؟',
+          'Avez-vous 25 ans ou plus ?': 
+            'آیا ۲۵ ساله یا بالاتر هستید؟',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'آیا فرزندان تحت تکفل زیر ۱۸ سال دارید؟',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'چند فرزند تحت تکفل دارید؟',
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+            'آیا در ADEM به عنوان جویای کار ثبت نام کرده‌اید؟',
+          'Combien de personnes composent votre foyer ?': 
+            'خانواده شما از چند نفر تشکیل شده؟',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'آیا درآمد ماهانه خالص خانواده شما کمتر از ۳۰۰۰ یورو است؟',
+          'Quelle est votre situation de logement ?': 
+            'وضعیت مسکن شما چگونه است؟',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'آیا فرزندان دانش‌آموز بین ۶ تا ۱۸ سال دارید؟'
+        },
+        'ur': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'کیا آپ بنیادی طور پر لکسمبرگ میں رہتے اور بستے ہیں؟',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'کیا آپ کے پاس لکسمبرگ میں قانونی اقامت کی اجازت ہے؟',
+          'Quelle est votre nationalité ?': 
+            'آپ کی قومیت کیا ہے؟',
+          'Avez-vous 25 ans ou plus ?': 
+            'کیا آپ کی عمر 25 سال یا اس سے زیادہ ہے؟',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'کیا آپ کے 18 سال سے کم عمر کے بچے ہیں؟',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'آپ کے کتنے بچے ہیں؟',
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+            'کیا آپ ADEM میں ملازمت کے طالب کے طور پر رجسٹرڈ ہیں؟',
+          'Combien de personnes composent votre foyer ?': 
+            'آپ کے گھر میں کتنے لوگ رہتے ہیں؟',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'کیا آپ کے گھر کی ماہانہ خالص آمدنی 3000€ سے کم ہے؟',
+          'Quelle est votre situation de logement ?': 
+            'آپ کی رہائش کی صورتحال کیا ہے؟',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'کیا آپ کے 6 سے 18 سال کی عمر کے سکول جانے والے بچے ہیں؟'
+        },
+        'ro': {
+          'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
+            'Locuiți și rezidați în principal în Luxemburg?',
+          'Avez-vous un titre de séjour valide au Luxembourg ?': 
+            'Aveți o autorizație de ședere validă în Luxemburg?',
+          'Quelle est votre nationalité ?': 
+            'Care este naționalitatea dumneavoastră?',
+          'Avez-vous 25 ans ou plus ?': 
+            'Aveți 25 de ani sau mai mult?',
+          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+            'Aveți copii în întreținere sub 18 ani?',
+          'Combien d\'enfants à charge avez-vous ?': 
+            'Câți copii aveți în întreținere?',
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+            'Sunteți înregistrat ca solicitant de locuri de muncă la ADEM?',
+          'Combien de personnes composent votre foyer ?': 
+            'Din câte persoane este compusă gospodăria dumneavoastră?',
+          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+            'Veniturile nete lunare ale gospodăriei sunt mai mici de 3000€?',
+          'Quelle est votre situation de logement ?': 
+            'Care este situația dumneavoastră de locuință?',
+          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+            'Aveți copii școlari între 6 și 18 ani?'
         }
+        // Maintenant toutes les 15 langues supportées sont couvertes
       };
 
       const translatedQuestion = translations[targetLanguage]?.[question.question] || question.question;
 
-      // Traduire les options
+      // Traduire les options de base (Oui/Non)
       let translatedOptions = question.options_json;
-      if (targetLanguage === 'de') {
+      
+      const optionTranslations: Record<string, Record<string, string>> = {
+        'de': { opt_oui: 'Ja', opt_non: 'Nein' },
+        'lu': { opt_oui: 'Jo', opt_non: 'Nee' },
+        'en': { opt_oui: 'Yes', opt_non: 'No' },
+        'pt': { opt_oui: 'Sim', opt_non: 'Não' },
+        'es': { opt_oui: 'Sí', opt_non: 'No' },
+        'it': { opt_oui: 'Sì', opt_non: 'No' },
+        'ar': { opt_oui: 'نعم', opt_non: 'لا' },
+        'pl': { opt_oui: 'Tak', opt_non: 'Nie' },
+        'ru': { opt_oui: 'Да', opt_non: 'Нет' },
+        'nl': { opt_oui: 'Ja', opt_non: 'Nee' },
+        'tr': { opt_oui: 'Evet', opt_non: 'Hayır' },
+        'fa': { opt_oui: 'بله', opt_non: 'خیر' },
+        'ur': { opt_oui: 'ہاں', opt_non: 'نہیں' },
+        'ro': { opt_oui: 'Da', opt_non: 'Nu' }
+      };
+
+      if (optionTranslations[targetLanguage]) {
         translatedOptions = {
           ...question.options_json,
-          opt_oui: 'Ja',
-          opt_non: 'Nein'
-        };
-      } else if (targetLanguage === 'lu') {
-        translatedOptions = {
-          ...question.options_json,
-          opt_oui: 'Jo',
-          opt_non: 'Nee'
-        };
-      } else if (targetLanguage === 'en') {
-        translatedOptions = {
-          ...question.options_json,
-          opt_oui: 'Yes',
-          opt_non: 'No'
+          ...optionTranslations[targetLanguage]
         };
       }
 

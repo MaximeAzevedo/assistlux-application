@@ -1,26 +1,25 @@
 import { useState, useEffect } from 'react';
-import EligibilityWizardRefactored from '../components/EligibilityChecker/EligibilityWizardRefactored';
 import EligibilityWizardShared from '../components/EligibilityChecker/EligibilityWizardShared';
 import EligibilityResultsShared from '../components/EligibilityChecker/EligibilityResultsShared';
 import { useNavigate } from 'react-router-dom';
-import { Users, User, ArrowLeft } from 'lucide-react';
+import { Users, ArrowLeft } from 'lucide-react';
 
 const EligibilityWizardDirect: React.FC = () => {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<'select' | 'classic' | 'shared' | 'results'>('select');
+  const [mode, setMode] = useState<'start' | 'shared' | 'results'>('start');
   const [results, setResults] = useState<any>(null);
 
   const handleBack = () => {
-    if (mode === 'select') {
+    if (mode === 'start') {
       navigate('/');
     } else {
-      setMode('select');
+      setMode('start');
       setResults(null);
     }
   };
 
-  const handleModeSelect = (selectedMode: 'classic' | 'shared') => {
-    setMode(selectedMode);
+  const handleStart = () => {
+    setMode('shared');
   };
 
   const handleComplete = (eligibilityResults: any) => {
@@ -30,7 +29,7 @@ const EligibilityWizardDirect: React.FC = () => {
 
   const handleRestart = () => {
     setResults(null);
-    setMode('select');
+    setMode('start');
   };
 
   if (mode === 'results') {
@@ -52,26 +51,7 @@ const EligibilityWizardDirect: React.FC = () => {
     );
   }
 
-  if (mode === 'classic') {
-    return (
-      <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Vérificateur d'Éligibilité AssistLux
-            </h1>
-            <p className="text-lg text-gray-600">
-              Découvrez les aides sociales auxquelles vous avez droit au Luxembourg
-            </p>
-          </div>
-
-          <EligibilityWizardRefactored onBack={handleBack} />
-        </div>
-      </div>
-    );
-  }
-
-  // Mode selection
+  // Interface de démarrage
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 pt-20 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,14 +63,12 @@ const EligibilityWizardDirect: React.FC = () => {
               Vérificateur d'Éligibilité AssistLux
             </h1>
             <p className="text-lg text-gray-600">
-              Choisissez le mode d'utilisation qui vous convient
+              Découvrez les aides sociales auxquelles vous avez droit au Luxembourg
             </p>
           </div>
 
-          {/* Mode Selection Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            
-            {/* Mode Écran Partagé */}
+          {/* Mode Écran Partagé - Centré */}
+          <div className="max-w-2xl mx-auto mb-8">
             <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-1">
               <div className="bg-white rounded-xl p-6 h-full">
                 <div className="flex items-center gap-3 mb-4">
@@ -98,16 +76,16 @@ const EligibilityWizardDirect: React.FC = () => {
                     <Users className="w-6 h-6 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">Mode Écran Partagé</h3>
+                    <h3 className="text-xl font-bold text-gray-900">Vérificateur d'Éligibilité</h3>
                     <div className="flex items-center gap-2 px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
-                      ✨ NOUVEAU
+                      ✨ NOUVELLE VERSION
                     </div>
                   </div>
                 </div>
                 
                 <p className="text-gray-600 mb-4">
-                  Idéal pour les entretiens avec un travailleur social. Interface bilingue en temps réel, 
-                  questions ultra-simples et rapport détaillé pour les deux parties.
+                  Interface collaborative idéale pour les entretiens avec un travailleur social. 
+                  Questions ultra-simples, traduction temps réel et rapport détaillé pour les deux parties.
                 </p>
 
                 <div className="space-y-3 mb-6">
@@ -134,62 +112,12 @@ const EligibilityWizardDirect: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => handleModeSelect('shared')}
+                  onClick={handleStart}
                   className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200"
                 >
-                  Démarrer en mode partagé
+                  Commencer le vérificateur
                 </button>
               </div>
-            </div>
-
-            {/* Mode Classique */}
-            <div className="border-2 border-gray-200 rounded-2xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
-                  <User className="w-6 h-6 text-gray-600" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Mode Personnel</h3>
-                  <div className="flex items-center gap-2 px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
-                    CLASSIQUE
-                  </div>
-                </div>
-              </div>
-              
-              <p className="text-gray-600 mb-4">
-                Version individuelle traditionnelle pour une utilisation autonome. 
-                Interface simple et directe en français uniquement.
-              </p>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span>Utilisation individuelle</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span>Interface en français</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span>Résultats standards</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span>Questions guidées classiques</span>
-                </div>
-              </div>
-
-              <div className="text-center text-sm text-gray-500 mb-4">
-                ⏱️ 2-3 minutes | 🔒 100% privé | 📋 Résultats simples
-              </div>
-
-              <button
-                onClick={() => handleModeSelect('classic')}
-                className="w-full px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-all duration-200"
-              >
-                Utiliser le mode classique
-              </button>
             </div>
           </div>
 
@@ -199,7 +127,7 @@ const EligibilityWizardDirect: React.FC = () => {
               🔒 Politique de Confidentialité Stricte
             </h4>
             <p className="text-purple-800 text-sm text-center">
-              Aucune donnée personnelle n'est stockée, quelle que soit l'option choisie. 
+              Aucune donnée personnelle n'est stockée. 
               Toutes les réponses sont traitées en mémoire uniquement et supprimées à la fin de la session.
             </p>
           </div>

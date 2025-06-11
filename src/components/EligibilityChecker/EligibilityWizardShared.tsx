@@ -8,9 +8,11 @@ import {
   AlertCircle, 
   Globe,
   FileText,
-  Loader2
+  Loader2,
+  Settings
 } from 'lucide-react';
 import { eligibilityService, Question, EligibilitySession, EligibilityResult } from '../../services/eligibilityService';
+import { supportedLanguages, SupportedLanguage } from '../../lib/translation';
 
 interface EligibilityCompleteResult extends EligibilityResult {
   session?: EligibilitySession;
@@ -43,14 +45,7 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
   const [translating, setTranslating] = useState(false);
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [evaluating, setEvaluating] = useState(false);
-
-  // Langues disponibles
-  const languages = [
-    { code: 'fr', flag: '🇫🇷', name: 'Français' },
-    { code: 'de', flag: '🇩🇪', name: 'Deutsch' },
-    { code: 'lu', flag: '🇱🇺', name: 'Lëtzebuergesch' },
-    { code: 'en', flag: '🇬🇧', name: 'English' }
-  ];
+  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
 
   // Charger les questions depuis le service
   useEffect(() => {
@@ -147,18 +142,24 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
     }
   };
 
-  // Changer de langue
-  const changeLanguage = async (langCode: 'fr' | 'de' | 'lu' | 'en') => {
+  // Changer de langue pour l'usager
+  const changeUserLanguage = async (langCode: SupportedLanguage) => {
     if (!currentQuestion || translating) return;
     
     setSession(prev => ({ ...prev, language: langCode }));
+    setShowLanguageSelector(false);
+    
+    // Toujours commencer par récupérer la question originale française
+    const originalQuestion = questions.find(q => q.id === currentQuestion.id);
+    if (!originalQuestion) return;
     
     if (langCode !== 'fr') {
-      const translated = await translateQuestion(currentQuestion, langCode);
+      // Traduire depuis le français vers la nouvelle langue
+      const translated = await translateQuestion(originalQuestion, langCode);
       setCurrentQuestion(translated);
     } else {
-      const originalQuestion = questions.find(q => q.id === currentQuestion.id);
-      if (originalQuestion) setCurrentQuestion(originalQuestion);
+      // Utiliser directement la version française
+      setCurrentQuestion(originalQuestion);
     }
   };
 
@@ -170,6 +171,29 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Traductions pour l'en-tête selon la langue de l'usager
+  const getHeaderTextForUser = (langCode: SupportedLanguage) => {
+    const headerTranslations: Record<SupportedLanguage, string> = {
+      'ar': 'بالنسبة لك',     // Pour vous (arabe)
+      'en': 'FOR YOU',       // Pour vous (anglais)
+      'fr': 'POUR VOUS',     // Pour vous (français)
+      'de': 'FÜR SIE',       // Pour vous (allemand)
+      'lb': 'FIR IECH',      // Pour vous (luxembourgeois)
+      'pt': 'PARA VOCÊ',     // Pour vous (portugais)
+      'ru': 'ДЛЯ ВАС',       // Pour vous (russe)
+      'tr': 'SİZİN İÇİN',    // Pour vous (turc)
+      'fa': 'برای شما',       // Pour vous (persan)
+      'ur': 'آپ کے لیے',      // Pour vous (ourdou)
+      'it': 'PER VOI',       // Pour vous (italien)
+      'es': 'PARA USTED',    // Pour vous (espagnol)
+      'nl': 'VOOR U',        // Pour vous (néerlandais)
+      'pl': 'DLA PAŃSTWA',   // Pour vous (polonais)
+      'ro': 'PENTRU DVS.'    // Pour vous (roumain)
+    };
+    
+    return headerTranslations[langCode] || 'POUR VOUS';
   };
 
   if (loading) {
@@ -254,23 +278,68 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
               <div className="text-sm text-gray-600">
                 💡 Lisez la question ensemble, cliquez la réponse
               </div>
-              <div className="flex gap-2">
-                {languages.map(lang => (
-                  <button
-                    key={lang.code}
-                    onClick={() => changeLanguage(lang.code as any)}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      session.language === lang.code
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                    disabled={translating}
-                  >
-                    {lang.flag} {lang.name}
-                  </button>
-                ))}
-              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Sélecteur de langue pour l'usager - Style DocumentScanner */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Globe className="w-5 h-5 text-blue-600" />
+              <span className="font-medium text-blue-900">Langue de rendu préférée pour l'usager</span>
+            </div>
+            <button
+              onClick={() => setShowLanguageSelector(!showLanguageSelector)}
+              className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+              disabled={translating}
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          </div>
+          
+          {showLanguageSelector ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+              {Object.entries(supportedLanguages).map(([code, info]) => (
+                <button
+                  key={code}
+                  onClick={() => changeUserLanguage(code as SupportedLanguage)}
+                  disabled={translating}
+                  className={`p-2 text-sm rounded-lg border transition-all ${
+                    session.language === code
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                  } ${translating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {info.nativeName}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-blue-700">
+              {session.language 
+                ? `Langue sélectionnée: ${supportedLanguages[session.language as keyof typeof supportedLanguages]?.nativeName}`
+                : `Langue par défaut: ${supportedLanguages.fr.nativeName}`
+              }
+            </p>
+          )}
+        </div>
+
+        {/* Progress bar */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-[24px] shadow-xl border border-gray-100/50 mb-6 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm font-medium text-gray-600">
+              Question {session.currentQuestionIndex + 1} sur {questions.length}
+            </span>
+            <span className="text-sm text-gray-500">
+              ⏱️ ~{formatTime(session.estimatedRemainingTime)} restant
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-3">
+            <div 
+              className="bg-gradient-to-r from-purple-600 to-pink-600 h-3 rounded-full transition-all duration-500"
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
           </div>
         </div>
 
@@ -278,28 +347,6 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
         <div className="bg-white/80 backdrop-blur-xl rounded-[24px] shadow-xl border border-gray-100/50 p-8">
           {currentQuestion && (
             <>
-              {/* Progress Bar */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">
-                    Question {session.currentQuestionIndex + 1} sur {questions.length}
-                  </span>
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>~{formatTime(session.estimatedRemainingTime)} restant</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div 
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 h-3 rounded-full transition-all duration-500"
-                    style={{ width: `${progressPercentage}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Question */}
               <div className="text-center mb-8">
                 <div className="text-6xl mb-4">{currentQuestion.icon_emoji}</div>
                 
@@ -316,7 +363,7 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
                   {session.language !== 'fr' && (
                     <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
                       <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                        🔷 FÜR SIE ({languages.find(l => l.code === session.language)?.name}):
+                        🔷 {getHeaderTextForUser(session.language)} ({supportedLanguages[session.language as keyof typeof supportedLanguages]?.nativeName}):
                       </h3>
                       <p className="text-xl text-blue-800">
                         {translating ? (
