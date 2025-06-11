@@ -4,21 +4,21 @@ import { aiService } from './aiService';
 
 // Language codes and names mapping
 export const supportedLanguages = {
-  ar: { name: 'Arabic', nativeName: 'العربية', rtl: true },
-  en: { name: 'English', nativeName: 'English', rtl: false },
-  fr: { name: 'French', nativeName: 'Français', rtl: false },
-  de: { name: 'German', nativeName: 'Deutsch', rtl: false },
-  lb: { name: 'Luxembourgish', nativeName: 'Lëtzebuergesch', rtl: false },
-  pt: { name: 'Portuguese', nativeName: 'Português', rtl: false },
-  ru: { name: 'Russian', nativeName: 'Русский', rtl: false },
-  tr: { name: 'Turkish', nativeName: 'Türkçe', rtl: false },
-  fa: { name: 'Persian', nativeName: 'فارسی', rtl: true },
-  ur: { name: 'Urdu', nativeName: 'اردو', rtl: true },
-  it: { name: 'Italian', nativeName: 'Italiano', rtl: false },
-  es: { name: 'Spanish', nativeName: 'Español', rtl: false },
-  nl: { name: 'Dutch', nativeName: 'Nederlands', rtl: false },
-  pl: { name: 'Polish', nativeName: 'Polski', rtl: false },
-  ro: { name: 'Romanian', nativeName: 'Română', rtl: false }
+  ar: { name: 'Arabic', nativeName: 'العربية', rtl: true, flag: '🇸🇦' },
+  en: { name: 'English', nativeName: 'English', rtl: false, flag: '🇬🇧' },
+  fr: { name: 'French', nativeName: 'Français', rtl: false, flag: '🇫🇷' },
+  de: { name: 'German', nativeName: 'Deutsch', rtl: false, flag: '🇩🇪' },
+  lb: { name: 'Luxembourgish', nativeName: 'Lëtzebuergesch', rtl: false, flag: '🇱🇺' },
+  pt: { name: 'Portuguese', nativeName: 'Português', rtl: false, flag: '🇵🇹' },
+  ru: { name: 'Russian', nativeName: 'Русский', rtl: false, flag: '🇷🇺' },
+  tr: { name: 'Turkish', nativeName: 'Türkçe', rtl: false, flag: '🇹🇷' },
+  fa: { name: 'Persian', nativeName: 'فارسی', rtl: true, flag: '🇮🇷' },
+  ur: { name: 'Urdu', nativeName: 'اردو', rtl: true, flag: '🇵🇰' },
+  it: { name: 'Italian', nativeName: 'Italiano', rtl: false, flag: '🇮🇹' },
+  es: { name: 'Spanish', nativeName: 'Español', rtl: false, flag: '🇪🇸' },
+  nl: { name: 'Dutch', nativeName: 'Nederlands', rtl: false, flag: '🇳🇱' },
+  pl: { name: 'Polish', nativeName: 'Polski', rtl: false, flag: '🇵🇱' },
+  ro: { name: 'Romanian', nativeName: 'Română', rtl: false, flag: '🇷🇴' }
 } as const;
 
 export type SupportedLanguage = keyof typeof supportedLanguages;

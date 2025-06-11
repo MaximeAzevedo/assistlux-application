@@ -7,7 +7,7 @@ export interface Question {
   ordre: number;
   question: string;
   key_reponse: string;
-  type_reponse: string;
+  type_reponse: QuestionType;
   options_json: any;
   branchements_json: any;
   condition_affichage?: string;
@@ -15,6 +15,26 @@ export interface Question {
   estimated_time_seconds?: number;
   icon_emoji?: string;
   difficulty_level?: string;
+  validation_rules?: ValidationRules;
+}
+
+// Nouveaux types de questions
+export type QuestionType = 
+  | 'Oui_Non'
+  | 'Choix_Multiple_ABC' 
+  | 'Choix_Multiple_Simple'
+  | 'Nombre_Entier'         // Nouveau : pour âge, nombre d'enfants
+  | 'Montant_Euro'          // Nouveau : pour revenus précis
+  | 'Selecteur_Nationalite' // Nouveau : pour nationalités détaillées
+  | 'Nombre_Personnes';     // Nouveau : pour composition du foyer
+
+// Règles de validation
+export interface ValidationRules {
+  required?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
+  unit?: string;
 }
 
 export interface EligibilityConclusion {
@@ -79,7 +99,7 @@ class EligibilityService {
           options_json: { opt_oui: 'Oui', opt_non: 'Non' },
           branchements_json: { opt_oui: 'PROF_S03', opt_non: 'PROF_END' },
           help_text: 'Un titre de séjour valide signifie que vous pouvez légalement vivre au Luxembourg',
-          icon_emoji: '📋',
+          icon_emoji: '📄',
           estimated_time_seconds: 20
         },
         {
@@ -87,22 +107,221 @@ class EligibilityService {
           ordre: 3,
           question: 'Quelle est votre nationalité ?',
           key_reponse: 'q_nationalite_cat',
-          type_reponse: 'Choix_Multiple_ABC',
-          options_json: { opt_A: 'Lux/UE/EEE/Suisse', opt_B: 'Autre (≥ 5 ans)', opt_C: 'Autre (< 5 ans)' },
-          branchements_json: { opt_A: 'PROF_S04', opt_B: 'PROF_S04', opt_C: 'PROF_S04' },
-          help_text: 'Votre nationalité détermine certaines conditions d\'éligibilité',
+          type_reponse: 'Selecteur_Nationalite',
+          options_json: {
+            // EUROPE
+            'AD': { label: 'Andorre', flag: '🇦🇩', continent: 'Europe', eligibility: 'A' },
+            'AL': { label: 'Albanie', flag: '🇦🇱', continent: 'Europe', eligibility: 'B' },
+            'AT': { label: 'Autriche', flag: '🇦🇹', continent: 'Europe', eligibility: 'A' },
+            'BE': { label: 'Belgique', flag: '🇧🇪', continent: 'Europe', eligibility: 'A' },
+            'BG': { label: 'Bulgarie', flag: '🇧🇬', continent: 'Europe', eligibility: 'A' },
+            'BY': { label: 'Biélorussie', flag: '🇧🇾', continent: 'Europe', eligibility: 'C' },
+            'CH': { label: 'Suisse', flag: '🇨🇭', continent: 'Europe', eligibility: 'A' },
+            'CZ': { label: 'République tchèque', flag: '🇨🇿', continent: 'Europe', eligibility: 'A' },
+            'DE': { label: 'Allemagne', flag: '🇩🇪', continent: 'Europe', eligibility: 'A' },
+            'DK': { label: 'Danemark', flag: '🇩🇰', continent: 'Europe', eligibility: 'A' },
+            'EE': { label: 'Estonie', flag: '🇪🇪', continent: 'Europe', eligibility: 'A' },
+            'ES': { label: 'Espagne', flag: '🇪🇸', continent: 'Europe', eligibility: 'A' },
+            'FI': { label: 'Finlande', flag: '🇫🇮', continent: 'Europe', eligibility: 'A' },
+            'FR': { label: 'France', flag: '🇫🇷', continent: 'Europe', eligibility: 'A' },
+            'GB': { label: 'Royaume-Uni', flag: '🇬🇧', continent: 'Europe', eligibility: 'B' },
+            'GR': { label: 'Grèce', flag: '🇬🇷', continent: 'Europe', eligibility: 'A' },
+            'HR': { label: 'Croatie', flag: '🇭🇷', continent: 'Europe', eligibility: 'A' },
+            'HU': { label: 'Hongrie', flag: '🇭🇺', continent: 'Europe', eligibility: 'A' },
+            'IE': { label: 'Irlande', flag: '🇮🇪', continent: 'Europe', eligibility: 'A' },
+            'IS': { label: 'Islande', flag: '🇮🇸', continent: 'Europe', eligibility: 'A' },
+            'IT': { label: 'Italie', flag: '🇮🇹', continent: 'Europe', eligibility: 'A' },
+            'LI': { label: 'Liechtenstein', flag: '🇱🇮', continent: 'Europe', eligibility: 'A' },
+            'LT': { label: 'Lituanie', flag: '🇱🇹', continent: 'Europe', eligibility: 'A' },
+            'LU': { label: 'Luxembourg', flag: '🇱🇺', continent: 'Europe', eligibility: 'A' },
+            'LV': { label: 'Lettonie', flag: '🇱🇻', continent: 'Europe', eligibility: 'A' },
+            'MC': { label: 'Monaco', flag: '🇲🇨', continent: 'Europe', eligibility: 'A' },
+            'MD': { label: 'Moldavie', flag: '🇲🇩', continent: 'Europe', eligibility: 'C' },
+            'ME': { label: 'Monténégro', flag: '🇲🇪', continent: 'Europe', eligibility: 'B' },
+            'MK': { label: 'Macédoine du Nord', flag: '🇲🇰', continent: 'Europe', eligibility: 'B' },
+            'MT': { label: 'Malte', flag: '🇲🇹', continent: 'Europe', eligibility: 'A' },
+            'NL': { label: 'Pays-Bas', flag: '🇳🇱', continent: 'Europe', eligibility: 'A' },
+            'NO': { label: 'Norvège', flag: '🇳🇴', continent: 'Europe', eligibility: 'A' },
+            'PL': { label: 'Pologne', flag: '🇵🇱', continent: 'Europe', eligibility: 'A' },
+            'PT': { label: 'Portugal', flag: '🇵🇹', continent: 'Europe', eligibility: 'A' },
+            'RO': { label: 'Roumanie', flag: '🇷🇴', continent: 'Europe', eligibility: 'A' },
+            'RS': { label: 'Serbie', flag: '🇷🇸', continent: 'Europe', eligibility: 'B' },
+            'RU': { label: 'Russie', flag: '🇷🇺', continent: 'Europe', eligibility: 'C' },
+            'SE': { label: 'Suède', flag: '🇸🇪', continent: 'Europe', eligibility: 'A' },
+            'SI': { label: 'Slovénie', flag: '🇸🇮', continent: 'Europe', eligibility: 'A' },
+            'SK': { label: 'Slovaquie', flag: '🇸🇰', continent: 'Europe', eligibility: 'A' },
+            'SM': { label: 'Saint-Marin', flag: '🇸🇲', continent: 'Europe', eligibility: 'A' },
+            'UA': { label: 'Ukraine', flag: '🇺🇦', continent: 'Europe', eligibility: 'C' },
+            'VA': { label: 'Vatican', flag: '🇻🇦', continent: 'Europe', eligibility: 'A' },
+
+            // AFRIQUE
+            'DZ': { label: 'Algérie', flag: '🇩🇿', continent: 'Afrique', eligibility: 'C' },
+            'AO': { label: 'Angola', flag: '🇦🇴', continent: 'Afrique', eligibility: 'C' },
+            'BJ': { label: 'Bénin', flag: '🇧🇯', continent: 'Afrique', eligibility: 'C' },
+            'BW': { label: 'Botswana', flag: '🇧🇼', continent: 'Afrique', eligibility: 'C' },
+            'BF': { label: 'Burkina Faso', flag: '🇧🇫', continent: 'Afrique', eligibility: 'C' },
+            'BI': { label: 'Burundi', flag: '🇧🇮', continent: 'Afrique', eligibility: 'C' },
+            'CV': { label: 'Cap-Vert', flag: '🇨🇻', continent: 'Afrique', eligibility: 'C' },
+            'CM': { label: 'Cameroun', flag: '🇨🇲', continent: 'Afrique', eligibility: 'C' },
+            'CF': { label: 'République centrafricaine', flag: '🇨🇫', continent: 'Afrique', eligibility: 'C' },
+            'TD': { label: 'Tchad', flag: '🇹🇩', continent: 'Afrique', eligibility: 'C' },
+            'KM': { label: 'Comores', flag: '🇰🇲', continent: 'Afrique', eligibility: 'C' },
+            'CG': { label: 'Congo', flag: '🇨🇬', continent: 'Afrique', eligibility: 'C' },
+            'CD': { label: 'RD Congo', flag: '🇨🇩', continent: 'Afrique', eligibility: 'C' },
+            'CI': { label: 'Côte d\'Ivoire', flag: '🇨🇮', continent: 'Afrique', eligibility: 'C' },
+            'DJ': { label: 'Djibouti', flag: '🇩🇯', continent: 'Afrique', eligibility: 'C' },
+            'EG': { label: 'Égypte', flag: '🇪🇬', continent: 'Afrique', eligibility: 'C' },
+            'GQ': { label: 'Guinée équatoriale', flag: '🇬🇶', continent: 'Afrique', eligibility: 'C' },
+            'ER': { label: 'Érythrée', flag: '🇪🇷', continent: 'Afrique', eligibility: 'C' },
+            'ET': { label: 'Éthiopie', flag: '🇪🇹', continent: 'Afrique', eligibility: 'C' },
+            'GA': { label: 'Gabon', flag: '🇬🇦', continent: 'Afrique', eligibility: 'C' },
+            'GM': { label: 'Gambie', flag: '🇬🇲', continent: 'Afrique', eligibility: 'C' },
+            'GH': { label: 'Ghana', flag: '🇬🇭', continent: 'Afrique', eligibility: 'C' },
+            'GN': { label: 'Guinée', flag: '🇬🇳', continent: 'Afrique', eligibility: 'C' },
+            'GW': { label: 'Guinée-Bissau', flag: '🇬🇼', continent: 'Afrique', eligibility: 'C' },
+            'KE': { label: 'Kenya', flag: '🇰🇪', continent: 'Afrique', eligibility: 'C' },
+            'LS': { label: 'Lesotho', flag: '🇱🇸', continent: 'Afrique', eligibility: 'C' },
+            'LR': { label: 'Libéria', flag: '🇱🇷', continent: 'Afrique', eligibility: 'C' },
+            'LY': { label: 'Libye', flag: '🇱🇾', continent: 'Afrique', eligibility: 'C' },
+            'MG': { label: 'Madagascar', flag: '🇲🇬', continent: 'Afrique', eligibility: 'C' },
+            'MW': { label: 'Malawi', flag: '🇲🇼', continent: 'Afrique', eligibility: 'C' },
+            'ML': { label: 'Mali', flag: '🇲🇱', continent: 'Afrique', eligibility: 'C' },
+            'MR': { label: 'Mauritanie', flag: '🇲🇷', continent: 'Afrique', eligibility: 'C' },
+            'MU': { label: 'Maurice', flag: '🇲🇺', continent: 'Afrique', eligibility: 'C' },
+            'MA': { label: 'Maroc', flag: '🇲🇦', continent: 'Afrique', eligibility: 'C' },
+            'MZ': { label: 'Mozambique', flag: '🇲🇿', continent: 'Afrique', eligibility: 'C' },
+            'NA': { label: 'Namibie', flag: '🇳🇦', continent: 'Afrique', eligibility: 'C' },
+            'NE': { label: 'Niger', flag: '🇳🇪', continent: 'Afrique', eligibility: 'C' },
+            'NG': { label: 'Nigéria', flag: '🇳🇬', continent: 'Afrique', eligibility: 'C' },
+            'RW': { label: 'Rwanda', flag: '🇷🇼', continent: 'Afrique', eligibility: 'C' },
+            'SN': { label: 'Sénégal', flag: '🇸🇳', continent: 'Afrique', eligibility: 'C' },
+            'SC': { label: 'Seychelles', flag: '🇸🇨', continent: 'Afrique', eligibility: 'C' },
+            'SL': { label: 'Sierra Leone', flag: '🇸🇱', continent: 'Afrique', eligibility: 'C' },
+            'SO': { label: 'Somalie', flag: '🇸🇴', continent: 'Afrique', eligibility: 'C' },
+            'ZA': { label: 'Afrique du Sud', flag: '🇿🇦', continent: 'Afrique', eligibility: 'B' },
+            'SS': { label: 'Soudan du Sud', flag: '🇸🇸', continent: 'Afrique', eligibility: 'C' },
+            'SD': { label: 'Soudan', flag: '🇸🇩', continent: 'Afrique', eligibility: 'C' },
+            'SZ': { label: 'Eswatini', flag: '🇸🇿', continent: 'Afrique', eligibility: 'C' },
+            'TZ': { label: 'Tanzanie', flag: '🇹🇿', continent: 'Afrique', eligibility: 'C' },
+            'TG': { label: 'Togo', flag: '🇹🇬', continent: 'Afrique', eligibility: 'C' },
+            'TN': { label: 'Tunisie', flag: '🇹🇳', continent: 'Afrique', eligibility: 'C' },
+            'UG': { label: 'Ouganda', flag: '🇺🇬', continent: 'Afrique', eligibility: 'C' },
+            'ZM': { label: 'Zambie', flag: '🇿🇲', continent: 'Afrique', eligibility: 'C' },
+            'ZW': { label: 'Zimbabwe', flag: '🇿🇼', continent: 'Afrique', eligibility: 'C' },
+
+            // ASIE
+            'AF': { label: 'Afghanistan', flag: '🇦🇫', continent: 'Asie', eligibility: 'C' },
+            'BD': { label: 'Bangladesh', flag: '🇧🇩', continent: 'Asie', eligibility: 'C' },
+            'BT': { label: 'Bhoutan', flag: '🇧🇹', continent: 'Asie', eligibility: 'C' },
+            'BN': { label: 'Brunei', flag: '🇧🇳', continent: 'Asie', eligibility: 'C' },
+            'KH': { label: 'Cambodge', flag: '🇰🇭', continent: 'Asie', eligibility: 'C' },
+            'CN': { label: 'Chine', flag: '🇨🇳', continent: 'Asie', eligibility: 'C' },
+            'IN': { label: 'Inde', flag: '🇮🇳', continent: 'Asie', eligibility: 'C' },
+            'ID': { label: 'Indonésie', flag: '🇮🇩', continent: 'Asie', eligibility: 'C' },
+            'IR': { label: 'Iran', flag: '🇮🇷', continent: 'Asie', eligibility: 'C' },
+            'IQ': { label: 'Irak', flag: '🇮🇶', continent: 'Asie', eligibility: 'C' },
+            'JP': { label: 'Japon', flag: '🇯🇵', continent: 'Asie', eligibility: 'B' },
+            'JO': { label: 'Jordanie', flag: '🇯🇴', continent: 'Asie', eligibility: 'C' },
+            'KZ': { label: 'Kazakhstan', flag: '🇰🇿', continent: 'Asie', eligibility: 'C' },
+            'KW': { label: 'Koweït', flag: '🇰🇼', continent: 'Asie', eligibility: 'C' },
+            'KG': { label: 'Kirghizistan', flag: '🇰🇬', continent: 'Asie', eligibility: 'C' },
+            'LA': { label: 'Laos', flag: '🇱🇦', continent: 'Asie', eligibility: 'C' },
+            'LB': { label: 'Liban', flag: '🇱🇧', continent: 'Asie', eligibility: 'C' },
+            'MY': { label: 'Malaisie', flag: '🇲🇾', continent: 'Asie', eligibility: 'C' },
+            'MV': { label: 'Maldives', flag: '🇲🇻', continent: 'Asie', eligibility: 'C' },
+            'MN': { label: 'Mongolie', flag: '🇲🇳', continent: 'Asie', eligibility: 'C' },
+            'MM': { label: 'Myanmar', flag: '🇲🇲', continent: 'Asie', eligibility: 'C' },
+            'NP': { label: 'Népal', flag: '🇳🇵', continent: 'Asie', eligibility: 'C' },
+            'KP': { label: 'Corée du Nord', flag: '🇰🇵', continent: 'Asie', eligibility: 'C' },
+            'OM': { label: 'Oman', flag: '🇴🇲', continent: 'Asie', eligibility: 'C' },
+            'PK': { label: 'Pakistan', flag: '🇵🇰', continent: 'Asie', eligibility: 'C' },
+            'PH': { label: 'Philippines', flag: '🇵🇭', continent: 'Asie', eligibility: 'C' },
+            'QA': { label: 'Qatar', flag: '🇶🇦', continent: 'Asie', eligibility: 'C' },
+            'SA': { label: 'Arabie saoudite', flag: '🇸🇦', continent: 'Asie', eligibility: 'C' },
+            'SG': { label: 'Singapour', flag: '🇸🇬', continent: 'Asie', eligibility: 'B' },
+            'KR': { label: 'Corée du Sud', flag: '🇰🇷', continent: 'Asie', eligibility: 'B' },
+            'LK': { label: 'Sri Lanka', flag: '🇱🇰', continent: 'Asie', eligibility: 'C' },
+            'SY': { label: 'Syrie', flag: '🇸🇾', continent: 'Asie', eligibility: 'C' },
+            'TW': { label: 'Taïwan', flag: '🇹🇼', continent: 'Asie', eligibility: 'C' },
+            'TJ': { label: 'Tadjikistan', flag: '🇹🇯', continent: 'Asie', eligibility: 'C' },
+            'TH': { label: 'Thaïlande', flag: '🇹🇭', continent: 'Asie', eligibility: 'C' },
+            'TL': { label: 'Timor oriental', flag: '🇹🇱', continent: 'Asie', eligibility: 'C' },
+            'TR': { label: 'Turquie', flag: '🇹🇷', continent: 'Asie', eligibility: 'C' },
+            'TM': { label: 'Turkménistan', flag: '🇹🇲', continent: 'Asie', eligibility: 'C' },
+            'AE': { label: 'Émirats arabes unis', flag: '🇦🇪', continent: 'Asie', eligibility: 'C' },
+            'UZ': { label: 'Ouzbékistan', flag: '🇺🇿', continent: 'Asie', eligibility: 'C' },
+            'VN': { label: 'Vietnam', flag: '🇻🇳', continent: 'Asie', eligibility: 'C' },
+            'YE': { label: 'Yémen', flag: '🇾🇪', continent: 'Asie', eligibility: 'C' },
+
+            // AMÉRIQUE DU NORD
+            'CA': { label: 'Canada', flag: '🇨🇦', continent: 'Amérique du Nord', eligibility: 'B' },
+            'CR': { label: 'Costa Rica', flag: '🇨🇷', continent: 'Amérique du Nord', eligibility: 'C' },
+            'CU': { label: 'Cuba', flag: '🇨🇺', continent: 'Amérique du Nord', eligibility: 'C' },
+            'DO': { label: 'République dominicaine', flag: '🇩🇴', continent: 'Amérique du Nord', eligibility: 'C' },
+            'SV': { label: 'Salvador', flag: '🇸🇻', continent: 'Amérique du Nord', eligibility: 'C' },
+            'GT': { label: 'Guatemala', flag: '🇬🇹', continent: 'Amérique du Nord', eligibility: 'C' },
+            'HT': { label: 'Haïti', flag: '🇭🇹', continent: 'Amérique du Nord', eligibility: 'C' },
+            'HN': { label: 'Honduras', flag: '🇭🇳', continent: 'Amérique du Nord', eligibility: 'C' },
+            'JM': { label: 'Jamaïque', flag: '🇯🇲', continent: 'Amérique du Nord', eligibility: 'C' },
+            'MX': { label: 'Mexique', flag: '🇲🇽', continent: 'Amérique du Nord', eligibility: 'C' },
+            'NI': { label: 'Nicaragua', flag: '🇳🇮', continent: 'Amérique du Nord', eligibility: 'C' },
+            'PA': { label: 'Panama', flag: '🇵🇦', continent: 'Amérique du Nord', eligibility: 'C' },
+            'TT': { label: 'Trinité-et-Tobago', flag: '🇹🇹', continent: 'Amérique du Nord', eligibility: 'C' },
+            'US': { label: 'États-Unis', flag: '🇺🇸', continent: 'Amérique du Nord', eligibility: 'B' },
+
+            // AMÉRIQUE DU SUD
+            'AR': { label: 'Argentine', flag: '🇦🇷', continent: 'Amérique du Sud', eligibility: 'C' },
+            'BO': { label: 'Bolivie', flag: '🇧🇴', continent: 'Amérique du Sud', eligibility: 'C' },
+            'BR': { label: 'Brésil', flag: '🇧🇷', continent: 'Amérique du Sud', eligibility: 'B' },
+            'CL': { label: 'Chili', flag: '🇨🇱', continent: 'Amérique du Sud', eligibility: 'C' },
+            'CO': { label: 'Colombie', flag: '🇨🇴', continent: 'Amérique du Sud', eligibility: 'C' },
+            'EC': { label: 'Équateur', flag: '🇪🇨', continent: 'Amérique du Sud', eligibility: 'C' },
+            'GY': { label: 'Guyana', flag: '🇬🇾', continent: 'Amérique du Sud', eligibility: 'C' },
+            'PY': { label: 'Paraguay', flag: '🇵🇾', continent: 'Amérique du Sud', eligibility: 'C' },
+            'PE': { label: 'Pérou', flag: '🇵🇪', continent: 'Amérique du Sud', eligibility: 'C' },
+            'SR': { label: 'Suriname', flag: '🇸🇷', continent: 'Amérique du Sud', eligibility: 'C' },
+            'UY': { label: 'Uruguay', flag: '🇺🇾', continent: 'Amérique du Sud', eligibility: 'C' },
+            'VE': { label: 'Venezuela', flag: '🇻🇪', continent: 'Amérique du Sud', eligibility: 'C' },
+
+            // OCÉANIE
+            'AU': { label: 'Australie', flag: '🇦🇺', continent: 'Océanie', eligibility: 'B' },
+            'FJ': { label: 'Fidji', flag: '🇫🇯', continent: 'Océanie', eligibility: 'C' },
+            'KI': { label: 'Kiribati', flag: '🇰🇮', continent: 'Océanie', eligibility: 'C' },
+            'MH': { label: 'Marshall', flag: '🇲🇭', continent: 'Océanie', eligibility: 'C' },
+            'FM': { label: 'Micronésie', flag: '🇫🇲', continent: 'Océanie', eligibility: 'C' },
+            'NR': { label: 'Nauru', flag: '🇳🇷', continent: 'Océanie', eligibility: 'C' },
+            'NZ': { label: 'Nouvelle-Zélande', flag: '🇳🇿', continent: 'Océanie', eligibility: 'B' },
+            'PW': { label: 'Palaos', flag: '🇵🇼', continent: 'Océanie', eligibility: 'C' },
+            'PG': { label: 'Papouasie-Nouvelle-Guinée', flag: '🇵🇬', continent: 'Océanie', eligibility: 'C' },
+            'WS': { label: 'Samoa', flag: '🇼🇸', continent: 'Océanie', eligibility: 'C' },
+            'SB': { label: 'Îles Salomon', flag: '🇸🇧', continent: 'Océanie', eligibility: 'C' },
+            'TO': { label: 'Tonga', flag: '🇹🇴', continent: 'Océanie', eligibility: 'C' },
+            'TV': { label: 'Tuvalu', flag: '🇹🇻', continent: 'Océanie', eligibility: 'C' },
+            'VU': { label: 'Vanuatu', flag: '🇻🇺', continent: 'Océanie', eligibility: 'C' }
+          },
+          branchements_json: { 
+            default: 'PROF_S04'
+          },
+          help_text: 'Votre nationalité détermine certaines conditions d\'éligibilité aux aides luxembourgeoises',
           icon_emoji: '🌍',
-          estimated_time_seconds: 25
+          estimated_time_seconds: 30
         },
         {
           id: 'PROF_S04',
           ordre: 4,
-          question: 'Avez-vous 25 ans ou plus ?',
-          key_reponse: 'q_age_25plus',
-          type_reponse: 'Oui_Non',
-          options_json: { opt_oui: 'Oui', opt_non: 'Non' },
-          branchements_json: { opt_oui: 'PROF_S06', opt_non: 'PROF_S05' },
-          help_text: 'L\'âge de 25 ans est un seuil important pour certaines aides',
+          question: 'Quel est votre âge ?',
+          key_reponse: 'q_age_exact',
+          type_reponse: 'Nombre_Entier',
+          options_json: {},
+          branchements_json: { continue: 'PROF_S05' },
+          validation_rules: { 
+            required: true, 
+            min: 16, 
+            max: 100, 
+            step: 1,
+            unit: 'ans'
+          },
+          help_text: 'Votre âge détermine l\'éligibilité à certaines aides (seuil 25 ans pour REVIS)',
           icon_emoji: '🎂',
           estimated_time_seconds: 10
         },
@@ -121,13 +340,20 @@ class EligibilityService {
         {
           id: 'PROF_S05B',
           ordre: 6,
-          question: 'Combien d\'enfants à charge avez-vous ?',
-          key_reponse: 'q_nb_enfants',
-          type_reponse: 'Choix_Multiple_Simple',
-          options_json: { opt_1: '1 enfant', opt_2: '2 enfants', opt_3: '3 enfants ou plus' },
-          branchements_json: { opt_1: 'PROF_S06', opt_2: 'PROF_S06', opt_3: 'PROF_S06' },
-          help_text: 'Précisez le nombre exact pour calculer les montants d\'aide',
-          icon_emoji: '🔢',
+          question: 'Combien d\'enfants à charge avez-vous exactement ?',
+          key_reponse: 'q_nb_enfants_exact',
+          type_reponse: 'Nombre_Entier',
+          options_json: {},
+          branchements_json: { continue: 'PROF_S06' },
+          validation_rules: { 
+            required: true, 
+            min: 1, 
+            max: 15, 
+            step: 1,
+            unit: 'enfants'
+          },
+          help_text: 'Le nombre exact d\'enfants permet de calculer précisément les montants d\'aide',
+          icon_emoji: '👨‍👩‍👧‍👦',
           estimated_time_seconds: 15
         },
         {
@@ -145,24 +371,38 @@ class EligibilityService {
         {
           id: 'PROF_S07',
           ordre: 8,
-          question: 'Combien de personnes composent votre foyer ?',
+          question: 'Combien de personnes composent votre foyer exactement ?',
           key_reponse: 'q_composition_menage',
-          type_reponse: 'Choix_Multiple_Simple',
-          options_json: { opt_1_pers: '1', opt_2_pers: '2', opt_3_plus_pers: '3 ou plus' },
-          branchements_json: { opt_1_pers: 'PROF_S08', opt_2_pers: 'PROF_S08', opt_3_plus_pers: 'PROF_S08' },
-          help_text: 'Le nombre de personnes dans votre foyer influence les montants d\'aide',
-          icon_emoji: '👥',
-          estimated_time_seconds: 20
+          type_reponse: 'Nombre_Personnes',
+          options_json: {},
+          branchements_json: { continue: 'PROF_S08' },
+          validation_rules: { 
+            required: true, 
+            min: 1, 
+            max: 20, 
+            step: 1,
+            unit: 'personnes'
+          },
+          help_text: 'Comptez vous-même + conjoint + enfants + toute autre personne vivant sous le même toit',
+          icon_emoji: '🏘️',
+          estimated_time_seconds: 25
         },
         {
           id: 'PROF_S08',
           ordre: 9,
-          question: 'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?',
-          key_reponse: 'q_niv_revenus_qual',
-          type_reponse: 'Oui_Non',
-          options_json: { opt_oui: 'Oui, moins de 3000€', opt_non: 'Non, 3000€ ou plus' },
-          branchements_json: { opt_oui: 'PROF_S09', opt_non: 'PROF_S09' },
-          help_text: 'Comptez tous les revenus nets de votre foyer (salaires, pensions, etc.)',
+          question: 'Quels sont vos revenus mensuels nets du foyer ?',
+          key_reponse: 'q_revenus_nets_exact',
+          type_reponse: 'Montant_Euro',
+          options_json: {},
+          branchements_json: { continue: 'PROF_S09' },
+          validation_rules: { 
+            required: true, 
+            min: 0, 
+            max: 15000, 
+            step: 50,
+            unit: '€/mois'
+          },
+          help_text: 'Comptez tous les revenus nets : salaires, pensions, allocations familiales, etc.',
           icon_emoji: '💰',
           estimated_time_seconds: 30,
           difficulty_level: 'medium'
@@ -176,7 +416,7 @@ class EligibilityService {
           options_json: { opt_A: 'Locataire', opt_B: 'Propriétaire avec crédit', opt_C: 'Propriétaire sans crédit' },
           branchements_json: { opt_A: 'PROF_S10', opt_B: 'PROF_S10', opt_C: 'PROF_EVAL' },
           help_text: 'Votre situation de logement détermine les aides disponibles',
-          icon_emoji: '🏘️',
+          icon_emoji: '🏡',
           estimated_time_seconds: 20
         },
         {
@@ -224,11 +464,30 @@ class EligibilityService {
       }
 
       // REVIS - Revenu d'Inclusion Sociale
+      const nationalityResponse = responses.q_nationalite_cat;
+      let eligibilityCategory = 'C'; // Par défaut
+      
+      // Déterminer la catégorie d'éligibilité basée sur la nationalité
+      if (nationalityResponse) {
+        // Si c'est un code pays, récupérer la catégorie d'éligibilité
+        const questions = await this.loadQuestions();
+        const nationalityQuestion = questions.find(q => q.key_reponse === 'q_nationalite_cat');
+        const nationalityData = nationalityQuestion?.options_json[nationalityResponse];
+        
+        if (nationalityData && nationalityData.eligibility) {
+          eligibilityCategory = nationalityData.eligibility;
+        } else if (['opt_A'].includes(nationalityResponse)) {
+          eligibilityCategory = 'A';
+        } else if (['opt_B'].includes(nationalityResponse)) {
+          eligibilityCategory = 'B';
+        }
+      }
+      
       if (
         responses.q_residence_lux === 'opt_oui' &&
         responses.q_sejour_legal_rnpp === 'opt_oui' &&
-        ['opt_A', 'opt_B'].includes(responses.q_nationalite_cat) &&
-        (responses.q_age_25plus === 'opt_oui' || responses.q_parent_enceinte === 'opt_oui') &&
+        ['A', 'B'].includes(eligibilityCategory) &&
+        (parseInt(responses.q_age_exact) >= 25 || responses.q_parent_enceinte === 'opt_oui') &&
         responses.q_dispo_emploi_adem === 'opt_oui'
       ) {
         eligibleAids.push({
@@ -245,9 +504,10 @@ class EligibilityService {
 
       // ARS - Allocation de rentrée scolaire
       if (
-        responses.q_nb_enfants && 
+        responses.q_nb_enfants_exact && 
         responses.q_enfants_scolarises === 'opt_oui' && 
-        responses.q_niv_revenus_qual === 'opt_oui'
+        responses.q_revenus_nets_exact &&
+        parseInt(responses.q_revenus_nets_exact) < 3000
       ) {
         eligibleAids.push({
           id: 'ARS_C',
@@ -262,7 +522,7 @@ class EligibilityService {
       }
 
       // Logement social
-      if (responses.q_niv_revenus_qual === 'opt_oui' && responses.q_logement_situation === 'opt_A') {
+      if (responses.q_revenus_nets_exact && parseInt(responses.q_revenus_nets_exact) < 3500 && responses.q_logement_situation === 'opt_A') {
         eligibleAids.push({
           id: 'LS_C',
           titre_aide: 'Logement social',
@@ -276,7 +536,7 @@ class EligibilityService {
       }
 
       // Prime énergie
-      if (responses.q_niv_revenus_qual === 'opt_oui') {
+      if (responses.q_revenus_nets_exact && parseInt(responses.q_revenus_nets_exact) < 3000) {
         eligibleAids.push({
           id: 'PE_C',
           titre_aide: 'Prime énergie',
@@ -343,7 +603,7 @@ class EligibilityService {
             'Hutt Dir eng gülteg Aufenthaltserlaubnis zu Lëtzebuerg?',
           'Quelle est votre nationalité ?': 
             'Wéi eng Nationalitéit hutt Dir?',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 ans oder méi ?': 
             'Sidd Dir 25 Joer al oder méi?',
           'Avez-vous des enfants à charge de moins de 18 ans ?': 
             'Hutt Dir Kanner ënner 18 Joer ze versuergen?',
@@ -391,7 +651,7 @@ class EligibilityService {
             'Tem uma autorização de residência válida no Luxemburgo?',
           'Quelle est votre nationalité ?': 
             'Qual é a sua nacionalidade?',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 ans ou mais ?': 
             'Tem 25 anos ou mais?',
           'Avez-vous des enfants à charge de moins de 18 ans ?': 
             'Tem filhos dependentes com menos de 18 anos?',
@@ -415,7 +675,7 @@ class EligibilityService {
             '¿Tiene un permiso de residencia válido en Luxemburgo?',
           'Quelle est votre nationalité ?': 
             '¿Cuál es su nacionalidad?',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 ans o más ?': 
             '¿Tiene 25 años o más?',
           'Avez-vous des enfants à charge de moins de 18 ans ?': 
             '¿Tiene hijos dependientes menores de 18 años?',
@@ -439,7 +699,7 @@ class EligibilityService {
             'Ha un permesso di soggiorno valido in Lussemburgo?',
           'Quelle est votre nationalité ?': 
             'Qual è la sua nazionalità?',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 ans o più ?': 
             'Ha 25 anni o più?',
           'Avez-vous des enfants à charge de moins de 18 ans ?': 
             'Ha figli a carico di età inferiore ai 18 anni?',
@@ -463,22 +723,22 @@ class EligibilityService {
             'هل لديك تصريح إقامة صالح في لوكسمبورغ؟',
           'Quelle est votre nationalité ?': 
             'ما هي جنسيتك؟',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 ans أو أكثر؟': 
             'هل عمرك 25 سنة أو أكثر؟',
-          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+          'Avez-vous des enfants عند تربية أطفال تحت 18 سنة؟': 
             'هل لديك أطفال تحت 18 سنة تعولهم؟',
-          'Combien d\'enfants à charge avez-vous ?': 
+          'Combien d\'enfants عند تربية أطفال؟': 
             'كم عدد الأطفال الذين تعولهم؟',
-          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+          'Êtes-vous inscrit(e) comme demandeur d\'emploi عند الإعلان عن الوظيفة؟': 
             'هل أنت مسجل كباحث عن عمل في ADEM؟',
-          'Combien de personnes composent votre foyer ?': 
-            'كم عدد الأشخاص في أسرتك؟',
-          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
-            'هل دخل أسرتك الشهري الصافي أقل من 3000 يورو؟',
-          'Quelle est votre situation de logement ?': 
+          'Combien de الأشخاص الذين يصلحون لمنزلك؟': 
+            'كم عدد الأشخاص الذين يصلحون لمنزلك؟',
+          'هل دخل منزلك الإيرادات الصافية الشهرية أقل من 3000€؟': 
+            'هل دخل منزلك الإيرادات الصافية الشهرية أقل من 3000€؟',
+          'ما هي حالة سكنك؟': 
             'ما هي حالة سكنك؟',
-          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
-            'هل لديك أطفال في سن المدرسة بين 6 و 18 سنة؟'
+          'آیا فرزندان دانش‌آموز بین ۶ تا ۱۸ سال دارید؟': 
+            'آیا فرزندان دانش‌آموز بین ۶ تا ۱۸ سال دارید؟'
         },
         'pl': {
           'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
@@ -487,7 +747,7 @@ class EligibilityService {
             'Czy ma Pan/Pani ważne zezwolenie na pobyt w Luksemburgu?',
           'Quelle est votre nationalité ?': 
             'Jakie jest Pana/Pani obywatelstwo?',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 ans lub więcej ?': 
             'Czy ma Pan/Pani 25 lat lub więcej?',
           'Avez-vous des enfants à charge de moins de 18 ans ?': 
             'Czy ma Pan/Pani dzieci na utrzymaniu poniżej 18 lat?',
@@ -511,21 +771,21 @@ class EligibilityService {
             'Есть ли у вас действующее разрешение на пребывание в Люксембурге?',
           'Quelle est votre nationalité ?': 
             'Какое у вас гражданство?',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 лет или больше ?': 
             'Вам 25 лет или больше?',
-          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+          'Avez-vous des enfants на иждивении младше 18 лет ?': 
             'Есть ли у вас дети на иждивении младше 18 лет?',
-          'Combien d\'enfants à charge avez-vous ?': 
+          'Combien d\'enfants на иждивении ?': 
             'Сколько у вас детей на иждивении?',
-          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+          'Êtes-vous inscrit(e) как ищущий работу в ADEM ?': 
             'Зарегистрированы ли вы как ищущий работу в ADEM?',
-          'Combien de personnes composent votre foyer ?': 
+          'Combien de людей в вашем домохозяйстве ?': 
             'Сколько человек в вашем домохозяйстве?',
-          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+          'Ваш месячный чистый доход домохозяйства менее 3000€ ?': 
             'Ваш месячный чистый доход домохозяйства менее 3000€?',
-          'Quelle est votre situation de logement ?': 
+          'Какая у вас жилищная ситуация ?': 
             'Какая у вас жилищная ситуация?',
-          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+          'Есть ли у вас дети школьного возраста от 6 до 18 лет ?': 
             'Есть ли у вас дети школьного возраста от 6 до 18 лет?'
         },
         'nl': {
@@ -535,21 +795,21 @@ class EligibilityService {
             'Heeft u een geldige verblijfsvergunning in Luxemburg?',
           'Quelle est votre nationalité ?': 
             'Wat is uw nationaliteit?',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 jaar of ouder ?': 
             'Bent u 25 jaar of ouder?',
-          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+          'Avez-vous des enfants ten laste jonger dan 18 jaar ?': 
             'Heeft u kinderen ten laste jonger dan 18 jaar?',
-          'Combien d\'enfants à charge avez-vous ?': 
+          'Combien d\'enfants heeft u ten laste ?': 
             'Hoeveel kinderen heeft u ten laste?',
-          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+          'Êtes-vous ingeschreven als werkzoekende bij ADEM ?': 
             'Bent u ingeschreven als werkzoekende bij ADEM?',
-          'Combien de personnes composent votre foyer ?': 
+          'Uit hoeveel personen bestaat uw huishouden ?': 
             'Uit hoeveel personen bestaat uw huishouden?',
-          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+          'Is het maandelijkse netto-inkomen van uw huishouden minder dan €3000 ?': 
             'Is het maandelijkse netto-inkomen van uw huishouden minder dan €3000?',
-          'Quelle est votre situation de logement ?': 
+          'Wat is uw woonsituatie ?': 
             'Wat is uw woonsituatie?',
-          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+          'Heeft u schoolgaande kinderen tussen 6 en 18 jaar ?': 
             'Heeft u schoolgaande kinderen tussen 6 en 18 jaar?'
         },
         'tr': {
@@ -559,11 +819,11 @@ class EligibilityService {
             'Lüksemburg\'da geçerli bir oturma izniniz var mı?',
           'Quelle est votre nationalité ?': 
             'Vatandaşlığınız nedir?',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 yaşında veya daha büyük müsünüz ?': 
             '25 yaşında veya daha büyük müsünüz?',
-          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+          'Avez-vous des enfants 18 yaşından küçük bakmakla yükümlü olduğunuz çocuklarınız var mı ?': 
             '18 yaşından küçük bakmakla yükümlü olduğunuz çocuklarınız var mı?',
-          'Combien d\'enfants à charge avez-vous ?': 
+          'Kaç çocuğunuz var ?': 
             'Kaç çocuğunuz var?',
           'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
             'ADEM\'de iş arayan olarak kayıtlı mısınız?',
@@ -583,21 +843,21 @@ class EligibilityService {
             'آیا مجوز اقامت معتبری در لوکزامبورگ دارید؟',
           'Quelle est votre nationalité ?': 
             'ملیت شما چیست؟',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 ساله یا بالاتر هستید؟': 
             'آیا ۲۵ ساله یا بالاتر هستید؟',
-          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+          'آیا فرزندان تحت تکفل زیر ۱۸ سال دارید؟': 
             'آیا فرزندان تحت تکفل زیر ۱۸ سال دارید؟',
-          'Combien d\'enfants à charge avez-vous ?': 
+          'چند فرزند تحت تکفل دارید؟': 
             'چند فرزند تحت تکفل دارید؟',
-          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+          'آیا در ADEM به عنوان جویای کار ثبت نام کرده‌اید؟': 
             'آیا در ADEM به عنوان جویای کار ثبت نام کرده‌اید؟',
-          'Combien de personnes composent votre foyer ?': 
+          'خانواده شما از چند نفر تشکیل شده؟': 
             'خانواده شما از چند نفر تشکیل شده؟',
-          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+          'آیا درآمد ماهانه خالص خانواده شما کمتر از ۳۰۰۰ یورو است؟': 
             'آیا درآمد ماهانه خالص خانواده شما کمتر از ۳۰۰۰ یورو است؟',
-          'Quelle est votre situation de logement ?': 
+          'وضعیت مسکن شما چگونه است؟': 
             'وضعیت مسکن شما چگونه است؟',
-          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+          'آیا فرزندان دانش‌آموز بین ۶ تا ۱۸ سال دارید؟': 
             'آیا فرزندان دانش‌آموز بین ۶ تا ۱۸ سال دارید؟'
         },
         'ur': {
@@ -607,22 +867,22 @@ class EligibilityService {
             'کیا آپ کے پاس لکسمبرگ میں قانونی اقامت کی اجازت ہے؟',
           'Quelle est votre nationalité ?': 
             'آپ کی قومیت کیا ہے؟',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 سال یا اس سے زیادہ ہے؟': 
             'کیا آپ کی عمر 25 سال یا اس سے زیادہ ہے؟',
-          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+          'کیا آپ کے 18 سال سے کم عمر کے بچے ہیں؟': 
             'کیا آپ کے 18 سال سے کم عمر کے بچے ہیں؟',
-          'Combien d\'enfants à charge avez-vous ?': 
+          'آپ کے کتنے بچے ہیں؟': 
             'آپ کے کتنے بچے ہیں؟',
-          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
-            'کیا آپ ADEM میں ملازمت کے طالب کے طور پر رجسٹرڈ ہیں؟',
-          'Combien de personnes composent votre foyer ?': 
+          'آیا آپ ADEM میں ملازمت کے طالب کے طور پر رجسٹرڈ ہیں؟': 
+            'آیا آپ ADEM میں ملازمت کے طالب کے طور پر رجسٹرڈ ہیں؟',
+          'آپ کے گھر میں کتنے لوگ رہتے ہیں؟': 
             'آپ کے گھر میں کتنے لوگ رہتے ہیں؟',
-          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
-            'کیا آپ کے گھر کی ماہانہ خالص آمدنی 3000€ سے کم ہے؟',
-          'Quelle est votre situation de logement ?': 
+          'آیا آپ کے گھر کی ماہانہ خالص آمدنی 3000€ سے کم ہے؟': 
+            'آیا آپ کے گھر کی ماہانہ خالص آمدنی 3000€ سے کم ہے؟',
+          'آپ کی رہائش کی صورتحال کیا ہے؟': 
             'آپ کی رہائش کی صورتحال کیا ہے؟',
-          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
-            'کیا آپ کے 6 سے 18 سال کی عمر کے سکول جانے والے بچے ہیں؟'
+          'آیا آپ کے 6 سے 18 سال کی عمر کے سکول جانے والے بچے ہیں؟': 
+            'آیا آپ کے 6 سے 18 سال کی عمر کے سکول جانے والے بچے ہیں؟'
         },
         'ro': {
           'Habitez-vous et résidez-vous de façon principale au Luxembourg ?': 
@@ -631,21 +891,21 @@ class EligibilityService {
             'Aveți o autorizație de ședere validă în Luxemburg?',
           'Quelle est votre nationalité ?': 
             'Care este naționalitatea dumneavoastră?',
-          'Avez-vous 25 ans ou plus ?': 
+          'Avez-vous 25 de ani sau mai mult ?': 
             'Aveți 25 de ani sau mai mult?',
-          'Avez-vous des enfants à charge de moins de 18 ans ?': 
+          'Aveți copii în întreținere sub 18 ani ?': 
             'Aveți copii în întreținere sub 18 ani?',
-          'Combien d\'enfants à charge avez-vous ?': 
+          'Câți copii aveți în întreținere ?': 
             'Câți copii aveți în întreținere?',
-          'Êtes-vous inscrit(e) comme demandeur d\'emploi à l\'ADEM ?': 
+          'Sunteți înregistrat ca solicitant de locuri de muncă la ADEM ?': 
             'Sunteți înregistrat ca solicitant de locuri de muncă la ADEM?',
-          'Combien de personnes composent votre foyer ?': 
+          'Din câte persoane este compusă gospodăria dumneavoastră ?': 
             'Din câte persoane este compusă gospodăria dumneavoastră?',
-          'Vos revenus mensuels nets du foyer sont-ils inférieurs à 3000€ ?': 
+          'Veniturile nete lunare ale gospodăriei sunt mai mici de 3000€ ?': 
             'Veniturile nete lunare ale gospodăriei sunt mai mici de 3000€?',
-          'Quelle est votre situation de logement ?': 
+          'Care este situația dumneavoastră de locuință ?': 
             'Care este situația dumneavoastră de locuință?',
-          'Avez-vous des enfants scolarisés entre 6 et 18 ans ?': 
+          'Aveți copii școlari între 6 și 18 ani ?': 
             'Aveți copii școlari între 6 și 18 ani?'
         }
         // Maintenant toutes les 15 langues supportées sont couvertes
