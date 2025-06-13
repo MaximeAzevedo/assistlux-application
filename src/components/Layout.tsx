@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 import { X, MessageCircle, MessageSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Header from './Header';
-import NavigationButtons from './NavigationButtons';
+import { FloatingTranslator } from './FloatingTranslator';
 import ChatInterface from './Chat/ChatInterface';
 
 interface LayoutProps {
@@ -38,7 +39,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="min-h-screen bg-gray-50 relative">
       <Header />
       {children}
-      <NavigationButtons />
+      <FloatingTranslator />
 
       {/* Chat Menu */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-2">
