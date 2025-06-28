@@ -24,6 +24,24 @@ const AZURE_LANGUAGE_MAPPING: Record<string, string> = {
   'ur': 'ur-PK'
 };
 
+// Mapping des voix Azure pour chaque langue (voix neuronales de haute qualité)
+const AZURE_VOICE_MAPPING: Record<string, string> = {
+  'fr-FR': 'fr-FR-DeniseNeural',     // Voix féminine française naturelle
+  'en-US': 'en-US-AriaNeural',       // Voix féminine anglaise claire
+  'de-DE': 'de-DE-KatjaNeural',      // Voix féminine allemande
+  'ar-SA': 'ar-SA-ZariyahNeural',    // Voix féminine arabe
+  'es-ES': 'es-ES-ElviraNeural',     // Voix féminine espagnole
+  'it-IT': 'it-IT-ElsaNeural',       // Voix féminine italienne
+  'pt-PT': 'pt-PT-RaquelNeural',     // Voix féminine portugaise
+  'ru-RU': 'ru-RU-SvetlanaNeural',   // Voix féminine russe
+  'tr-TR': 'tr-TR-EmelNeural',       // Voix féminine turque
+  'nl-NL': 'nl-NL-ColetteNeural',    // Voix féminine néerlandaise
+  'pl-PL': 'pl-PL-ZofiaNeural',      // Voix féminine polonaise
+  'ro-RO': 'ro-RO-AlinaNeural',      // Voix féminine roumaine
+  'fa-IR': 'fa-IR-DilaraNeural',     // Voix féminine perse
+  'ur-PK': 'ur-PK-UzmaNeural'        // Voix féminine ourdou
+};
+
 export interface SpeechRecognitionResult {
   text: string;
   confidence: number;
@@ -38,9 +56,20 @@ export interface SpeechRecognitionOptions {
   maxDuration?: number; // en secondes
 }
 
+export interface TextToSpeechOptions {
+  text: string;
+  language: string;
+  voice?: string;
+  rate?: number;    // 0.5 à 2.0
+  pitch?: number;   // -50% à +50%
+  volume?: number;  // 0 à 100
+}
+
 export class AzureSpeechService {
   private recognizer: sdk.SpeechRecognizer | null = null;
+  private synthesizer: sdk.SpeechSynthesizer | null = null;
   private isRecognizing = false;
+  private isSynthesizing = false;
   private onResultCallback?: (result: SpeechRecognitionResult) => void;
   private onErrorCallback?: (error: string) => void;
   private onStatusCallback?: (status: 'listening' | 'processing' | 'stopped') => void;
@@ -274,6 +303,129 @@ export class AzureSpeechService {
       available: this.isAvailable(),
       provider: 'Azure Speech Services EU'
     };
+  }
+
+  /**
+   * Synthèse vocale avec Azure Text-to-Speech
+   */
+  async speakText(options: TextToSpeechOptions): Promise<void> {
+    if (!this.isAvailable()) {
+      throw new Error('Azure Speech Services non configuré');
+    }
+
+    if (this.isSynthesizing) {
+      console.warn('⚠️ Synthèse déjà en cours');
+      return;
+    }
+
+    try {
+      console.log('🔊 Démarrage synthèse Azure TTS:', options.text.substring(0, 50) + '...');
+      
+      // Configuration Azure Speech
+      const speechConfig = sdk.SpeechConfig.fromSubscription(AZURE_SPEECH_KEY!, AZURE_SPEECH_REGION);
+      
+      // Langue et voix
+      const azureLanguage = AZURE_LANGUAGE_MAPPING[options.language] || 'fr-FR';
+      const azureVoice = options.voice || AZURE_VOICE_MAPPING[azureLanguage] || 'fr-FR-DeniseNeural';
+      
+      speechConfig.speechSynthesisVoiceName = azureVoice;
+      speechConfig.speechSynthesisLanguage = azureLanguage;
+      
+      // Configuration audio (haut-parleurs)
+      const audioConfig = sdk.AudioConfig.fromDefaultSpeakerOutput();
+      
+      // Créer le synthesizer
+      this.synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
+      
+      // Préparer le SSML pour contrôler la voix
+      const ssml = this.buildSSML(options.text, azureVoice, options);
+      
+      this.isSynthesizing = true;
+      
+      // Démarrer la synthèse
+      this.synthesizer.speakSsmlAsync(
+        ssml,
+        (result: sdk.SpeechSynthesisResult) => {
+          if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
+            console.log('✅ Synthèse vocale terminée (Azure EU)');
+          } else if (result.reason === sdk.ResultReason.Canceled) {
+            console.error('❌ Synthèse annulée:', result.reason);
+          }
+          this.cleanupSynthesis();
+        },
+        (error: string) => {
+          console.error('❌ Erreur synthèse vocale:', error);
+          this.onErrorCallback?.(`Erreur synthèse: ${error}`);
+          this.cleanupSynthesis();
+        }
+      );
+
+    } catch (error: unknown) {
+      console.error('❌ Erreur configuration synthèse:', error);
+      this.onErrorCallback?.(`Erreur configuration synthèse: ${error}`);
+      this.cleanupSynthesis();
+    }
+  }
+
+  /**
+   * Construit le SSML pour contrôler la synthèse vocale
+   */
+  private buildSSML(text: string, voice: string, options: TextToSpeechOptions): string {
+    const rate = options.rate ? `${Math.round((options.rate - 1) * 100)}%` : '0%';
+    const pitch = options.pitch ? `${options.pitch}%` : '0%';
+    
+    return `
+      <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${voice.split('-').slice(0, 2).join('-')}">
+        <voice name="${voice}">
+          <prosody rate="${rate}" pitch="${pitch}">
+            ${text}
+          </prosody>
+        </voice>
+      </speak>
+    `;
+  }
+
+  /**
+   * Arrête la synthèse vocale
+   */
+  stopSynthesis(): void {
+    if (this.synthesizer && this.isSynthesizing) {
+      try {
+        this.synthesizer.close();
+        this.cleanupSynthesis();
+        console.log('🛑 Synthèse vocale arrêtée');
+      } catch (error: unknown) {
+        console.error('❌ Erreur arrêt synthèse:', error);
+      }
+    }
+  }
+
+  /**
+   * Nettoyage des ressources de synthèse
+   */
+  private cleanupSynthesis(): void {
+    if (this.synthesizer) {
+      this.synthesizer.close();
+      this.synthesizer = null;
+    }
+    this.isSynthesizing = false;
+  }
+
+  /**
+   * Obtient les voix disponibles pour une langue
+   */
+  getAvailableVoices(language: string): string[] {
+    const azureLanguage = AZURE_LANGUAGE_MAPPING[language] || 'fr-FR';
+    return Object.entries(AZURE_VOICE_MAPPING)
+      .filter(([lang]) => lang === azureLanguage)
+      .map(([, voice]) => voice);
+  }
+
+  /**
+   * Vérifie si la synthèse est en cours
+   */
+  isSpeaking(): boolean {
+    return this.isSynthesizing;
   }
 }
 

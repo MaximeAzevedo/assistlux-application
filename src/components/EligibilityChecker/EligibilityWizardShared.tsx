@@ -1038,7 +1038,7 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
                       </div>
                       <h3 className="text-sm font-bold text-indigo-900">
                         POUR LE TRAVAILLEUR SOCIAL
-                      </h3>
+                    </h3>
                     </div>
                     <p className="text-lg text-indigo-800 font-medium leading-relaxed">
                       {questions.find(q => q.id === currentQuestion.id)?.question}
@@ -1054,7 +1054,7 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
                         </div>
                         <h3 className="text-sm font-bold text-emerald-900">
                           {getHeaderTextForUser(session.language)} ({supportedLanguages[session.language as keyof typeof supportedLanguages]?.nativeName})
-                        </h3>
+                      </h3>
                       </div>
                       <div className="text-lg text-emerald-800 font-medium leading-relaxed">
                         {translating ? (
@@ -1096,11 +1096,11 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
                 ) : (
                   // Rendu soft et professionnel pour Oui_Non et choix multiples
                   <div className="flex gap-4 justify-center flex-wrap w-full max-w-xl mx-auto">
-                    {Object.entries(currentQuestion.options_json).map(([key, value]) => (
-                      <button
-                        key={key}
-                        onClick={() => handleAnswer(key, value as string)}
-                        disabled={translating}
+                {Object.entries(currentQuestion.options_json).map(([key, value]) => (
+                  <button
+                    key={key}
+                    onClick={() => handleAnswer(key, value as string)}
+                    disabled={translating}
                         className={`group relative px-8 py-3 text-base font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg min-w-[120px] ${
                           key === 'opt_oui' 
                             ? 'bg-white text-green-700 border-2 border-green-200 hover:bg-green-50 hover:border-green-300'
@@ -1121,8 +1121,8 @@ const EligibilityWizardShared: React.FC<EligibilityWizardSharedProps> = ({
                           )}
                           <span>{value as string}</span>
                         </div>
-                      </button>
-                    ))}
+                  </button>
+                ))}
                   </div>
                 )}
               </div>

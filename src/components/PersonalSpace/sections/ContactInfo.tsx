@@ -18,7 +18,6 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ data, onChange }) => {
     { value: 'email', label: '📧 Email' },
     { value: 'phone', label: '📱 Téléphone' },
     { value: 'sms', label: '💬 SMS' },
-    { value: 'whatsapp', label: '📲 WhatsApp' },
     { value: 'letter', label: '✉️ Courrier postal' },
     { value: 'visit', label: '🏢 Visite en personne' }
   ];

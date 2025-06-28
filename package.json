@@ -9,13 +9,17 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test:azure": "echo '🇪🇺 Test Configuration Azure OpenAI EU...' && node -e \"console.log('✅ Azure OpenAI configuré pour:', {endpoint: process.env.VITE_AZURE_OPENAI_ENDPOINT?.slice(0,30) + '...', deployment: process.env.VITE_AZURE_OPENAI_DEPLOYMENT_NAME, region: 'swedencentral'})\"",
-    "postinstall": "node scripts/copy-pdf-worker.mjs"
+    "postinstall": "node scripts/copy-pdf-worker.mjs",
+    "import-knowledge": "tsx scripts/import-knowledge.ts",
+    "knowledge:clear": "echo '🗑️ Suppression de la base de connaissances...' && tsx scripts/clear-knowledge.ts"
   },
   "dependencies": {
     "@googlemaps/react-wrapper": "^1.1.35",
     "@headlessui/react": "^1.7.18",
     "@supabase/supabase-js": "^2.49.9",
+    "@types/dotenv": "^6.1.1",
     "browser-image-compression": "^2.0.2",
+    "dotenv": "^16.5.0",
     "i18next": "^23.10.0",
     "i18next-browser-languagedetector": "^7.2.0",
     "lucide-react": "^0.344.0",
@@ -48,6 +52,7 @@
     "postcss": "^8.5.4",
     "supabase": "^2.24.3",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.20.3",
     "typescript": "^5.2.2",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",

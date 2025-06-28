@@ -64,15 +64,15 @@ const VerificateurEligibilite: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white/80 backdrop-blur-xl rounded-[24px] shadow-xl border border-gray-100/50 p-8">
           
-          {/* Header */}
+            {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
                 <Search className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Vérificateur d'Éligibilité
-              </h1>
+                  Vérificateur d'Éligibilité
+                </h1>
             </div>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Identifiez toutes les aides sociales auxquelles vous avez droit au Luxembourg
@@ -92,67 +92,67 @@ const VerificateurEligibilite: React.FC = () => {
                     <h3 className="text-xl font-bold text-gray-900 mb-2">
                       Interface Collaborative
                     </h3>
-                    <p className="text-gray-600">
+                <p className="text-gray-600">
                       Conçue pour les entretiens avec un travailleur social. 
                       Interface multilingue avec rapport détaillé instantané.
-                    </p>
-                  </div>
-                </div>
+                </p>
+              </div>
+            </div>
 
                 {/* Fonctionnalités */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
                     <Users className="w-5 h-5 text-purple-600" />
                     <span className="text-sm text-gray-700">Mode collaboratif</span>
-                  </div>
+                    </div>
                   <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
                     <Globe className="w-5 h-5 text-purple-600" />
                     <span className="text-sm text-gray-700">6 langues supportées</span>
-                  </div>
+                        </div>
                   <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
                     <FileText className="w-5 h-5 text-purple-600" />
                     <span className="text-sm text-gray-700">Rapport bilingue</span>
-                  </div>
+                      </div>
                   <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
                     <Shield className="w-5 h-5 text-purple-600" />
                     <span className="text-sm text-gray-700">100% confidentiel</span>
+                    </div>
                   </div>
-                </div>
 
                 {/* Stats */}
                 <div className="flex items-center justify-center gap-8 mb-6 p-4 bg-gray-50 rounded-lg">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-purple-600 mb-1">
-                      <FileText className="w-4 h-4" />
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1 text-purple-600 mb-1">
+                        <FileText className="w-4 h-4" />
                       <span className="font-bold text-lg">11</span>
-                    </div>
+                      </div>
                     <p className="text-xs text-gray-600">questions max</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-purple-600 mb-1">
+                    </div>
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1 text-purple-600 mb-1">
                       <Clock className="w-4 h-4" />
                       <span className="font-bold text-lg">3-5</span>
-                    </div>
+                      </div>
                     <p className="text-xs text-gray-600">minutes</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-purple-600 mb-1">
+                    </div>
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1 text-purple-600 mb-1">
                       <Globe className="w-4 h-4" />
                       <span className="font-bold text-lg">6</span>
-                    </div>
+                      </div>
                     <p className="text-xs text-gray-600">langues</p>
+                    </div>
                   </div>
-                </div>
 
-                {/* Action Button */}
-                <button
-                  onClick={handleStartEligibilityCheck}
+                  {/* Action Button */}
+                  <button
+                    onClick={handleStartEligibilityCheck}
                   className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
-                >
+                  >
                   <span>Commencer la vérification</span>
                   <ArrowRight className="w-5 h-5" />
-                </button>
-              </div>
+                  </button>
+                </div>
             </div>
           </div>
 
@@ -178,10 +178,10 @@ const VerificateurEligibilite: React.FC = () => {
                 <h5 className="font-semibold text-purple-900 mb-2">Mode Collaboratif</h5>
                 <p className="text-sm text-purple-800">
                   Travailleur social et bénéficiaire voient les informations simultanément.
-                </p>
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
           {/* Politique de Confidentialité */}
           <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 mb-6">

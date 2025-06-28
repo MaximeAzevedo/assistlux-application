@@ -199,6 +199,52 @@ const Dashboard: React.FC = () => {
               </Link>
             </div>
           </div>
+
+          {/* Eligibility Check Card */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-tr from-violet-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                <Euro className="w-6 h-6 text-green-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                {t('features.eligibility.title')}
+              </h3>
+              <p className="text-gray-600 leading-relaxed mb-6">
+                {t('features.eligibility.description')}
+              </p>
+              <Link
+                to="/verificateur-eligibilite"
+                className="inline-flex items-center text-green-600 hover:text-green-700 font-medium group-hover:translate-x-1 transition-transform duration-300"
+              >
+                {t('features.eligibility.button')} →
+              </Link>
+            </div>
+          </div>
+
+          {/* Traducteur d'entretiens Card */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-tr from-violet-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                <MessageCircle className="w-6 h-6 text-indigo-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Traducteur d'entretiens
+              </h3>
+              <p className="text-gray-600 leading-relaxed mb-6">
+                Traduction vocale temps réel pour vos entretiens sociaux. Interface bilingue avec synthèse IA automatique.
+              </p>
+              <Link
+                to="/traducteur-entretiens"
+                className="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium group-hover:translate-x-1 transition-transform duration-300"
+              >
+                Commencer →
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
 

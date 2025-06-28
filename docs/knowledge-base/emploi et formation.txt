@@ -1,0 +1,211 @@
+Voici les informations détaillées concernant les entités mentionnées dans la catégorie "IV. Emploi et Insertion Professionnelle", tirées de la base de données :
+
+## I. Agence pour le développement de l'emploi (ADEM)
+
+*   **Nom officiel complet** : Agence pour le développement de l'emploi (ADEM).
+*   **Type de service** : Service public de l'emploi, chargé de l'inscription des demandeurs d'emploi, du versement des indemnités de chômage et de la mise en relation avec les employeurs. Il fournit également des services d'orientation professionnelle, de formation et des mesures d'insertion pour les personnes handicapées.
+*   **Catégorie** : Emploi et Insertion Professionnelle [Requête de l'utilisateur], Agence nationale, Administration publique, Orientation et Accès à l'Emploi, Service public central pour les demandeurs d'emploi et les employeurs [Requête de l'utilisateur].
+*   **Adresse(s)** :
+    *   **Siège** : 13A, rue de Bitbourg, L-1273 Luxembourg-Hamm. BP 2208, L-1022 Luxembourg.
+    *   **Bâtiment ADEM à Hamm (services spécifiques)** : 19, rue de Bitbourg, L-1273 Luxembourg-Hamm.
+    *   **Antennes régionales** : Diekirch, Differdange, Esch-sur-Alzette (Belval), Luxembourg-Ville, Wasserbillig, Wiltz.
+    *   **Maisons de l'Orientation (hébergeant ADEM-OP)** : Luxembourg-Ville (rue Aldringen), Diekirch (avenue de la Gare), Esch-Belval (boulevard Porte de France).
+*   **Téléphone(s)** :
+    *   **Contact Center Demandeurs d'emploi** : (+352) 247-88888.
+    *   **Contact Center Employeurs** : (+352) 247-88000.
+    *   **Service d'orientation professionnelle (ADEM-OP) à Luxembourg** : (+352) 247-85480.
+*   **Site web** : www.adem.public.lu. Le site institutionnel est également accessible via adem.gouvernement.lu.
+*   **Email** : info@adem.etat.lu. Pour les employeurs : employeur@adem.etat.lu. Pour le Service Salariés à Capacité Réduite : info.tcr@adem.etat.lu.
+*   **Horaires d'ouverture** :
+    *   **Agences et Contact Centers téléphoniques** : Généralement du lundi au vendredi, de 8h00 à 12h00 et de 13h00 à 17h00.
+    *   **Service Salariés Capacité Réduite** : Lundi - Vendredi : 08h00-18h00.
+    *   Certaines agences locales (Differdange, Wiltz, Wasserbillig) peuvent avoir des consultations sur rendez-vous et des horaires non spécifiés.
+    *   **ADEM-OP Maison de l'Orientation Luxembourg** : Lundi - Vendredi : 10h00-16h00.
+*   **Informations générales et missions** :
+    *   L'ADEM est le service public de l'emploi au Luxembourg, chargé de l'inscription des demandeurs d'emploi, de la détermination et du versement des indemnités de chômage, et de la mise en œuvre de mesures pour favoriser leur retour sur le marché du travail.
+    *   Elle offre des services d'assistance et d'orientation, de conseil en orientation professionnelle, et d'accès à des formations adaptées aux besoins du marché du travail et des individus.
+    *   L'ADEM gère un portail d'offres d'emploi (JobBoard) et met en œuvre des mesures spécifiques pour l'emploi, telles que le Contrat d'Initiation à l'Emploi (CIE) et le Contrat d'Appui-Emploi (CAE).
+    *   Elle est également responsable de l'orientation professionnelle des jeunes de moins de 30 ans et assure la formation, la rééducation et l'intégration professionnelle des personnes en situation de handicap.
+    *   L'ADEM joue un rôle pivot pour la reconnaissance du statut de salarié handicapé via sa Commission médicale.
+*   **Conditions d'accès** :
+    *   **Générales** : Être à la recherche d'un emploi, être apte au travail, résider légalement au Luxembourg (ou conditions spécifiques pour frontaliers).
+    *   **Spécifiques pour certaines mesures** : Âge, durée d'inscription, statut peuvent être des critères.
+    *   **Statut de salarié handicapé** : Pour être reconnu comme salarié handicapé, il faut présenter une diminution de la capacité de travail d'au moins 30%, avoir un état médical stable, être apte à exercer un emploi salarié sur le marché du travail ordinaire ou en atelier protégé, et remplir les conditions pour exercer une activité professionnelle au Luxembourg.
+*   **Délais** : Les délais spécifiques pour les procédures de l'ADEM ne sont pas détaillés, à l'exception de la durée des contrats d'insertion (par exemple, 12 mois pour le CIE).
+*   **Documents requis** :
+    *   **Pour l'inscription comme demandeur d'emploi** : Numéro de matricule national à 13 chiffres, pièce d'identité en cours de validité (carte d'identité, passeport), carte de sécurité sociale et, le cas échéant, titre de séjour. Un CV actualisé et précis est indispensable.
+    *   **Pour la reconnaissance du statut de salarié handicapé** : Rapports médicaux récents et détaillés, copie de pièce d'identité, justificatifs de qualifications professionnelles, certificat d'affiliation à la sécurité sociale, et, pour les personnes en emploi, une copie du contrat de travail et la fiche d'aptitude du médecin du travail. Les ressortissants de pays tiers doivent également fournir la preuve d'un droit de séjour.
+*   **Procédures spécifiques** :
+    *   **Inscription comme demandeur d'emploi** : Peut se faire en ligne via MyGuichet.lu ou par téléphone après avoir fixé un rendez-vous. Une exception notable concerne les personnes s'inscrivant dans le cadre d'une demande de Revenu d'inclusion sociale (REVIS) ; elles doivent se présenter au rendez-vous communiqué par le Fonds National de Solidarité (FNS). Après inscription, le demandeur signe une convention de collaboration avec l'ADEM.
+    *   **Conseiller référent** : Suite à l'inscription, le demandeur d'emploi reçoit une convocation pour un premier entretien avec un conseiller référent, qui devient la personne de contact principale pour le suivi, l'orientation et l'information sur les mesures et formations.
+    *   **JobBoard** : Plateforme numérique centrale. Les demandeurs d'emploi inscrits ont accès à toutes les offres (publiques ou restreintes) et un accès exclusif aux nouvelles offres durant les sept premiers jours. Les profils peuvent être publiés et consultables par les employeurs. Les conseillers facilitent la mise en contact. Les coordonnées (téléphone, email) communiquées à l'ADEM doivent être à jour.
+    *   **Accès aux formations professionnelles** : Sous certaines conditions (notamment validation par le conseiller référent), l'ADEM propose un catalogue de formations gratuites, axées sur des secteurs qui recrutent ou sur le développement de compétences transversales. L'offre inclut des formations "sur mesure", sectorielles, d'activation/orientation professionnelle, et linguistiques. Les demandeurs d'emploi peuvent également introduire une demande de remboursement partiel des frais de formation via MyGuichet.lu après avoir obtenu un code d'accès de leur conseiller ADEM.
+    *   **Contrat d'Initiation à l'Emploi (CIE)** : Destiné aux jeunes de moins de 30 ans, inscrits à l'ADEM depuis au moins trois mois (sauf exceptions). Contrat de 12 mois (prolongeable de 6 mois), à temps plein, avec formation pratique en entreprise. L'indemnité varie de 80% à 130% du salaire social minimum non qualifié. L'employeur bénéficie d'une subvention.
+    *   **Contrat d'Appui-Emploi (CAE)** : Vise également les jeunes demandeurs d'emploi de moins de 30 ans, diplômés ou non, inscrits à l'ADEM depuis au moins trois mois. L'objectif est une initiation et/ou une formation pratique et théorique pour augmenter leurs compétences. Les promoteurs de CAE sont des entreprises ou organismes n'ayant pas la forme juridique d'une société commerciale (ex: ASBL, fondations, communes). Contrat de 12 mois directement entre le jeune et l'ADEM.
+    *   **Contrat de Réinsertion-Emploi (CRE)** : S'adresse aux demandeurs d'emploi âgés d'au moins 45 ans, aux salariés en reclassement interne ou externe avec une capacité de travail réduite, et aux salariés handicapés reconnus. Le demandeur doit être inscrit à l'ADEM depuis au moins un mois. Contrat de 12 mois.
+    *   **Reconnaissance du statut de salarié handicapé** : La demande est à adresser à la Commission médicale de l'ADEM.
+*   **Partenaires** : Ministère du Travail, offices sociaux locaux, Office National d'Inclusion Sociale (ONIS), Fonds National de Solidarité (FNS), centres de formation, associations d’insertion, Ministère Famille/Solidarités, Agents Régionaux d'Inclusion Sociale (ARIS), Service National de la Jeunesse (SNJ), Caritas, asbl Amitié Plurielle.
+*   **Informations pour professionnels** : L'ADEM dispose d'un centre de contact (infos techniques, formulaires modèles en ligne). Les travailleurs sociaux peuvent accompagner les usagers dans l'inscription à l'ADEM et les orienter vers l'ADEM-OP. Les Contact Centers de l'ADEM peuvent être utilisés par les professionnels. L'information sur les CIE et CAE est cruciale pour les jeunes. L'ADEM est un partenaire incontournable pour toute démarche d'insertion ou de réinsertion professionnelle des publics suivis par les services sociaux. L'ONIS dispose d'un annuaire des ARIS, qui sont les interlocuteurs privilégiés pour le suivi des bénéficiaires du REVIS. L'AIS (Fondation pour l'Accès au Logement) travaille en collaboration directe avec les services sociaux pour le logement des personnes vulnérables, et les demandes de logement AIS doivent être introduites par un service social partenaire.
+*   **Références légales** : Code du Travail (régime d’assurance chômage, articles L.621-1 et s.).
+*   **Autres informations pertinentes** : Accès au JobBoard pour demandeurs d'emploi inscrit. L'ADEM peut orienter les jeunes d'origine étrangère ou nécessitant un suivi particulier vers des programmes spécialisés (e.g. orientation CISP).
+
+---
+
+## II. Maison de l'Orientation
+
+*   **Nom officiel complet** : Maison de l'orientation.
+*   **Type de service** : Structure étatique regroupant plusieurs acteurs publics pour conseiller sur les choix d'études, formations et projets professionnels. Elle fournit des informations sur les parcours scolaires, le monde du travail et les possibilités de changement de parcours professionnel.
+*   **Catégorie** : Emploi et Insertion Professionnelle [Requête de l'utilisateur], Agence nationale, Orientation et Accès à l'Emploi, Service public d’orientation scolaire/professionnelle centralisé.
+*   **Adresse(s)** :
+    *   Luxembourg : 29, rue Aldringen, L-1118 Luxembourg. Ancien siège à 13 Rue de Reims, L-2417 Luxembourg (quartier Gare).
+    *   Antennes/services délocalisés à Esch-Belval et Diekirch (ADEM-OP).
+*   **Téléphone(s)** : Information générale : 8002-8181 (gratuit). Contacts spécifiques par service/personne sont disponibles.
+*   **Site web** : maison-orientation.public.lu, orientation.lu.
+*   **Email** : info@m-o.lu. Communication : communication@m-o.lu.
+*   **Horaires d'ouverture** :
+    *   Espace conseil et information (Luxembourg) : accueil sans rendez-vous tous les jours de 10h00 à 12h00 et de 13h00 à 17h00. Les services spécifiques peuvent avoir des horaires/modalités sur rendez-vous.
+    *   Anciennement : Lundi–vendredi, 8h30–12h et 13h30–17h.
+*   **Informations générales et missions** :
+    *   C'est une administration de l'État qui centralise des acteurs publics de l'orientation scolaire et professionnelle.
+    *   Sa mission est de conseiller tout citoyen pour identifier ses capacités, compétences, intérêts et l'aider à prendre des décisions éclairées concernant ses choix d'études, de formations, ainsi que ses projets professionnels.
+    *   Elle est organisée autour de plusieurs guichets thématiques : le Centre psycho-social et d'accompagnement scolaires (CePAS), le Service de la scolarisation des enfants étrangers (SECAM), le Service information et conseil études supérieures (MESR), le service d'orientation professionnelle de l'ADEM (ADEM-OP), le Service de la Formation des Adultes (SFA), et l'Agence de transition vers la vie active (ATVA) pour les jeunes à besoins spécifiques.
+    *   Un espace multimédia est à disposition pour la recherche documentaire, la rédaction de CV et de lettres de motivation, ou pour des démarches administratives en ligne.
+*   **Conditions d'accès** : Ouvert à tous. Certaines conditions spécifiques peuvent s'appliquer pour des services particuliers hébergés (ex: ADEM-OP pour demandeurs d'emploi inscrits).
+*   **Délais** : Non spécifié.
+*   **Documents requis** : Non spécifié, mais pour un bilan de compétences via l'ADEM, il est nécessaire d'être inscrit à l'ADEM.
+*   **Procédures spécifiques** :
+    *   **Bilan de compétences** : Peut être proposé aux demandeurs d'emploi inscrits à l'ADEM sous certaines conditions par leur conseiller référent. De nombreux organismes de formation membres du portail lifelong-learning.lu proposent également des bilans de compétences. Le site orientation.lu offre des informations complémentaires et des liens vers des tests d'auto-évaluation en ligne.
+    *   **Modalités de contact** : Accueil physique sans rendez-vous pour l'information générale. Prise de rendez-vous pour des conseils individualisés avec les différents services hébergés. Permanence téléphonique. Formulaire en ligne possible via les sites web.
+*   **Partenaires** : Ministère de l'Éducation nationale, de l'Enfance et de la Jeunesse (MENJE), Institut national pour le développement de la formation professionnelle continue (INFPC), Agence pour le développement de l'emploi (ADEM), Service National de la Jeunesse (SNJ).
+*   **Informations pour professionnels** : Les services de la Maison de l'Orientation aident les professionnels à orienter efficacement les usagers.
+*   **Références légales** : Service public relevant du MENJE.
+
+---
+
+## III. Naxi, Centre de Formation et d'Insertion Professionnelle pour Femmes
+
+*   **Nom officiel complet** : Naxi, Centre de Formation et d'Insertion Professionnelle pour Femmes.
+*   **Type de service** : Formation et insertion professionnelle. Propose des programmes de qualification.
+*   **Catégorie** : Réinsertion professionnelle (via l'économie sociale) [Requête de l'utilisateur], Formation.
+*   **Adresse(s)** : 49 A, rue du Baerendall, L-8212 Mamer.
+*   **Téléphone(s)** : 8002-4488.
+*   **Site web** : https://fed.lu/wp/services/naxi/.
+*   **Email** : naxi@fed.lu.
+*   **Horaires d'ouverture** :
+    *   Lundi - Vendredi : 08h00-12h00 & 14h00-16h00 (ou sur RDV).
+    *   Horaires Bureau : Lundi - Vendredi 08h30-11h30 & 13h30-16h30 (indicatif Office Social).
+    *   Horaires des cours : variés (voir site web).
+*   **Informations générales et missions** : Initiative de l'économie sociale axée sur la formation et l'insertion.
+*   **Conditions d'accès** : Pour femmes cherchant un emploi, adressées par l'ADEM ou l'ONIS.
+*   **Partenaires** : Agence pour le développement de l'emploi (ADEM), Office National d'Inclusion Sociale (ONIS).
+
+---
+
+## IV. Competence A.s.b.l.
+
+*   **Nom officiel complet** : Competence A.s.b.l..
+*   **Type de service** : Réinsertion professionnelle, Bilan de compétences, Formations.
+*   **Catégorie** : Réinsertion professionnelle (via l'économie sociale) [Requête de l'utilisateur], Formation.
+*   **Adresse(s)** : 13-15, Breedewues, L-1259 Senningerberg.
+*   **Téléphone(s)** : 26324220.
+*   **Site web** : www.competence-asbl.com.
+*   **Email** : info@competence-asbl.com.
+*   **Horaires d'ouverture** : Non spécifié (Cours variés en journée/soirée, voir site web).
+*   **Informations générales et missions** : Initiative de l'économie sociale pour la réinsertion. Propose des formations et des bilans de compétences.
+
+---
+
+## V. COSP, Centre d'Orientation Socio-Professionnelle A.s.b.l.
+
+*   **Nom officiel complet** : COSP, Centre d'Orientation Socio-Professionnelle A.s.b.l..
+*   **Type de service** : Orientation socio-professionnelle, incluant la guidance et la formation.
+*   **Catégorie** : Réinsertion professionnelle (via l'économie sociale) [Requête de l'utilisateur], Emploi, Formation.
+*   **Adresse(s)** : 30, rue de Diekirch, L-7440 Lintgen.
+*   **Téléphone(s)** : 180 48 85-1.
+*   **Site web** : cosp.lu/.
+*   **Email** : contact@cosp.lu.
+*   **Horaires d'ouverture** :
+    *   Lundi - Jeudi : 07h45-17h00 ; Vendredi : 07h45-16h00 (Atelier lavage repassage).
+    *   Secrétariat : Lundi, Vendredi 14h00-16h00 (indicatif). Horaires des cours : variés (en soirée et samedi matin, voir site web).
+*   **Informations générales et missions** : Centre spécialisé dans l'orientation socio-professionnelle. Aide à définir un projet professionnel et à identifier les parcours de formation adaptés. Propose un accompagnement individuel.
+
+---
+
+## VI. Forum pour l'emploi
+
+*   **Nom officiel complet** : Forum pour l'emploi.
+*   **Type de service** : Réinsertion professionnelle, pouvant inclure la formation. Propose des emplois de service (jardinage, nettoyage, ménage, brocante *Am Gaertchen* et *PMH* – café solidaire) encadrés par l'association.
+*   **Catégorie** : Réinsertion professionnelle (via l'économie sociale) [Requête de l'utilisateur], Emploi, Formation.
+*   **Adresse(s)** :
+    *   **Siège** : 36, Z.A.E.R. Op der Héi, L-9809 Hosingen.
+    *   **Antenne Diekirch** : 20, route d'Ettelbrück, L-9230 Diekirch.
+*   **Téléphone(s)** : 532378, (+352) 80 48 85-1.
+*   **Site web** : www.fpe.lu.
+*   **Email** : nmigy@fpe.lu, info@fpe.lu.
+*   **Horaires d'ouverture** :
+    *   Lundi - Vendredi : 08h00-17h00.
+    *   Bureau Cours de langues : Lundi, Mardi, Jeudi, Vendredi 08h00-11h45 & 13h30-16h30. Horaires des cours : variés (voir site web).
+*   **Informations générales et missions** : Initiative pour l'emploi et la réinsertion professionnelle par le travail et l'accompagnement. L'objectif est le soutien (contrats aidés, réinsertion) et la réintégration par le travail. Les programmes peuvent inclure des modules de formation.
+*   **Conditions d'accès** : S'adresse aux chômeurs de longue durée, aux bénéficiaires du revenu minimum, et aux personnes fragilisées cherchant un retour à l’emploi.
+*   **Partenaires** : Fondation de l'action sociale, ministères, syndicats, communes.
+
+---
+
+## VII. ProActif A.s.b.l.
+
+*   **Nom officiel complet** : ProActif A.s.b.l..
+*   **Type de service** : Réinsertion professionnelle. Propose des activités dans divers secteurs (ex: bâtiment, environnement) avec un accompagnement et potentiellement de la formation intégrée. L'objectif est de redonner un rythme de travail et de référer les bénéficiaires vers l’emploi durable.
+*   **Catégorie** : Réinsertion professionnelle (via l'économie sociale) [Requête de l'utilisateur], Formation.
+*   **Adresse(s)** : 5, rue de Läiteschbaach, L-5324 Contern.
+*   **Téléphone(s)** : 273344126.
+*   **Site web** : www.proactif.lu.
+*   **Email** : info@proactif.lu.
+*   **Horaires d'ouverture** : Non spécifié (Cours du soir, horaires spécifiques).
+*   **Informations générales et missions** : Entreprise socio-économique active depuis plus de 20 ans, spécialisée dans la remise au travail des chômeurs de longue durée.
+
+---
+
+## VIII. Zarabina A.s.b.l.
+
+*   **Nom officiel complet** : Zarabina A.s.b.l..
+*   **Type de service** : Réinsertion professionnelle, pouvant inclure la formation.
+*   **Catégorie** : Réinsertion professionnelle (via l'économie sociale) [Requête de l'utilisateur], Formation.
+*   **Adresse(s)** :
+    *   **Esch-sur-Alzette** : 27, rue Emile Mayrisch, L-4240 Esch-sur-Alzette.
+    *   **Luxembourg** : 37-39, rue Felix de Blochausen, L-1243 Luxembourg.
+*   **Téléphone(s)** : 26551213126 (Esch), 26551213608 (Luxembourg).
+*   **Site web** : www.zarabina.lu.
+*   **Email** : info@zarabina.lu.
+*   **Horaires d'ouverture** :
+    *   **Esch-sur-Alzette** : Horaires variés (voir sites web communaux). Les inscriptions sont possibles du lundi au vendredi de 12h00 à 18h00 (dates spécifiques).
+    *   **Luxembourg** : Centre d'appel : Lundi - Vendredi : 06h45-19h00 ; Samedi, Dimanche et jours fériés : 09h00-16h30.
+*   **Informations générales et missions** : Initiative de l'économie sociale pour la réinsertion par le travail et l'accompagnement. Les programmes peuvent inclure des modules de formation.
+
+---
+
+## IX. Office National d'Inclusion Sociale (ONIS)
+
+*   **Nom officiel complet** : Office national d’inclusion sociale (ONIS).
+*   **Type de service** : Coordonne les actions sociales du Revenu d'inclusion sociale (REVIS), élabore des plans d’activation/stabilisation, et oriente vers des mesures adaptées (activités socio-professionnelles, apprentissage, etc.). Organise le suivi intensif des bénéficiaires du REVIS, notamment les Travaux d'Utilité Collective (TUC).
+*   **Catégorie** : Emploi et Insertion Professionnelle [Requête de l'utilisateur], Agence nationale, Aides Sociales et Stabilisation du Parcours, Administration publique relevant du Ministère de la Famille, de l’Intégration et à la Grande Région, Administration du Revenu d'inclusion sociale (REVIS).
+*   **Adresse(s)** : 13C, rue de Bitbourg, L-1273 Luxembourg.
+*   **Téléphone(s)** : (+352) 247-83636.
+*   **Site web** : onis.gouvernement.lu. Des informations sont également disponibles via guichet.lu (infos Démarches REVIS).
+*   **Email** : contact@onis.etat.lu.
+*   **Horaires d'ouverture** : Non précisés publiquement ; le travail se fait sur rendez-vous et dans le cadre de projets territoriaux.
+*   **Informations générales et missions** :
+    *   Coordonne l'action des Agents Régionaux d'Inclusion Sociale (ARIS) pour garantir un traitement identique des bénéficiaires devant la loi et s'assurer que les mesures d'activation sont appropriées.
+    *   Conseille et guide les ARIS par des directives, des réunions et des entretiens individuels, et les informe des dispositifs établis ou nouveaux.
+    *   Gère les constats d'incapacité de travail des bénéficiaires d'une allocation d'activation et, le cas échéant, convoque les personnes à se présenter auprès d'experts mandatés par le directeur de l'ONIS.
+    *   Contrôle les informations reprises aux "décomptes mensuels" des bénéficiaires de l'allocation d'activation et gère les dossiers des personnes dispensées de la participation à des mesures d'activation.
+    *   Assure l'exécution de la loi sur le revenu d'inclusion sociale (REVIS), coordonne les actions des autorités et organisations responsables, et collecte des données statistiques.
+*   **Conditions d'accès** : Le public cible est constitué des bénéficiaires du REVIS (personnes de moins de 65 ans aptes au travail et nécessitant un accompagnement intensif). Ces personnes sont orientées vers l'ONIS par l'ADEM en raison de besoins spécifiques en matière d'activation et d'un éloignement particulier du marché de l'emploi.
+*   **Procédures spécifiques** :
+    *   **Plan d'activation individualisé** : Lorsqu'un bénéficiaire du REVIS est jugé apte au travail, l'ADEM l'oriente vers l'ONIS. L'ONIS, par le biais de ses Agents Régionaux d'Inclusion Sociale (ARIS), élabore alors avec le bénéficiaire un plan d'activation individualisé. Ce plan, d'une durée maximale d'un an (renouvelable), définit un projet d'activation, des engagements réciproques et un calendrier de démarches. La participation à ce parcours d'activation est une condition pour le maintien du REVIS. Un refus de collaborer avec l'ONIS ou l'ADEM, ou le non-respect des engagements du plan d'activation, peut entraîner la suspension ou le retrait des prestations.
+    *   **Mesures d'activation** : Peuvent inclure des activités de stabilisation sociale, des travaux d'utilité collective (TUC), des cours et formations, ou encore des mesures de réadaptation ou de réhabilitation. Inversement, les personnes qui, grâce à ces mesures, deviennent aptes à intégrer le marché du travail ordinaire sont réorientées par l'ONIS vers l'ADEM.
+    *   **Travaux d'utilité collective (TUC)** : Le TUC est une mesure d'activation organisée par l'ONIS pour les bénéficiaires du REVIS. Elle peut être organisée auprès de l'État, des communes, des établissements publics ou d'utilité publique, et des institutions poursuivant un but non lucratif. Le TUC permet au bénéficiaire d'acquérir des expériences sociales et professionnelles et d'améliorer son employabilité sous des conditions moins exigeantes que celles du premier marché. L'allocation est calculée sur la base du salaire social minimum.
+    *   **Mesures de stabilisation** : Ce sont des mesures préparatoires destinées à favoriser la qualité de vie et l'inclusion sociale du bénéficiaire et, le cas échéant, d'améliorer son employabilité en vue d'augmenter ses chances d'insertion sur le marché de l'emploi. Quelques exemples sont les cours et/ou formations (langue, informatique), les cures, traitements ou autres mesures de réadaptation/réhabilitation, et les suivis psychologiques.
+*   **Partenaires** : Agence pour le développement de l'emploi (ADEM) (pour profilage et suivi ordinaire des bénéficiaires du REVIS), Ministère de la Famille, des Solidarités, du Vivre ensemble et de l'Accueil (tutelle), communes (via ARIS – 30 agents régionaux), associations d’aide sociale, Fonds National de Solidarité (FNS), offices sociaux communaux/intercommunaux (qui orientent vers l'ONIS), organismes de formation.
+*   **Informations pour professionnels** : L'ONIS dispose d'un annuaire des Agents Régionaux d'Inclusion Sociale (ARIS), qui sont les interlocuteurs privilégiés pour le suivi des bénéficiaires du REVIS dans le cadre de l'activation. Des circulaires d’information et des formations pour référents sociaux sont également disponibles.
+*   **Références légales** : Loi du 28 juillet 2018 relative au revenu d’inclusion sociale (loi REVIS). La convention avec l’OSCR (Office Social Commun de Remich) est conclue sur la base de cette loi.
+*   **Autres informations pertinentes** : La convention avec l'OSCR règle les modalités de collaboration entre l’OSCR et l’ONIS et le financement des obligations incombant à l’organisme de gestion dans la mise en œuvre du REVIS.

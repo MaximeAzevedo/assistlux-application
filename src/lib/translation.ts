@@ -75,6 +75,21 @@ export async function translateText(text: string, targetLanguage: string): Promi
   }
 }
 
+export async function translateTextForInterview(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
+  if (!text?.trim()) return text;
+  
+  try {
+    return await aiService.translateTextForInterview(text, sourceLanguage, targetLanguage);
+  } catch (error) {
+    // Log seulement en développement
+    if (import.meta.env.DEV) {
+      console.error('Interview translation error:', error);
+    }
+    // Fallback vers traduction normale
+    return await translateText(text, targetLanguage);
+  }
+}
+
 export async function detectLanguage(text: string): Promise<string> {
   try {
     if (!text) {

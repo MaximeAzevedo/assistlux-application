@@ -106,6 +106,54 @@ export class AIService {
     return response.content;
   }
 
+  // Traduction spécialisée pour entretiens sociaux
+  async translateTextForInterview(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
+    const languageNames: Record<string, string> = {
+      'fr': 'français',
+      'en': 'anglais',
+      'ar': 'arabe',
+      'de': 'allemand',
+      'es': 'espagnol',
+      'it': 'italien',
+      'pt': 'portugais',
+      'ru': 'russe',
+      'tr': 'turc',
+      'nl': 'néerlandais',
+      'pl': 'polonais',
+      'ro': 'roumain',
+      'fa': 'persan',
+      'ur': 'ourdou'
+    };
+
+    const sourceLangName = languageNames[sourceLanguage] || sourceLanguage;
+    const targetLangName = languageNames[targetLanguage] || targetLanguage;
+
+    const response = await this.createCompletion({
+      messages: [
+        {
+          role: "system",
+          content: `Tu es un traducteur expert spécialisé dans les entretiens sociaux et administratifs. 
+
+CONTEXTE: Tu traduis une conversation en temps réel entre un assistant social et un usager.
+
+INSTRUCTIONS:
+- Traduis fidèlement du ${sourceLangName} vers le ${targetLangName}
+- Conserve le ton naturel et respectueux de la conversation
+- Adapte les formules de politesse selon les normes culturelles
+- Garde la même personne (je/vous/tu) que dans l'original
+- Pour les termes administratifs, utilise les équivalents officiels
+- Sois précis et naturel, comme dans une vraie conversation
+
+IMPORTANT: Réponds UNIQUEMENT avec la traduction, sans commentaire ni explication.`
+        },
+        { role: "user", content: text }
+      ],
+      temperature: 0.2, // Plus déterministe pour la cohérence
+      max_tokens: 800
+    });
+    return response.content;
+  }
+
   // Détection de langue
   async detectLanguage(text: string): Promise<string> {
     const response = await this.createCompletion({

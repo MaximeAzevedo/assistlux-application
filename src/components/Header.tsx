@@ -66,6 +66,13 @@ const Header = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
               <Link 
+                to="/traducteur-entretiens" 
+                className="text-gray-700 hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 hover:bg-clip-text hover:text-transparent font-semibold transition-all relative group"
+              >
+                Traducteur
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+              </Link>
+              <Link 
                 to="/carte-interactive" 
                 className="text-gray-700 hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 hover:bg-clip-text hover:text-transparent font-semibold transition-all relative group"
               >
@@ -119,6 +126,13 @@ const Header = () => {
               onClick={() => setIsOpen(false)}
             >
               Effectuer démarche
+            </Link>
+            <Link
+              to="/traducteur-entretiens"
+              className="block px-3 py-2 rounded-xl text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Traducteur d'entretiens
             </Link>
             <Link
               to="/carte-interactive"
