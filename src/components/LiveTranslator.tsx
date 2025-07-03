@@ -52,24 +52,25 @@ export const LiveTranslator: React.FC<LiveTranslatorProps> = ({
     setAzureSpeechAvailable(available);
 
     // Configuration des callbacks Azure Speech
-    azureSpeechService.setCallbacks(
-      (result: SpeechRecognitionResult) => {
-        setInputText(result.text);
-        setSpeechStatus('idle');
-        setIsListening(false);
-      },
-      (error: string) => {
-        console.error('❌ Erreur Azure Speech:', error);
-        setSpeechStatus('idle');
-        setIsListening(false);
-      },
-      (status: 'listening' | 'processing' | 'stopped') => {
-        setSpeechStatus(status === 'stopped' ? 'idle' : status);
-        if (status === 'stopped') {
-          setIsListening(false);
-        }
-      }
-    );
+    const handleResult = (result: SpeechRecognitionResult) => {
+      setInputText(result.text);
+      setSpeechStatus('idle');
+      setIsListening(false);
+    };
+
+    const handleError = (error: string) => {
+      console.error('❌ Erreur Azure Speech:', error);
+      setSpeechStatus('idle');
+      setIsListening(false);
+    };
+
+    azureSpeechService.addResultListener(handleResult);
+    azureSpeechService.addErrorListener(handleError);
+
+    return () => {
+      azureSpeechService.removeResultListener(handleResult);
+      azureSpeechService.removeErrorListener(handleError);
+    };
   }, []);
 
   // Auto-scroll vers le bas

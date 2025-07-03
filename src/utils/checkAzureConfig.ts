@@ -53,6 +53,12 @@ export const checkAzureSpeechConfig = (): AzureConfigCheck => {
   };
 };
 
+// Fonction asynchrone pour vérifier la configuration Azure
+export const checkAzureConfiguration = async (): Promise<boolean> => {
+  const config = checkAzureSpeechConfig();
+  return config.isConfigured;
+};
+
 export const logAzureConfigStatus = (): void => {
   const config = checkAzureSpeechConfig();
   

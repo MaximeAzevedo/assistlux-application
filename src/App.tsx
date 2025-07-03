@@ -18,6 +18,7 @@ import AssistanceJudiciaireWizard from './components/AssistanceJudiciaire/Assist
 import ProceduresGuide from './components/ProceduresGuide/ProceduresGuide';
 import AdminPage from './pages/Admin';
 import InterviewTranslator from './components/InterviewTranslator/InterviewTranslator';
+import FileConverter from './components/FileConverter/FileConverter';
 
 // Composant de chargement
 const LoadingSpinner = () => (
@@ -47,8 +48,9 @@ function App() {
           <Route path="/carte-interactive" element={<CarteInteractive />} />
           <Route path="/aides-et-informations" element={<Dashboard />} />
           
-          {/* Nouvelle fonctionnalité : Traducteur d'entretiens */}
+          {/* Nouvelles fonctionnalités */}
           <Route path="/traducteur-entretiens" element={<InterviewTranslator />} />
+          <Route path="/convertisseur-fichiers" element={<FileConverter />} />
           
           {/* Pages de développement */}
           <Route path="/database-setup" element={<DatabaseSetup />} />

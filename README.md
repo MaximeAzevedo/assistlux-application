@@ -229,147 +229,195 @@ const azureOpenAI = new AzureOpenAI({
 - **🛡️ Anonymisation RGPD** : Anonymisation automatique de 10+ types de données personnelles
 - **🗑️ Effacement Sécurisé** : Nettoyage immédiat des données temporaires
 - **🔒 Conformité RGPD Complète** : Aucune donnée personnelle conservée
+- **🎯 Traduction Temps Réel Améliorée** : Détection automatique multi-langues et synthèse vocale Azure
 
 ---
 
-## 📋 Configuration Azure OpenAI EU
+## 🎙️ **FONCTIONNALITÉ TRADUCTION TEMPS RÉEL - AMÉLIORATIONS v2.5**
 
-### Variables d'Environnement Requises
+### 🔧 **Corrections des Bugs Critiques**
 
-```env
-# Azure OpenAI Configuration (RGPD EU Compliant - Sweden Central)
-VITE_AZURE_OPENAI_API_KEY=your_azure_openai_api_key
-VITE_AZURE_OPENAI_ENDPOINT=https://assistluxsweden.openai.azure.com/
-VITE_AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini
-VITE_AZURE_OPENAI_API_VERSION=2024-07-18
+#### ✅ **1. Détection de Langue Améliorée**
+- **Avant** : Azure Speech configuré pour une seule langue → mauvaise reconnaissance
+- **Après** : Détection automatique multi-langues avec langues candidates
+- **Résultat** : Reconnaissance précise même si l'usager change de langue
 
-# Ancienne configuration OpenAI (désactivée)
-# VITE_OPENAI_API_KEY=sk-...
-```
+#### ✅ **2. Logique de Locuteur Intelligente**  
+- **Avant** : Simple comparaison `langue détectée = langue assistant ?`
+- **Après** : Logique basée sur mots-clés + contexte + langues configurées
+- **Résultat** : Identification correcte assistant vs usager même en cas d'ambiguïté
 
-### 🔧 Installation Azure OpenAI
+#### ✅ **3. Synthèse Vocale Azure TTS**
+- **Avant** : Synthèse navigateur avec sélection de voix aléatoire
+- **Après** : Azure Text-to-Speech EU + fallback intelligent navigateur
+- **Résultat** : Voix naturelles dans la bonne langue avec accent approprié
 
-```bash
-# Package Azure OpenAI SDK
-npm install @azure/openai
+### 🎯 **Nouvelles Fonctionnalités**
 
-# Package OpenAI (requis pour Azure)
-npm install openai
-```
+#### 📊 **Qualité de Traduction en Temps Réel**
+- Calcul automatique basé sur la confiance de reconnaissance
+- Indicateur visuel : 🟢 >85% | 🟡 70-85% | 🔴 <70%
+- Pénalité pour erreurs récentes, bonus pour traductions réussies
 
-### 🇪🇺 Conformité EU Data Boundary
+#### 📄 **Export Détaillé des Sessions**
+- Statistiques complètes (durée, langues, précision)
+- Analyse automatique des sujets abordés
+- Métadonnées RGPD et conformité EU
+- Format JSON structuré pour archivage
 
-**✅ Région Conforme RGPD :**
-- **Région** : Sweden Central (`swedencentral`)
-- **Statut** : Inclus dans l'EU Data Boundary Microsoft
-- **Conformité** : 100% EU/EFTA résidence des données
-- **Anonymisation** : Automatique avant traitement IA
-
----
-
-## 🛡️ Fonctionnalités RGPD v2.5
-
-### 1. **Anonymisation Automatique**
-
-```typescript
-// Données anonymisées automatiquement :
-const anonymizedData = {
-  matricule: "MATRICULE_XXX",      // 13 chiffres → masqué
-  iban: "IBAN_XXX",                // IBAN → masqué  
-  noms: "NOM_XXX",                 // Noms/prénoms → masqués
-  adresses: "ADRESSE_XXX",         // Adresses Luxembourg → masquées
-  telephones: "TEL_XXX",           // +352 → masqués
-  emails: "EMAIL_XXX",             // Emails → masqués
-  montants: "MONTANT_XXX",         // Euros → masqués
-  dates: "DATE_XXX"                // Dates → masquées
-};
-```
-
-### 2. **Effacement Sécurisé Immédiat**
-
-```typescript
-// Triple suréécriture automatique
-await secureDataCleanup(tempData);
-// 1. Suréécriture avec '0'
-// 2. Suréécriture avec '1' 
-// 3. Mise à null + GC forcé
-```
-
-### 3. **Alerte RGPD Obligatoire**
-
-- ⚠️ Bannière fixe en haut de page
-- 🚫 Interface désactivée sans consentement
-- 📋 Message : "Ne scannez pas de documents contenant des infos personnelles si non nécessaire"
+#### 🔄 **Gestion Intelligente des Silences**
+- Timeout adaptatif (3s en mode conversation)
+- Redémarrage automatique après synthèse vocale
+- Pas d'interruption pour les pauses naturelles
 
 ---
 
-## 📊 Tableau de Conformité RGPD
+## 🧪 **GUIDE DE TEST - TRADUCTION TEMPS RÉEL**
 
-| Fonctionnalité | Statut v2.5 | Description |
-|----------------|-------------|-------------|
-| 🇪🇺 **Azure OpenAI EU** | ✅ **CONFORME** | Sweden Central - EU Data Boundary |
-| 🛡️ **Anonymisation** | ✅ **CONFORME** | 10+ patterns luxembourgeois |
-| 🗑️ **Effacement Immédiat** | ✅ **CONFORME** | Triple suréécriture sécurisée |
-| ⚠️ **Alerte RGPD** | ✅ **CONFORME** | Consentement obligatoire |
-| 🚫 **Conservation Données** | ✅ **CONFORME** | Aucune donnée conservée |
-| 📋 **Audit Trail** | ✅ **CONFORME** | Logs anonymisés complets |
+### **Phase 1 : Test de Détection Multi-Langues**
 
----
+1. **Démarrer le mode conversation**
+2. **Test 1** : Parler en français → vérifier détection "Assistant social"
+3. **Test 2** : Faire parler quelqu'un en anglais → vérifier détection "Usager" 
+4. **Test 3** : Alterner français/anglais rapidement → vérifier transitions
+5. **Test 4** : Dire des mots-clés ("bonjour", "help me") → vérifier logique intelligente
 
-## 🔄 Migration OpenAI → Azure OpenAI
+### **Phase 2 : Test de Qualité de Traduction**
 
-### Avant (OpenAI US - Non Conforme)
-```typescript
-// ❌ OpenAI US = Violation RGPD
-import OpenAI from 'openai';
-const openai = new OpenAI({
-  apiKey: process.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-});
-```
+1. **Observer l'indicateur de qualité** en temps réel
+2. **Parler clairement** → qualité devrait être >85% (🟢)
+3. **Murmurer ou parler avec bruit** → qualité devrait baisser (🟡/🔴)
+4. **Vérifier** que les traductions sont dans la bonne langue
+5. **Écouter la synthèse vocale** → vérifier accent approprié
 
-### Après (Azure OpenAI EU - Conforme)
-```typescript
-// ✅ Azure OpenAI EU = Conforme RGPD
-import { AzureOpenAI } from 'openai';
-const azureOpenAI = new AzureOpenAI({
-  apiKey: process.env.VITE_AZURE_OPENAI_API_KEY,
-  endpoint: process.env.VITE_AZURE_OPENAI_ENDPOINT,
-  apiVersion: process.env.VITE_AZURE_OPENAI_API_VERSION,
-  dangerouslyAllowBrowser: true
-});
-```
+### **Phase 3 : Test de Robustesse**
+
+1. **Tester avec accents forts** (arabe, portugais, etc.)
+2. **Faire des pauses longues** (>5s) → vérifier redémarrage auto
+3. **Couper/reconnecter Internet** → vérifier gestion d'erreur
+4. **Parler simultanément** → vérifier gestion des conflits
+
+### **Phase 4 : Test d'Export**
+
+1. **Faire une conversation complète** (5-10 échanges minimum)
+2. **Exporter la session** → vérifier fichier JSON généré
+3. **Analyser les statistiques** : durée, précision, sujets
+4. **Vérifier mentions RGPD** dans le rapport
 
 ---
 
-## 🔍 Exemples de Code
+## 🧪 **CORRECTIONS CRITIQUES v2.5.1 - TRADUCTION TEMPS RÉEL**
 
-### Analyse avec Anonymisation RGPD
+### ✅ **BUGS CORRIGÉS**
 
-```typescript
-const result = await azureOpenAI.chat.completions.create({
-  model: process.env.VITE_AZURE_OPENAI_DEPLOYMENT_NAME,
-  messages: [{
-    role: "user", 
-    content: [
-      { type: "text", text: "DOCUMENT ANONYMISÉ RGPD" },
-      { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64}` }}
-    ]
-  }],
-  max_tokens: 800,
-  temperature: 0.1
-});
+#### **1. Voix française qui prononce l'anglais** 
+- **Problème** : Fallback synthèse navigateur ne chargeait pas les voix correctement
+- **Solution** : Chargement forcé des voix + sélection intelligente par langue
+- **Résultat** : Chaque langue utilise maintenant sa voix native appropriée
+
+#### **2. Écoute qui s'arrête après la première interaction**
+- **Problème** : Azure Speech s'arrête après chaque reconnaissance malgré le mode "continu"
+- **Solution** : Redémarrage automatique + détection d'arrêt inattendu
+- **Résultat** : Écoute vraiment continue maintenant
+
+---
+
+## 🎯 **GUIDE DE TEST CRITIQUE**
+
+### **Test 1 : Vérification des Voix par Langue**
+
+1. **Démarrer mode conversation**
+2. **Parler en français** → Écouter la traduction anglaise
+   - ✅ **Attendu** : Voix anglaise native (accent américain/britannique)
+   - ❌ **Bug précédent** : Voix française tentant de prononcer l'anglais
+3. **Faire parler en anglais** → Écouter la traduction française  
+   - ✅ **Attendu** : Voix française native naturelle
+4. **Tester autres langues** (arabe, allemand, etc.)
+
+**Debug Console** :
+```
+🔍 Recherche voix pour langue: en
+📋 Codes recherchés: ["en-US", "en-GB", "en-AU", "en"]
+🎙️ Voix disponibles: ["Microsoft David - English (United States)", ...]
+✅ Voix système trouvée: Microsoft David - English (United States) (en-US)
+🎙️ Voix finale sélectionnée: Microsoft David - English (United States) (en-US)
 ```
 
-### Effacement Sécurisé
+### **Test 2 : Vérification Écoute Continue**
 
-```typescript
-// Nettoyage automatique dans finally{}
-finally {
-  await secureDataCleanup(tempData, base64);
-  // Triple suréécriture + GC forcé
-}
+1. **Démarrer mode conversation**
+2. **Parler** → Attendre la traduction
+3. **Ne rien toucher** → Vérifier que l'écoute redémarre automatiquement
+4. **Parler à nouveau** → Doit fonctionner sans clic
+5. **Répéter 5-10 fois** de suite
+
+**Debug Console** :
 ```
+🔄 Redémarrage automatique de l'écoute...
+🔄 Redémarrage écoute automatique en mode conversation...
+✅ Écoute redémarrée avec succès
+🎤 Session Azure Speech démarrée
+```
+
+### **Test 3 : Gestion Robuste des Erreurs**
+
+1. **Couper/reconnecter Internet** pendant une conversation
+2. **Parler pendant qu'une traduction est en cours**  
+3. **Arrêter/redémarrer rapidement le mode conversation**
+4. **Vérifier** que l'écoute reprend toujours automatiquement
+
+---
+
+## 🐛 **Débogage Avancé**
+
+### **Logs Critiques à Surveiller**
+
+```javascript
+// ✅ VOIX CORRECTE
+🎙️ Voix finale sélectionnée: Microsoft Aria Online (Natural) (en-US)
+
+// ❌ PROBLÈME VOIX  
+⚠️ Aucune voix trouvée, utilisation langue par défaut: fr-FR
+
+// ✅ ÉCOUTE CONTINUE OK
+🔄 Redémarrage automatique de l'écoute...
+✅ Écoute redémarrée avec succès
+
+// ❌ PROBLÈME ÉCOUTE CONTINUE
+❌ Erreur redémarrage automatique: [error]
+🔄 Nouvelle tentative dans 3 secondes...
+```
+
+### **Indicateurs Visuels**
+
+- 🟢 **"Conversation Active"** : Écoute en cours
+- 🟡 **"Conversation en Pause"** : Traitement en cours  
+- 🔴 **Erreur** : Problème de connexion/permission
+
+---
+
+## ⚡ **Performance Attendue**
+
+- **Latence vocale** : <2s (reconnaissance + traduction + synthèse)
+- **Redémarrage auto** : <1s après fin de synthèse
+- **Robustesse** : Récupération automatique des erreurs réseau
+- **Qualité vocale** : Voix natives pour chaque langue
+
+---
+
+## 🎯 **Prochaines Améliorations Prévues**
+
+### **Phase 2 - UX (2-3 semaines)**
+- [ ] Bouton pause temporaire pour consultations
+- [ ] Mode écoute sélective (activer/désactiver par locuteur)
+- [ ] Correction manuelle des traductions
+- [ ] Indicateur de niveau sonore temps réel
+
+### **Phase 3 - Fonctionnalités Avancées (3-4 semaines)**
+- [ ] Génération automatique de résumé de session
+- [ ] Détection automatique de termes techniques récurrents
+- [ ] Mode hors ligne de secours avec synthèse locale
+- [ ] Interface d'administration pour statistiques globales
 
 ---
 

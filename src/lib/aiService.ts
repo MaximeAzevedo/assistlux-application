@@ -122,17 +122,95 @@ export class AIService {
       'pl': 'polonais',
       'ro': 'roumain',
       'fa': 'persan',
-      'ur': 'ourdou'
+      'ur': 'ourdou',
+      'pt-br': 'portugais brésilien',
+      'es-mx': 'espagnol mexicain',
+      'sv': 'suédois',
+      'no': 'norvégien',
+      'da': 'danois',
+      'he': 'hébreu',
+      'zh': 'chinois mandarin',
+      'ja': 'japonais',
+      'ko': 'coréen',
+      'hi': 'hindi',
+      'th': 'thaï',
+      'vi': 'vietnamien',
+      'lb': 'luxembourgeois'
     };
 
     const sourceLangName = languageNames[sourceLanguage] || sourceLanguage;
     const targetLangName = languageNames[targetLanguage] || targetLanguage;
 
-    const response = await this.createCompletion({
-      messages: [
-        {
-          role: "system",
-          content: `Tu es un traducteur expert spécialisé dans les entretiens sociaux et administratifs. 
+    // 🆕 AMÉLIORATION : Prompts spécialisés par famille de langues
+    const getOptimizedPrompt = (sourceLang: string, targetLang: string): string => {
+      // Langues à script arabe/persan (RTL)
+      if (['ar', 'fa', 'ur', 'he'].includes(sourceLang) || ['ar', 'fa', 'ur', 'he'].includes(targetLang)) {
+        return `Tu es un expert en traduction spécialisé dans les langues sémitiques et persanes pour les services sociaux.
+
+CONTEXTE: Traduction d'entretien social entre assistant et usager.
+LANGUES: ${sourceLangName} → ${targetLangName}
+
+SPÉCIFICITÉS CULTURELLES:
+- Respecte les formules de politesse traditionnelles
+- Adapte le registre formel/informel selon la culture
+- Préserve le respect hiérarchique dans les salutations
+- Pour l'arabe : utilise l'arabe standard moderne (pas dialectal)
+- Pour le persan/ourdou : privilégie les formes respectueuses
+
+IMPORTANT: Réponds UNIQUEMENT avec la traduction naturelle et respectueuse.`;
+      }
+
+      // Langues asiatiques (idéographiques)
+      if (['zh', 'ja', 'ko'].includes(sourceLang) || ['zh', 'ja', 'ko'].includes(targetLang)) {
+        return `Tu es un expert en traduction spécialisé dans les langues d'Asie de l'Est pour les services sociaux.
+
+CONTEXTE: Traduction d'entretien social entre assistant et usager.
+LANGUES: ${sourceLangName} → ${targetLangName}
+
+SPÉCIFICITÉS CULTURELLES:
+- Respecte les niveaux de politesse (keigo en japonais, honorifiques en coréen)
+- Adapte les formes de respect selon l'âge et le statut
+- Pour le chinois : utilise le mandarin simplifié standard
+- Pour le japonais : niveau poli mais accessible (masu/desu)
+- Pour le coréen : forme 존댓말 (jondaetmal) respectueuse
+
+IMPORTANT: Réponds UNIQUEMENT avec la traduction culturellement appropriée.`;
+      }
+
+      // Langues slaves/cyrilliques
+      if (['ru', 'pl', 'ro'].includes(sourceLang) || ['ru', 'pl', 'ro'].includes(targetLang)) {
+        return `Tu es un expert en traduction spécialisé dans les langues d'Europe de l'Est pour les services sociaux.
+
+CONTEXTE: Traduction d'entretien social entre assistant et usager.
+LANGUES: ${sourceLangName} → ${targetLangName}
+
+SPÉCIFICITÉS LINGUISTIQUES:
+- Respecte les déclinaisons et aspects verbaux
+- Adapte les formules de politesse slaves
+- Privilégie la forme polie "vous" (вы en russe, Pan/Pani en polonais)
+- Utilise un vocabulaire administratif précis et accessible
+
+IMPORTANT: Réponds UNIQUEMENT avec la traduction grammaticalement correcte.`;
+      }
+
+      // Langues germaniques/nordiques
+      if (['de', 'nl', 'sv', 'no', 'da'].includes(sourceLang) || ['de', 'nl', 'sv', 'no', 'da'].includes(targetLang)) {
+        return `Tu es un expert en traduction spécialisé dans les langues germaniques pour les services sociaux.
+
+CONTEXTE: Traduction d'entretien social entre assistant et usager.
+LANGUES: ${sourceLangName} → ${targetLangName}
+
+SPÉCIFICITÉS LINGUISTIQUES:
+- Respecte la structure syntaxique spécifique (V2 en allemand, etc.)
+- Utilise la forme polie "Sie/U/De" appropriée
+- Privilégie la clarté administrative typique de ces cultures
+- Adapte les termes techniques selon les systèmes sociaux locaux
+
+IMPORTANT: Réponds UNIQUEMENT avec la traduction précise et formelle.`;
+      }
+
+      // Prompt général pour les autres langues (français, anglais, langues romanes)
+      return `Tu es un traducteur expert spécialisé dans les entretiens sociaux et administratifs. 
 
 CONTEXTE: Tu traduis une conversation en temps réel entre un assistant social et un usager.
 
@@ -144,11 +222,33 @@ INSTRUCTIONS:
 - Pour les termes administratifs, utilise les équivalents officiels
 - Sois précis et naturel, comme dans une vraie conversation
 
-IMPORTANT: Réponds UNIQUEMENT avec la traduction, sans commentaire ni explication.`
+IMPORTANT: Réponds UNIQUEMENT avec la traduction, sans commentaire ni explication.`;
+    };
+
+    // 🆕 Température adaptative selon la complexité linguistique
+    const getOptimizedTemperature = (sourceLang: string, targetLang: string): number => {
+      // Langues complexes nécessitent plus de créativité
+      if (['ar', 'fa', 'ur', 'zh', 'ja', 'ko', 'he', 'th', 'vi'].includes(sourceLang) || 
+          ['ar', 'fa', 'ur', 'zh', 'ja', 'ko', 'he', 'th', 'vi'].includes(targetLang)) {
+        return 0.3; // Un peu plus de flexibilité
+      }
+      
+      // Langues européennes : déterminisme élevé
+      return 0.2;
+    };
+
+    const optimizedPrompt = getOptimizedPrompt(sourceLanguage, targetLanguage);
+    const optimizedTemperature = getOptimizedTemperature(sourceLanguage, targetLanguage);
+
+    const response = await this.createCompletion({
+      messages: [
+        {
+          role: "system",
+          content: optimizedPrompt
         },
         { role: "user", content: text }
       ],
-      temperature: 0.2, // Plus déterministe pour la cohérence
+      temperature: optimizedTemperature,
       max_tokens: 800
     });
     return response.content;
@@ -156,18 +256,61 @@ IMPORTANT: Réponds UNIQUEMENT avec la traduction, sans commentaire ni explicati
 
   // Détection de langue
   async detectLanguage(text: string): Promise<string> {
+    // 🆕 AMÉLIORATION : Prompt de détection multilingue enrichi
     const response = await this.createCompletion({
       messages: [
         {
           role: "system",
-          content: "Detect the language of the following text. Respond with only the ISO 639-1 language code (e.g., 'en', 'fr', 'ar', 'lb'). Be precise and only return the code."
+          content: `Tu es un expert linguiste spécialisé dans la détection de langues pour les services sociaux. 
+
+TÂCHE: Détecter la langue du texte suivant avec une précision maximale.
+
+LANGUES SUPPORTÉES ET LEURS CODES:
+- Français: fr
+- Anglais: en  
+- Arabe: ar (standard moderne)
+- Allemand: de
+- Espagnol: es
+- Italien: it
+- Portugais: pt
+- Russe: ru
+- Turc: tr
+- Néerlandais: nl
+- Polonais: pl
+- Roumain: ro
+- Persan/Farsi: fa
+- Ourdou: ur
+- Chinois: zh
+- Japonais: ja
+- Coréen: ko
+- Hindi: hi
+- Thaï: th
+- Vietnamien: vi
+- Hébreu: he
+- Luxembourgeois: lb
+
+SPÉCIFICITÉS IMPORTANTES:
+- Pour l'arabe: identifier l'arabe standard moderne (pas les dialectes)
+- Pour le chinois: privilégier "zh" (mandarin simplifié)
+- Pour les langues à scripts spéciaux: se baser sur les caractères Unicode
+- Pour les langues européennes: analyser la morphologie et la syntaxe
+- Contexte: phrases typiques d'entretiens sociaux/administratifs
+
+INSTRUCTIONS:
+1. Analyse le script d'écriture (latin, arabe, cyrillique, etc.)
+2. Identifie les mots-clés et la structure grammaticale
+3. Prends en compte le contexte social/administratif
+4. Réponds UNIQUEMENT avec le code ISO 639-1 à deux lettres
+5. Si incertain entre plusieurs langues proches, privilégie la plus commune
+
+IMPORTANT: Réponds SEULEMENT le code de langue à 2 lettres, rien d'autre.`
         },
         { role: "user", content: text }
       ],
-      temperature: 0.1,
+      temperature: 0.1, // Très déterministe pour la détection
       max_tokens: 10
     });
-    return response.content.toLowerCase();
+    return response.content.toLowerCase().trim();
   }
 
   // Analyse de document

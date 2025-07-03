@@ -17,10 +17,18 @@ export default defineConfig({
   ],
   optimizeDeps: {
     exclude: ['lucide-react'],
+    force: true,
+    include: [
+      'react',
+      'react-dom',
+      '@headlessui/react',
+      'i18next',
+      'react-i18next'
+    ]
   },
   define: {
     'process.env': {},
-    global: {},
+    global: 'globalThis',
   },
   server: {
     headers: {
@@ -29,7 +37,12 @@ export default defineConfig({
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
     hmr: {
-      overlay: false
+      overlay: false,
+      port: 24678
+    },
+    watch: {
+      usePolling: false,
+      interval: 100
     }
   },
   build: {

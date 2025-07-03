@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, Home, ArrowLeft, Globe } from 'lucide-react';
+import { Menu, X, Home, ArrowLeft, Globe, RefreshCw } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from './LanguageSelector';
@@ -56,6 +56,14 @@ const Header = () => {
                 className="text-gray-700 hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 hover:bg-clip-text hover:text-transparent font-semibold transition-all relative group"
               >
                 Vérifier éligibilité
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+              </Link>
+              <Link 
+                to="/convertisseur-fichiers" 
+                className="text-gray-700 hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 hover:bg-clip-text hover:text-transparent font-semibold transition-all relative group flex items-center gap-1"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Convertisseur
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
               <Link 
@@ -119,6 +127,14 @@ const Header = () => {
               onClick={() => setIsOpen(false)}
             >
               Vérifier éligibilité
+            </Link>
+            <Link
+              to="/convertisseur-fichiers"
+              className="block px-3 py-2 rounded-xl text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-colors flex items-center gap-2"
+              onClick={() => setIsOpen(false)}
+            >
+              <RefreshCw className="w-4 h-4" />
+              Convertisseur de fichiers
             </Link>
             <Link
               to="/effectuer-demarche"

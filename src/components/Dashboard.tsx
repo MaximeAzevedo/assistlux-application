@@ -7,6 +7,7 @@ import {
   MapPin,
   Video,
   Euro,
+  RefreshCw,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import WhyChoose from './WhyChoose';
@@ -242,6 +243,29 @@ const Dashboard: React.FC = () => {
                 className="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium group-hover:translate-x-1 transition-transform duration-300"
               >
                 Commencer →
+              </Link>
+            </div>
+          </div>
+
+          {/* Convertisseur de fichiers Card */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                <RefreshCw className="w-6 h-6 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Convertisseur Image → PDF
+              </h3>
+              <p className="text-gray-600 leading-relaxed mb-6">
+                Convertissez vos images (JPEG, PNG, HEIC, WEBP...) en PDF localement. Aucun envoi vers des serveurs externes.
+              </p>
+              <Link
+                to="/convertisseur-fichiers"
+                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium group-hover:translate-x-1 transition-transform duration-300"
+              >
+                Convertir des fichiers →
               </Link>
             </div>
           </div>
