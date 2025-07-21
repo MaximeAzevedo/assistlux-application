@@ -37,12 +37,21 @@ export default defineConfig({
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
     hmr: {
-      overlay: false,
-      port: 24678
+      overlay: true,
+      // Laisser Vite choisir un port disponible automatiquement
+      clientPort: undefined
     },
     watch: {
-      usePolling: false,
-      interval: 100
+      // Activer le polling sur macOS pour éviter les problèmes de surveillance des fichiers
+      usePolling: true,
+      interval: 300,
+      // Ignorer les dossiers qui peuvent causer des rechargements inutiles
+      ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/coverage/**']
+    },
+    // Augmenter la stabilité de la connexion
+    middlewareMode: false,
+    fs: {
+      strict: false
     }
   },
   build: {

@@ -13,6 +13,14 @@ export interface VoiceConfig {
 export const AZURE_VOICES: Record<string, VoiceConfig[]> = {
   'fr': [
     {
+      code: 'fr-FR-Remy:DragonHDLatestNeural',
+      name: 'Rémy Dragon HD (France) 🆕',
+      gender: 'male',
+      style: 'empathetic',
+      quality: 'hd',
+      features: ['Emotion Detection 2025', 'Ultra-Expressive', 'Perfect for social interviews', 'Multilingual Enhanced']
+    },
+    {
       code: 'fr-FR-DeniseNeural',
       name: 'Denise (France)',
       gender: 'female',

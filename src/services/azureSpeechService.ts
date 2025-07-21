@@ -1,5 +1,6 @@
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import { logger } from '../utils/logger';
+import { applySpeechRGPDConfig, auditRGPDCompliance } from '../utils/azureRGPDConfig';
 
 // Configuration Azure Speech Services (région EU pour conformité RGPD)
 const AZURE_SPEECH_KEY = import.meta.env.VITE_AZURE_SPEECH_KEY;
@@ -43,7 +44,7 @@ const AZURE_LANGUAGE_MAPPING: Record<string, string> = {
 // Mapping des voix Azure pour chaque langue (voix neuronales de haute qualité)
 const AZURE_VOICE_MAPPING: Record<string, string> = {
   // 🆕 VOIX HD PREMIUM 2025 - Vraies voix Azure Speech Services
-  'fr-FR': 'fr-FR-Vivienne:DragonHDLatestNeural',    // 🇫🇷 Voix HD française premium 2025 - VRAIE voix Dragon HD
+  'fr-FR': 'fr-FR-Vivienne:DragonHDLatestNeural',    // 🇫🇷 Voix HD française premium 2025 - Voix féminine Dragon HD
   'en-US': 'en-US-Andrew:DragonHDLatestNeural',       // 🇺🇸 Voix HD anglaise premium Dragon HD
   'de-DE': 'de-DE-Seraphina:DragonHDLatestNeural',    // 🇩🇪 Voix HD allemande premium Dragon HD
   'ar-SA': 'ar-SA-ZariyahNeural',                     // 🇸🇦 Voix féminine arabe haute qualité 
@@ -190,6 +191,9 @@ export class AzureSpeechService {
       this.speechConfig.speechRecognitionLanguage = this.recognitionLanguage;
       this.speechConfig.enableDictation();
       
+      // 🛡️ PRIORITÉ : Appliquer la configuration RGPD centralisée
+      applySpeechRGPDConfig(this.speechConfig);
+      
       if (fastMode) {
         // 🚀 FAST TRANSCRIPTION - Configuration ultra-rapide
         console.log('🚀 Activation du mode Fast Transcription');
@@ -202,15 +206,18 @@ export class AzureSpeechService {
         this.speechConfig.setProperty('SpeechServiceConnection_RecoMode', 'INTERACTIVE');
         this.speechConfig.setProperty('SpeechServiceResponse_RequestDetailedResultTrueFalse', 'false');
         
-        // Désactiver certaines optimisations qui ajoutent de la latence
-        this.speechConfig.setProperty('SpeechServiceConnection_EnableAudioLogging', 'false');
-        
         logger.info('Fast Transcription activée - latence réduite de 60%');
       } else {
         // Configuration standard (actuelle)
         this.speechConfig.setProperty('SpeechServiceConnection_InitialSilenceTimeoutMs', '8000');
         this.speechConfig.setProperty('SpeechServiceConnection_EndSilenceTimeoutMs', '2000');
         this.speechConfig.setProperty('SpeechServiceResponse_RequestDetailedResultTrueFalse', 'true');
+      }
+      
+      // 🔍 Audit RGPD final
+      const auditResult = auditRGPDCompliance();
+      if (!auditResult.overall) {
+        logger.warn('⚠️ Configuration RGPD incomplète - Vérifiez les paramètres');
       }
       
       // Configuration pour la qualité audio
