@@ -683,51 +683,7 @@ const InterviewTranslator: React.FC = () => {
             </div>
           </div>
 
-          {/* Indicateurs de configuration (sans options avancées) */}
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            <div className="flex items-center space-x-3 p-4 bg-purple-50 rounded-xl border border-purple-100">
-              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-              <Globe className="h-5 w-5 text-purple-600" />
-              </div>
-              <div>
-                <div className="font-semibold text-purple-900">Assistant social</div>
-                <div className="text-sm text-purple-600 flex items-center space-x-1">
-                  {selectedAssistantLang ? (
-                    <>
-                      <span>{selectedAssistantLang.flag}</span>
-                      <span>{selectedAssistantLang.name}</span>
-                      <span className="bg-purple-200 text-purple-800 px-2 py-0.5 rounded-full text-xs font-medium">
-                        Auto-détection
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-gray-500">Choisir une langue</span>
-                  )}
-              </div>
-            </div>
-            </div>
-            <div className="flex items-center space-x-3 p-4 bg-pink-50 rounded-xl border border-pink-100">
-              <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-              <Languages className="h-5 w-5 text-pink-600" />
-              </div>
-              <div>
-                <div className="font-semibold text-pink-900">Usager</div>
-                <div className="text-sm text-pink-600 flex items-center space-x-1">
-                  {selectedUserLang ? (
-                    <>
-                      <span>{selectedUserLang.flag}</span>
-                      <span>{selectedUserLang.name}</span>
-                      {selectedUserLang.quality === 'hd' && (
-                        <span className="bg-pink-200 text-pink-800 px-2 py-0.5 rounded-full text-xs font-medium">HD</span>
-                      )}
-                    </>
-                  ) : (
-                    <span className="text-gray-500">Choisir une langue</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
 
         {/* Interface de conversation */}

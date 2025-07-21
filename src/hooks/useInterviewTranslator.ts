@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateText, translateTextForInterview } from '../lib/translation';
+import { translateText, translateTextForInterview, initializeTranslationCache } from '../lib/translation';
 import { detectLanguage } from '../lib/translation';
 import { azureSpeechService } from '../services/azureSpeechService';
 import { 
@@ -26,12 +26,14 @@ export const useInterviewTranslator = ({
   const [translationQuality, setTranslationQuality] = useState(85);
   const [messages, setMessages] = useState<TranslationMessage[]>([]);
   const [sessionStats, setSessionStats] = useState<SessionStats | null>(null);
+  const [isStreaming, setIsStreaming] = useState(false); // 🚀 NOUVEAU : État streaming translation
   
-  // Références
-  const sessionStartTime = useRef<Date | null>(null);
+  // Refs pour éviter les re-renders et gérer les états asynchrones
   const isProcessingRef = useRef(false);
   const lastProcessedText = useRef<string>('');
-  const lastProcessedTime = useRef<number | null>(null);
+  const lastProcessedTime = useRef<number>(0);
+  const sessionStartTime = useRef<Date | null>(null);
+  const streamingBuffer = useRef<string>(''); // 🚀 NOUVEAU : Buffer pour streaming
 
   // Fonction améliorée de synthèse vocale
   const speakTranslation = useCallback(async (text: string, language: string) => {
@@ -123,8 +125,15 @@ export const useInterviewTranslator = ({
     }
   }, []);
 
+  // Initialisation du cache de traduction
+  useEffect(() => {
+    initializeTranslationCache();
+  }, []);
+
   // Configuration des callbacks Azure Speech (une seule fois)
   useEffect(() => {
+    console.log('🔧 🎯 CONFIGURATION CALLBACKS AZURE SPEECH HOOK');
+    
     const handleResult = async (result: any) => {
       console.log('🎤 Résultat Azure Speech:', result.text);
       
@@ -158,13 +167,25 @@ export const useInterviewTranslator = ({
       setIsTranslating(true);
 
       try {
-        // Détection de la langue parlée avec retry
+        // 🚀 PRIORISER LA DÉTECTION AZURE, puis fallback vers notre fonction
         let detectedLanguage;
-        try {
-          detectedLanguage = await detectLanguage(result.text);
-        } catch (error) {
-          console.warn('Erreur détection langue, utilisation par défaut:', error);
-          detectedLanguage = assistantLanguage; // Fallback intelligent
+        
+        // 1️⃣ D'ABORD : Utiliser la détection Azure (plus fiable)
+        if (result.language) {
+          // Convertir le code Azure (fr-FR) vers notre code (fr)
+          const azureToOurCode = result.language.split('-')[0]; // fr-FR → fr
+          console.log(`🎯 Utilisation détection Azure: ${result.language} → ${azureToOurCode}`);
+          detectedLanguage = azureToOurCode;
+        } else {
+          // 2️⃣ FALLBACK : Notre fonction de détection seulement si Azure n'a pas détecté
+          console.log('🔄 Fallback vers notre détection de langue');
+          try {
+            detectedLanguage = await detectLanguage(result.text);
+            console.log(`🔍 Notre détection: ${detectedLanguage}`);
+          } catch (error) {
+            console.warn('Erreur détection langue, utilisation par défaut:', error);
+            detectedLanguage = assistantLanguage; // Fallback intelligent
+          }
         }
         
         console.log('🔍 Langue détectée:', detectedLanguage);
@@ -230,18 +251,65 @@ export const useInterviewTranslator = ({
       }
     };
 
+    // 🚀 NOUVEAU : Gestionnaire des résultats intermédiaires pour streaming translation
+    const handleInterimResult = async (interimResult: any) => {
+      console.log(`🚀 Streaming chunk reçu: ${interimResult.wordCount} mots - "${interimResult.text}"`);
+      
+      // Éviter le reprocessing du même chunk
+      if (streamingBuffer.current === interimResult.text) {
+        return;
+      }
+      
+      streamingBuffer.current = interimResult.text;
+      setIsStreaming(true);
+      
+      try {
+        // Détection rapide de langue pour le streaming
+        const detectedLanguage = await detectLanguage(interimResult.text);
+        const speaker: SpeakerRole = detectedLanguage === assistantLanguage ? 'assistant' : 'user';
+        const targetLanguage = speaker === 'assistant' ? userLanguage : assistantLanguage;
+        
+        // Traduction streaming si nécessaire
+        if (detectedLanguage !== targetLanguage) {
+          console.log(`🚀 Streaming translation: ${detectedLanguage} → ${targetLanguage}`);
+          
+          const streamTranslation = await translateTextForInterview(
+            interimResult.text, 
+            detectedLanguage, 
+            targetLanguage
+          );
+          
+          console.log(`🚀 Streaming traduit: "${streamTranslation}"`);
+          
+          // Synthèse vocale immédiate pour le streaming (optionnel)
+          // await speakTranslation(streamTranslation, targetLanguage);
+        }
+        
+      } catch (error) {
+        console.warn('⚠️ Erreur streaming translation (non-critique):', error);
+      } finally {
+        setIsStreaming(false);
+      }
+    };
+
     const handleError = (error: any) => {
       console.error('❌ Erreur Azure Speech:', error);
       setIsListening(false);
       setIsTranslating(false);
+      setIsStreaming(false);
       isProcessingRef.current = false;
     };
 
+    console.log('🔧 ➕ AJOUT DES LISTENERS AZURE SPEECH');
     azureSpeechService.addResultListener(handleResult);
+    azureSpeechService.addInterimResultListener(handleInterimResult); // 🚀 NOUVEAU
     azureSpeechService.addErrorListener(handleError);
+    console.log('🔧 ✅ LISTENERS AJOUTÉS AVEC SUCCÈS');
 
     return () => {
+      console.log('🔧 ➖ SUPPRESSION DES LISTENERS AZURE SPEECH');
       azureSpeechService.removeResultListener(handleResult);
+      azureSpeechService.removeInterimResultListener(handleInterimResult); // 🚀 NOUVEAU
       azureSpeechService.removeErrorListener(handleError);
     };
   }, [assistantLanguage, userLanguage]); // Dépendances minimales
@@ -254,30 +322,38 @@ export const useInterviewTranslator = ({
     }
 
     try {
-      console.log('🎤 Démarrage reconnaissance Azure Speech...');
+      console.log('🚀 Démarrage Fast Transcription Azure Speech (latence réduite)...');
       setIsListening(true);
-      await azureSpeechService.startRecognition({
+      
+      // 🚀 UTILISATION FAST TRANSCRIPTION + STREAMING pour latence ultra-réduite
+      await azureSpeechService.startFastRecognition({
         language: assistantLanguage, // Commencer avec la langue de l'assistant
         continuous: true,
-        interimResults: false,
+        interimResults: true, // 🚀 ACTIVATION STREAMING - Résultats intermédiaires pour traduction progressive
         maxDuration: 30
       });
+      
+      // Activer le streaming translation
+      azureSpeechService.enableStreamingTranslation();
+      
+      // 🚀 ACTIVER WEBSOCKET PERSISTANT - Éviter les reconnexions
+      azureSpeechService.enablePersistentConnection();
     } catch (error) {
-      console.error('❌ Erreur démarrage reconnaissance:', error);
+      console.error('❌ Erreur démarrage Fast Transcription:', error);
       setIsListening(false);
     }
   }, [isListening, isTranslating, assistantLanguage]);
 
-  // Arrêt de l'écoute
+  // 🚀 MODIFIÉ : Pause intelligent avec WebSocket persistant
   const stopListening = useCallback(async () => {
     if (!isListening) return;
 
     try {
-      console.log('🛑 Arrêt reconnaissance...');
-      azureSpeechService.stopRecognition();
+      console.log('🚀 Pause reconnaissance (WebSocket maintenu)...');
+      await azureSpeechService.pauseRecognition(); // 🚀 NOUVEAU : Garde WebSocket ouvert
       setIsListening(false);
     } catch (error) {
-      console.error('❌ Erreur arrêt reconnaissance:', error);
+      console.error('❌ Erreur pause reconnaissance:', error);
       setIsListening(false);
     }
   }, [isListening]);
@@ -296,7 +372,16 @@ export const useInterviewTranslator = ({
   }, [startListening]);
 
   const endSession = useCallback(async () => {
-    await stopListening();
+    // 🚀 Arrêt complet avec fermeture WebSocket pour fin de session
+    try {
+      console.log('🏁 Fin de session - Fermeture complète WebSocket');
+      azureSpeechService.disablePersistentConnection(); // Désactiver la persistance
+      await azureSpeechService.stopRecognition(); // Fermeture complète
+      setIsListening(false);
+    } catch (error) {
+      console.error('❌ Erreur fin session:', error);
+    }
+    
     // Calculer les stats de session
     const duration = sessionStartTime.current 
       ? Math.floor((Date.now() - sessionStartTime.current.getTime()) / 1000)
@@ -380,6 +465,7 @@ export const useInterviewTranslator = ({
   return {
     isListening,
     isTranslating,
+    isStreaming, // 🚀 NOUVEAU : État streaming translation
     translationQuality,
     messages,
     sessionStats,

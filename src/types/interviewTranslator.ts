@@ -80,6 +80,7 @@ export interface UseInterviewTranslatorProps {
 export interface UseInterviewTranslatorReturn {
   isListening: boolean;
   isTranslating: boolean;
+  isStreaming: boolean; // 🚀 NOUVEAU : État streaming translation
   translationQuality: number;
   messages: TranslationMessage[];
   sessionStats: SessionStats | null;

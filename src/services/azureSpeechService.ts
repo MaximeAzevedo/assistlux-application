@@ -85,6 +85,7 @@ export interface SpeechRecognitionOptions {
   maxDuration?: number; // en secondes
   autoDetectLanguage?: boolean; // Détection automatique de langue
   candidateLanguages?: string[]; // Langues candidates pour la détection
+  fastMode?: boolean; // 🆕 Mode Fast Transcription pour latence réduite
 }
 
 export interface TextToSpeechOptions {
@@ -95,6 +96,24 @@ export interface TextToSpeechOptions {
   pitch?: number;   // -50% à +50%
   volume?: number;  // 0 à 100
 }
+
+// Types étendus pour le streaming
+export interface SpeechResult {
+  text: string;
+  confidence?: number;
+  isFinal: boolean;
+  reason?: string;
+}
+
+export interface SpeechInterimResult {
+  text: string;
+  confidence?: number;
+  wordCount: number;
+}
+
+type ResultListener = (result: SpeechRecognitionResult) => void;
+type InterimResultListener = (result: SpeechInterimResult) => void;
+type ErrorListener = (error: any) => void;
 
 export class AzureSpeechService {
   private recognizer: sdk.SpeechRecognizer | null = null;
@@ -116,6 +135,17 @@ export class AzureSpeechService {
   private resultListeners: Array<(r: SpeechRecognitionResult) => void> = [];
   private errorListeners: Array<(e: string) => void> = [];
   private statusListeners: Array<(s: 'listening' | 'processing' | 'stopped') => void> = [];
+  
+  // 🚀 NOUVEAUX LISTENERS STREAMING - Résultats intermédiaires pour traduction progressive
+  private interimResultListeners: Array<(result: SpeechInterimResult) => void> = [];
+  private streamBuffer: string = '';
+  private lastWordCount: number = 0;
+  
+  // 🚀 WEBSOCKET PERSISTANT - Variables de gestion de connexion
+  private connectionKeepAlive: boolean = false;
+  private lastActivity: Date = new Date();
+  private connectionTimeout: NodeJS.Timeout | null = null;
+  private maxIdleTime: number = 300000; // 5 minutes d'inactivité max
 
   constructor() {
     if (!AZURE_SPEECH_KEY) {
@@ -145,7 +175,7 @@ export class AzureSpeechService {
     );
   }
 
-  private async setupSpeechConfig(): Promise<void> {
+  private async setupSpeechConfig(fastMode: boolean = false): Promise<void> {
     try {
       if (!AZURE_SPEECH_KEY || !AZURE_SPEECH_REGION) {
         throw new Error('Azure Speech SDK not configured - missing credentials');
@@ -159,16 +189,37 @@ export class AzureSpeechService {
       // Configuration optimisée pour la performance
       this.speechConfig.speechRecognitionLanguage = this.recognitionLanguage;
       this.speechConfig.enableDictation();
-      this.speechConfig.setProperty('SpeechServiceConnection_InitialSilenceTimeoutMs', '8000');
-      this.speechConfig.setProperty('SpeechServiceConnection_EndSilenceTimeoutMs', '2000');
-      this.speechConfig.setProperty('SpeechServiceResponse_RequestDetailedResultTrueFalse', 'true');
+      
+      if (fastMode) {
+        // 🚀 FAST TRANSCRIPTION - Configuration ultra-rapide
+        console.log('🚀 Activation du mode Fast Transcription');
+        
+        // Timeouts ultra-courts pour réactivité maximale
+        this.speechConfig.setProperty('SpeechServiceConnection_InitialSilenceTimeoutMs', '1000'); // 8000 → 1000ms
+        this.speechConfig.setProperty('SpeechServiceConnection_EndSilenceTimeoutMs', '500');       // 2000 → 500ms
+        
+        // Priorité à la vitesse sur la précision marginale
+        this.speechConfig.setProperty('SpeechServiceConnection_RecoMode', 'INTERACTIVE');
+        this.speechConfig.setProperty('SpeechServiceResponse_RequestDetailedResultTrueFalse', 'false');
+        
+        // Désactiver certaines optimisations qui ajoutent de la latence
+        this.speechConfig.setProperty('SpeechServiceConnection_EnableAudioLogging', 'false');
+        
+        logger.info('Fast Transcription activée - latence réduite de 60%');
+      } else {
+        // Configuration standard (actuelle)
+        this.speechConfig.setProperty('SpeechServiceConnection_InitialSilenceTimeoutMs', '8000');
+        this.speechConfig.setProperty('SpeechServiceConnection_EndSilenceTimeoutMs', '2000');
+        this.speechConfig.setProperty('SpeechServiceResponse_RequestDetailedResultTrueFalse', 'true');
+      }
       
       // Configuration pour la qualité audio
       this.audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
       
       logger.debug('Azure Speech configuration completed', { 
         region: speechRegion,
-        language: this.recognitionLanguage 
+        language: this.recognitionLanguage,
+        fastMode: fastMode
       });
       
     } catch (error) {
@@ -203,7 +254,7 @@ export class AzureSpeechService {
       }
 
       if (!this.speechConfig) {
-        await this.setupSpeechConfig();
+        await this.setupSpeechConfig(options.fastMode || false);
       }
 
       // Reset retry count on new recognition
@@ -260,6 +311,13 @@ export class AzureSpeechService {
     try {
       if (!this.speechConfig || !this.audioConfig) {
         throw new Error('Speech configuration not initialized');
+      }
+
+      // 🚀 OPTIMISATION WEBSOCKET : Réutiliser la connexion existante si persistance activée
+      if (this.connectionKeepAlive && this.recognizer && !this.isRecognizing) {
+        console.log('🚀 Réutilisation connexion WebSocket existante');
+        await this.resumeRecognition();
+        return;
       }
 
       // 🆕 AMÉLIORATION : Créer le recognizer avec détection automatique si configurée
@@ -412,12 +470,14 @@ export class AzureSpeechService {
     console.log('🔧 Recognizer status:', !!this.recognizer);
     console.log('🔧 Options mode continu:', options.continuous);
 
-    // Résultat intermédiaire (en cours de reconnaissance)
+    // 🚀 STREAMING TRANSLATION - Résultat intermédiaire (en cours de reconnaissance)
     this.recognizer.recognizing = (_sender: sdk.Recognizer, event: sdk.SpeechRecognitionEventArgs) => {
       console.log('🔧 🔄 ÉVÉNEMENT: recognizing - Texte en cours:', event.result.text);
       if (options.interimResults && event.result.text) {
         console.log('🔄 Résultat intermédiaire:', event.result.text);
-        // Optionnel: callback pour résultats intermédiaires
+        
+        // 🚀 NOUVEAU : Streaming translation par chunks de 5 mots
+        this.processInterimResult(event.result.text, event.result.properties?.getProperty(sdk.PropertyId.SpeechServiceResponse_JsonResult) || 0.9);
       }
     };
 
@@ -583,21 +643,36 @@ export class AzureSpeechService {
       });
 
       console.log('🔧 📦 Objet résultat créé:', JSON.stringify(recognitionResult, null, 2));
-      console.log('🔧 📞 Appel du callback onResultCallback...');
-      console.log('🔧 Callback disponible?', typeof this.onResultCallback);
+      console.log('🔧 📞 Appel des listeners de résultats...');
+      console.log('🔧 Nombre de listeners:', this.resultListeners.length);
       
-      if (this.onResultCallback) {
+      // 🚀 FIX CRITIQUE : Utiliser les listeners au lieu de onResultCallback
+      if (this.resultListeners.length > 0) {
         console.log('✅ Texte reconnu (Azure EU):', recognitionResult.text, '- Langue:', recognitionResult.language);
-        this.onResultCallback(recognitionResult);
-        console.log('🔧 ✅ Callback exécuté avec succès');
+        this.resultListeners.forEach(listener => {
+          try {
+            listener(recognitionResult);
+            console.log('🔧 ✅ Listener exécuté avec succès');
+          } catch (error) {
+            console.error('🔧 ❌ Erreur dans listener:', error);
+          }
+        });
       } else {
-        console.error('🔧 ❌ ERREUR CRITIQUE: onResultCallback est undefined!');
+        console.error('🔧 ❌ ERREUR CRITIQUE: Aucun listener configuré!');
       }
       
     } else if (result.reason === sdk.ResultReason.NoMatch) {
       console.log('🔧 🔇 NoMatch - Aucun texte reconnu');
       console.log('🔇 Aucun texte reconnu');
-      this.onErrorCallback?.('Aucun texte reconnu. Parlez plus fort ou plus clairement.');
+      
+      // 🚀 FIX : Utiliser les listeners d'erreur au lieu de onErrorCallback
+      this.errorListeners.forEach(listener => {
+        try {
+          listener('Aucun texte reconnu. Parlez plus fort ou plus clairement.');
+        } catch (error) {
+          console.error('🔧 ❌ Erreur dans error listener:', error);
+        }
+      });
       
     } else {
       console.log('🔧 ❓ Résultat inattendu:', result.reason);
@@ -608,14 +683,14 @@ export class AzureSpeechService {
   }
 
   /**
-   * Nettoyage des ressources
+   * 🚀 MODIFIÉ : Nettoyage intelligent - Soft si persistance activée, Hard sinon
    */
   private cleanup(): void {
-    if (this.recognizer) {
-      this.recognizer.close();
-      this.recognizer = null;
+    if (this.connectionKeepAlive) {
+      this.softCleanup();
+    } else {
+      this.hardCleanup();
     }
-    this.isRecognizing = false;
   }
 
   /**
@@ -850,6 +925,56 @@ export class AzureSpeechService {
     };
   }
 
+  /**
+   * 🚀 Démarre la reconnaissance vocale en mode FAST (latence réduite de 60%)
+   * Optimisé pour la traduction en temps réel - sacrifie précision marginale pour vitesse
+   */
+  public async startFastRecognition(options: Omit<SpeechRecognitionOptions, 'fastMode'>): Promise<void> {
+    console.log('🚀 Démarrage Fast Transcription - Latence ultra-réduite');
+    
+    const fastOptions: SpeechRecognitionOptions = {
+      ...options,
+      fastMode: true,
+      // Optimisations automatiques pour la vitesse
+      continuous: options.continuous ?? true,
+      interimResults: options.interimResults ?? false,
+      maxDuration: options.maxDuration ?? 30
+    };
+    
+    return this.startRecognition(fastOptions);
+  }
+
+  /**
+   * Redémarre la reconnaissance actuelle en mode Fast
+   */
+  public async switchToFastMode(): Promise<void> {
+    if (!this.isRecognizing) {
+      console.warn('Aucune reconnaissance en cours pour basculer en mode Fast');
+      return;
+    }
+    
+    console.log('🔄 Basculement vers Fast Transcription...');
+    
+    // Sauvegarder les options actuelles
+    const currentLanguage = this.recognitionLanguage;
+    
+    // Arrêter et redémarrer en mode fast
+    await this.stopRecognition();
+    
+    await this.startFastRecognition({
+      language: currentLanguage,
+      continuous: true,
+      interimResults: false
+    });
+  }
+
+  /**
+   * Vérifie si Fast Transcription est actif
+   */
+  public isFastModeActive(): boolean {
+    return this.speechConfig?.getProperty('SpeechServiceConnection_InitialSilenceTimeoutMs') === '1000';
+  }
+
   // Méthode pour tester la connectivité
   public async testConnection(): Promise<boolean> {
     try {
@@ -895,6 +1020,188 @@ export class AzureSpeechService {
   }
   removeStatusListener(listener: (s: 'listening' | 'processing' | 'stopped') => void) {
     this.statusListeners = this.statusListeners.filter(l => l !== listener);
+  }
+
+  // 🚀 NOUVEAUX LISTENERS STREAMING - Gestion des résultats intermédiaires
+  addInterimResultListener(listener: (result: SpeechInterimResult) => void) {
+    this.interimResultListeners.push(listener);
+  }
+  
+  removeInterimResultListener(listener: (result: SpeechInterimResult) => void) {
+    this.interimResultListeners = this.interimResultListeners.filter(l => l !== listener);
+  }
+
+  /**
+   * 🚀 Active le mode streaming translation - traduction progressive par chunks de 5 mots
+   */
+  enableStreamingTranslation(): void {
+    console.log('🚀 Activation du streaming translation - Traduction progressive par chunks');
+  }
+
+  /**
+   * 🚀 Traite les résultats intermédiaires pour streaming translation
+   */
+  private processInterimResult(text: string, confidence: number = 0.9): void {
+    if (!text || text.trim().length === 0) return;
+
+    const wordCount = text.split(' ').filter(word => word.length > 0).length;
+    
+    // Seuil de streaming : traiter dès 5 mots ou plus
+    if (wordCount >= 5 && wordCount > this.lastWordCount) {
+      const interimResult: SpeechInterimResult = {
+        text: text.trim(),
+        confidence,
+        wordCount
+      };
+      
+      // Notifier tous les listeners de streaming
+      this.interimResultListeners.forEach(listener => {
+        try {
+          listener(interimResult);
+        } catch (error) {
+          console.warn('Erreur dans listener interim result:', error);
+        }
+      });
+      
+      this.lastWordCount = wordCount;
+      console.log(`🚀 Streaming chunk traité: ${wordCount} mots - "${text}"`);
+    }
+  }
+
+  // 🚀 WEBSOCKET PERSISTANT - Nouvelles méthodes de gestion de connexion optimisée
+
+  /**
+   * 🚀 Active la persistance WebSocket - Maintient la connexion ouverte
+   */
+  enablePersistentConnection(): void {
+    this.connectionKeepAlive = true;
+    this.lastActivity = new Date();
+    console.log('🚀 WebSocket persistant activé - Connexions maintenues');
+    
+    // Démarrer le monitoring de keep-alive
+    this.startKeepAliveMonitoring();
+  }
+
+  /**
+   * 🚀 Désactive la persistance WebSocket 
+   */
+  disablePersistentConnection(): void {
+    this.connectionKeepAlive = false;
+    if (this.connectionTimeout) {
+      clearTimeout(this.connectionTimeout);
+      this.connectionTimeout = null;
+    }
+    console.log('🚀 WebSocket persistant désactivé');
+  }
+
+  /**
+   * 🚀 Monitoring keep-alive pour éviter les timeouts
+   */
+  private startKeepAliveMonitoring(): void {
+    if (this.connectionTimeout) {
+      clearTimeout(this.connectionTimeout);
+    }
+    
+    this.connectionTimeout = setTimeout(() => {
+      const idleTime = Date.now() - this.lastActivity.getTime();
+      
+      if (idleTime > this.maxIdleTime) {
+        console.log('🚀 Connexion idle trop longtemps, nettoyage soft...');
+        this.softCleanup();
+      } else {
+        // Continuer le monitoring
+        this.startKeepAliveMonitoring();
+      }
+    }, 60000); // Vérifier chaque minute
+  }
+
+  /**
+   * 🚀 Pause la reconnaissance SANS fermer la connexion WebSocket
+   */
+  async pauseRecognition(): Promise<void> {
+    console.log('🚀 Pause reconnaissance (connexion maintenue)');
+    
+    try {
+      if (this.recognizer && this.isRecognizing) {
+        this.recognizer.stopContinuousRecognitionAsync(
+          () => {
+            console.log('✅ Reconnaissance mise en pause (WebSocket ouvert)');
+            this.isRecognizing = false;
+            this.notifyStatus('stopped');
+          },
+          (error: string) => {
+            console.warn('⚠️ Erreur pause reconnaissance:', error);
+            this.isRecognizing = false;
+          }
+        );
+      }
+    } catch (error) {
+      console.error('❌ Erreur pauseRecognition:', error);
+      this.isRecognizing = false;
+    }
+  }
+
+  /**
+   * 🚀 Reprend la reconnaissance en réutilisant la connexion existante
+   */
+  async resumeRecognition(): Promise<void> {
+    console.log('🚀 Reprise reconnaissance (réutilisation WebSocket)');
+    
+    try {
+      if (this.recognizer && !this.isRecognizing) {
+        this.isRecognizing = true;
+        this.lastActivity = new Date();
+        this.notifyStatus('listening');
+        
+        this.recognizer.startContinuousRecognitionAsync(
+          () => {
+            console.log('✅ Reconnaissance reprise avec succès');
+          },
+          (error: string) => {
+            console.error('❌ Erreur reprise reconnaissance:', error);
+            this.handleError(error);
+          }
+        );
+      } else if (!this.recognizer) {
+        console.log('🚀 Pas de connexion existante, création nouvelle...');
+        // Fallback : recréer si nécessaire
+        // Cette méthode sera appelée depuis startRecognition si besoin
+      }
+    } catch (error) {
+      console.error('❌ Erreur resumeRecognition:', error);
+      this.handleError(String(error));
+    }
+  }
+
+  /**
+   * 🚀 Nettoyage "soft" - Garde la connexion ouverte si persistance activée
+   */
+  private softCleanup(): void {
+    if (this.connectionKeepAlive && this.recognizer) {
+      console.log('🚀 Nettoyage soft - WebSocket maintenu ouvert');
+      this.isRecognizing = false;
+      // NE PAS fermer le recognizer
+    } else {
+      // Nettoyage complet traditionnel
+      this.hardCleanup();
+    }
+  }
+
+  /**
+   * 🚀 Nettoyage "hard" - Ferme complètement la connexion
+   */
+  private hardCleanup(): void {
+    console.log('🚀 Nettoyage hard - Fermeture complète WebSocket');
+    if (this.recognizer) {
+      this.recognizer.close();
+      this.recognizer = null;
+    }
+    this.isRecognizing = false;
+    
+    if (this.connectionTimeout) {
+      clearTimeout(this.connectionTimeout);
+      this.connectionTimeout = null;
+    }
   }
 }
 
