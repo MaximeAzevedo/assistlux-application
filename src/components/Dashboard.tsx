@@ -6,8 +6,8 @@ import {
   ClipboardList,
   MapPin,
   Video,
-  Euro,
   RefreshCw,
+  Euro,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import WhyChoose from './WhyChoose';
@@ -109,28 +109,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Allocation Vie Chère Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-tr from-green-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center mb-6 transform group-hover:scale-110 transition-transform duration-300">
-                <Euro className="w-6 h-6 text-green-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Allocation de Vie Chère 2025
-              </h3>
-              <p className="text-gray-600 leading-relaxed mb-6">
-                Formulaire intelligent pré-rempli avec IA pour votre demande d'allocation de vie chère du FNS
-              </p>
-              <Link
-                to="/allocation-vie-chere"
-                className="inline-flex items-center text-green-600 hover:text-green-700 font-medium group-hover:translate-x-1 transition-transform duration-300"
-              >
-                Démarrer ma demande →
-              </Link>
-            </div>
-          </div>
+
 
           {/* Process Assistance Card */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden">

@@ -10,12 +10,11 @@ import EligibilityWizardDirect from './pages/EligibilityWizardDirect';
 import VerificateurEligibilite from './pages/VerificateurEligibilite';
 import ProcessAssistant from './pages/ProcessAssistant';
 import CarteInteractive from './pages/CarteInteractive';
-import AideLogementWizard from './components/AideLogement/AideLogementWizard';
 import ContentPage from './components/ContentPage';
 import Dashboard from './components/Dashboard';
 import DatabaseSetup from './components/DatabaseSetup';
-import AssistanceJudiciaireWizard from './components/AssistanceJudiciaire/AssistanceJudiciaireWizard';
 import ProceduresGuide from './components/ProceduresGuide/ProceduresGuide';
+import PreparationLogementSocial from './components/PreparationLogementSocial/PreparationLogementSocial';
 import AdminPage from './pages/Admin';
 import InterviewTranslator from './components/InterviewTranslator/InterviewTranslator';
 import FileConverter from './components/FileConverter/FileConverter';
@@ -41,8 +40,7 @@ function App() {
           <Route path="/eligibility-wizard" element={<EligibilityWizardDirect />} />
           <Route path="/eligibility-check" element={<ProcessAssistant />} />
           <Route path="/effectuer-demarche" element={<ProceduresGuide />} />
-          <Route path="/effectuer-demarche/assistance-judiciaire" element={<AssistanceJudiciaireWizard />} />
-          <Route path="/effectuer-demarche/aide-logement" element={<AideLogementWizard />} />
+          <Route path="/preparation-logement-social" element={<PreparationLogementSocial />} />
           <Route path="/espace-personnel" element={<PersonalSpace />} />
           <Route path="/guide-demarches" element={<ProceduresGuide />} />
           <Route path="/carte-interactive" element={<CarteInteractive />} />
